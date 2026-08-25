@@ -256,5 +256,54 @@ export const FinancialService = {
       return req;
     });
     saveRequests();
+  },
+
+  initializeDefaultFeesForShipment: (shipmentId: string) => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('shipment_settings') || '{}');
+      const defaultFees: any[] = saved.fees || [
+        { name: 'Phí khai báo hải quan', category: 'Hải quan', type: 'CHI', amount: 1000000, currency: 'VND', isBillable: true, active: true },
+        { name: 'Phí hiện trường kiểm hóa', category: 'Hiện trường', type: 'CHI', amount: 500000, currency: 'VND', isBillable: true, active: true },
+        { name: 'Phí vận chuyển nội địa', category: 'Vận chuyển', type: 'CHI', amount: 8000000, currency: 'VND', isBillable: true, active: true },
+        { name: 'Phí cảng & Nâng hạ', category: 'Cảng / Terminal', type: 'CHI', amount: 3000000, currency: 'VND', isBillable: true, active: true },
+        { name: 'Phí lệnh giao hàng (D/O)', category: 'Chứng từ', type: 'CHI', amount: 500000, currency: 'VND', isBillable: true, active: true },
+        { name: 'Phí khác / Phát sinh', category: 'Khác', type: 'CHI', amount: 500000, currency: 'VND', isBillable: false, active: true },
+      ];
+
+      const activeFees = defaultFees.filter((f) => f.active !== false);
+      const newItems: FinancialRequest[] = activeFees.map((fee, idx) => ({
+        id: `CHI-${Math.floor(1000 + Math.random() * 9000)}-${idx + 1}`,
+        shipmentId,
+        type: (fee.type || 'CHI') as 'CHI' | 'THU',
+        description: fee.name,
+        category: fee.category || 'Vận hành',
+        partyName: 'Đơn vị dịch vụ / Cảng vụ',
+        amount: fee.amount || 0,
+        paidAmount: 0,
+        remainingAmount: fee.amount || 0,
+        currency: fee.currency || 'VND',
+        requestDate: new Date().toISOString().split('T')[0],
+        expectedDate: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+        requester: getCurrentUser(),
+        status: 'CHỜ DUYỆT',
+        notes: fee.notes || 'Định mức phí mặc định khởi tạo tự động từ hệ thống',
+        isBillable: fee.isBillable !== false,
+        billableAmount: fee.isBillable ? fee.amount : undefined,
+        history: [
+          {
+            id: Math.random().toString(36).substr(2, 9),
+            timestamp: new Date().toISOString(),
+            action: 'TẠO MỚI TỰ ĐỘNG',
+            user: 'Hệ thống',
+            details: 'Khởi tạo theo bảng định mức phí mặc định'
+          }
+        ]
+      }));
+
+      MOCK_REQUESTS = [...newItems, ...MOCK_REQUESTS];
+      saveRequests();
+    } catch (e) {
+      console.error('Failed to init default fees:', e);
+    }
   }
 };

@@ -41,7 +41,7 @@ export default function EditShipmentModal({
     setError('');
 
     try {
-      const json = await apiFetch(`/api/shipments/${shipment.id}`, {
+      await apiFetch(`/api/shipments/${shipment.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

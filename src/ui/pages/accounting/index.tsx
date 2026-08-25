@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutDashboard, ArrowDownLeft, ArrowUpRight, BookOpen, Download, Columns, Wallet, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Download, Columns, Wallet, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
 
 import OperationsTab from './operations.js';
 import CashbookTab from './cashbook.js';

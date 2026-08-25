@@ -320,9 +320,13 @@ export default function ShipmentList() {
       {isModalOpen && (
         <CreateShipmentModal 
           onClose={() => setIsModalOpen(false)} 
-          onSuccess={() => {
+          onSuccess={(newShipment) => {
             setIsModalOpen(false);
-            loadShipments();
+            if (newShipment?.id) {
+              navigate(`/shipments/${newShipment.id}`);
+            } else {
+              loadShipments();
+            }
           }}
         />
       )}

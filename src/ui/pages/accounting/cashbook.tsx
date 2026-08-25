@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import FilterDropdown from '../../components/ui/filter_dropdown.js';

@@ -13,7 +13,188 @@
   },
   "nav": {
     "adminDashboard": "Admin Dashboard",
-    "shipments": "Shipments"
+    "shipments": "Shipments",
+    "accounting": "Accounting",
+    "masterData": "Master Data",
+    "customers": "Customers",
+    "shippingLines": "Shipping Lines",
+    "ports": "Ports & Gateways"
+  },
+  "masterData": {
+    "customers": {
+      "title": "Customer Management",
+      "subtitle": "Manage customers and contact information",
+      "addCustomer": "Add Customer",
+      "editCustomer": "Edit Customer",
+      "deleteCustomer": "Delete Customer",
+      "deleteConfirm": "Are you sure you want to delete this customer? This action cannot be undone.",
+      "name": "Customer Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "createdAt": "Created Date",
+      "noCustomers": "No customers found",
+      "searchPlaceholder": "Search by name, email, phone, address..."
+    },
+    "shippingLines": {
+      "title": "Shipping Line Management",
+      "subtitle": "Manage global & domestic shipping carriers",
+      "addShippingLine": "Add Shipping Line",
+      "editShippingLine": "Edit Shipping Line",
+      "deleteShippingLine": "Delete Shipping Line",
+      "deleteConfirm": "Are you sure you want to delete this shipping line? This action cannot be undone.",
+      "code": "Carrier Code",
+      "name": "Carrier Name",
+      "contactPerson": "Contact Person",
+      "email": "Email",
+      "phone": "Hotline / Phone",
+      "website": "Website",
+      "trackingUrl": "Tracking URL",
+      "notes": "Notes",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "noShippingLines": "No shipping lines found",
+      "searchPlaceholder": "Search by code, name, contact person..."
+    },
+    "ports": {
+      "title": "Port & Gateway Management",
+      "subtitle": "Manage seaports, inland container depots (ICD), border gates, and airports",
+      "addPort": "Add Port",
+      "editPort": "Edit Port",
+      "deletePort": "Delete Port",
+      "deleteConfirm": "Are you sure you want to delete this port? This action cannot be undone.",
+      "code": "Port Code (UN/LOCODE)",
+      "name": "Port / Hub Name",
+      "country": "Country",
+      "countryCode": "Country Code",
+      "city": "City / Province",
+      "type": "Port Type",
+      "address": "Address / Location",
+      "notes": "Notes",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "noPorts": "No ports found",
+      "searchPlaceholder": "Search by port code, name, city, country...",
+      "filterAll": "All Port Types",
+      "types": {
+        "SEAPORT": "Seaport",
+        "INLAND_PORT": "Inland Port / River",
+        "ICD": "Inland Container Depot (ICD)",
+        "BORDER_GATE": "Border Gate",
+        "AIRPORT": "Airport"
+      }
+    }
+  },
+  "settingsPage": {
+    "title": "System Settings",
+    "subtitle": "Manage and configure LogiFlow operational parameters",
+    "searchPlaceholder": "Search settings...",
+    "kpi": {
+      "users": "Members",
+      "roles": "Roles",
+      "alertRules": "Alert Rules",
+      "currency": "Currency",
+      "systemVersion": "Version"
+    },
+    "manage": "Configure",
+    "viewDetails": "View Details",
+    "close": "Close",
+    "saveChanges": "Save Changes",
+    "groups": {
+      "usersRoles": {
+        "title": "Users & Roles",
+        "description": "Team accounts, roles, and RBAC permissions",
+        "badge": "2 Members"
+      },
+      "shipmentConfig": {
+        "title": "Shipment Config",
+        "description": "Auto-tracking prefix, 14 stages, and container types",
+        "badge": "14 Stages"
+      },
+      "alertsNotifications": {
+        "title": "Alerts & Notifications",
+        "description": "Port delay thresholds, customs holds, and emails",
+        "badge": "4 Rules"
+      },
+      "companyProfile": {
+        "title": "Company Profile",
+        "description": "Corporate entity, tax ID, and branch offices",
+        "badge": "2 Branches"
+      },
+      "financeCurrency": {
+        "title": "Finance & Currency",
+        "description": "Billing currencies, exchange rates, and cost catalog",
+        "badge": "USD / VND"
+      },
+      "securityIntegrations": {
+        "title": "Security & Integrations",
+        "description": "JWT session timeout, API keys, and integrations",
+        "badge": "JWT Auth"
+      }
+    },
+    "shipmentPage": {
+      "title": "Shipment & Workflow Configuration",
+      "subtitle": "Configure tracking number generation, 14-stage lifecycle, container specs, and default routes",
+      "backToSettings": "Back to Settings",
+      "tabs": {
+        "tracking": "Tracking Rules",
+        "fees": "Default Fees",
+        "stages": "Status Lifecycle",
+        "containers": "Container Specs",
+        "routes": "Routes & Hubs",
+        "documents": "Required Docs"
+      },
+      "fees": {
+        "title": "Default Cost & Fee Norms for New Shipments",
+        "subtitle": "Standard costs will be automatically initialized and provisioned when creating new shipments",
+        "totalEstimate": "Total Default Cost Norm",
+        "activeCount": "Active Fees",
+        "addFee": "Add New Fee",
+        "feeName": "Fee Name",
+        "category": "Category",
+        "type": "Fee Type",
+        "amount": "Standard Amount",
+        "currency": "Currency",
+        "billable": "Billable to Customer",
+        "notes": "Notes & Purpose",
+        "active": "Active"
+      },
+      "tracking": {
+        "title": "Automatic Tracking Number Generation",
+        "prefix": "Tracking Code Prefix",
+        "autoGenerate": "Automatically generate code on new shipment creation",
+        "format": "Code Format",
+        "preview": "Tracking Code Live Preview",
+        "sample": "Sample Code:"
+      },
+      "stages": {
+        "title": "14-Stage Logistics Lifecycle",
+        "description": "Manage milestone progression from draft creation to final delivery",
+        "stage": "Status Name",
+        "code": "Status Code",
+        "sla": "Standard SLA (Hours)",
+        "active": "Active"
+      },
+      "containers": {
+        "title": "Standard Container Types & Capacities",
+        "code": "Type Code",
+        "name": "Container Name",
+        "maxWeight": "Max Payload",
+        "volume": "Volume (CBM)",
+        "active": "Active"
+      },
+      "routes": {
+        "title": "Default Route & Transit Checkpoints",
+        "defaultMode": "Default Transportation Mode",
+        "defaultOrigin": "Default Port of Loading (POL)",
+        "defaultTransit": "Default Transit Port",
+        "defaultDest": "Default Port of Discharge (POD)",
+        "defaultBorder": "Default Border Gate"
+      },
+      "saveSuccess": "Shipment configuration saved successfully!"
+    }
   },
   "financial": {
     "tabs": {
@@ -419,19 +600,27 @@
   "createShipment": {
     "title": "Create Transit Shipment",
     "subtitle": "Initiate a new China → Vietnam → Cambodia route.",
-    "routing": "Routing",
-    "origin": "Origin (China)",
-    "transit": "Transit (Vietnam)",
-    "destination": "Destination (Cambodia)",
-    "parties": "Parties",
+    "routing": "Routing & Ports",
+    "origin": "Port of Loading (POL)",
+    "transit": "Transit Port",
+    "destination": "Port of Discharge (POD)",
+    "border": "Border Gate",
+    "parties": "Customer Information",
     "customer": "Customer (Bill To)",
-    "cargo_transport": "Cargo & Transport",
+    "selectCustomer": "-- Select Customer --",
+    "noCustomers": "No customers found in Master Data.",
+    "cargo_transport": "Cargo & Transportation Specs",
+    "tracking_number": "Tracking Number",
     "transport_mode": "Transport Mode",
-    "est_weight": "Est. Weight",
+    "container_type": "Container Type",
+    "est_weight": "Total Weight (KG)",
     "placeholder_weight": "e.g. 15,000 kg",
-    "est_volume": "Est. Volume",
+    "est_volume": "Total Volume (CBM)",
     "placeholder_volume": "e.g. 35 CBM",
-    "note": "* Tracking number and initial draft status will be automatically generated.",
+    "dates": "Estimated Schedule",
+    "etd": "Est. Departure Date (ETD)",
+    "eta": "Est. Arrival Date (ETA)",
+    "note": "* Tracking number and Draft (DRAFT) status will be automatically initialized according to system settings.",
     "creating": "Creating...",
     "create": "Create Shipment"
   },

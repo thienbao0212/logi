@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, Plus, MoreVertical, ArrowUpRight, Download } from 'lucide-react';
+import { Search, Plus, MoreVertical, Download } from 'lucide-react';
 import FilterDropdown from '../../components/ui/filter_dropdown.js';
 import { FinancialService } from '../../components/shipment/tabs/financial/mockService.js';
 import { FinancialRequest } from '../../components/shipment/tabs/financial/types.js';

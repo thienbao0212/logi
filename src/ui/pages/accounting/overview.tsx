@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TrendingUp, TrendingDown, DollarSign, Wallet, ArrowUpRight, ArrowDownRight, Clock } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FinancialService } from '../../components/shipment/tabs/financial/mockService.js';
 import { FinancialRequest } from '../../components/shipment/tabs/financial/types.js';
@@ -147,7 +147,7 @@ export default function OverviewTab() {
                 <Tooltip 
                   cursor={{fill: '#f1f5f9'}}
                   contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, undefined]}
+                  formatter={(value: any) => [`$${Number(value || 0).toLocaleString()}`, '']}
                 />
                 <Legend iconType="circle" wrapperStyle={{paddingTop: '20px'}} />
                 <Bar dataKey="Inflow" name={t('accounting.cashbook.inflow', 'Inflow')} fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />

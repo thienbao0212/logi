@@ -13,7 +13,188 @@
   },
   "nav": {
     "adminDashboard": "Bảng điều khiển Admin",
-    "shipments": "Lô hàng"
+    "shipments": "Lô hàng",
+    "accounting": "Kế toán",
+    "masterData": "Master Data",
+    "customers": "Quản lý khách hàng",
+    "shippingLines": "Quản lý hãng tàu",
+    "ports": "Quản lý cảng"
+  },
+  "masterData": {
+    "customers": {
+      "title": "Quản lý khách hàng",
+      "subtitle": "Quản lý danh mục khách hàng và thông tin liên hệ",
+      "addCustomer": "Thêm khách hàng",
+      "editCustomer": "Chỉnh sửa khách hàng",
+      "deleteCustomer": "Xóa khách hàng",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa khách hàng này không? Hành động này không thể hoàn tác.",
+      "name": "Tên khách hàng",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ",
+      "createdAt": "Ngày tạo",
+      "noCustomers": "Chưa có khách hàng nào",
+      "searchPlaceholder": "Tìm kiếm theo tên, email, số điện thoại, địa chỉ..."
+    },
+    "shippingLines": {
+      "title": "Quản lý hãng tàu",
+      "subtitle": "Quản lý danh sách các hãng tàu quốc tế & nội địa",
+      "addShippingLine": "Thêm hãng tàu",
+      "editShippingLine": "Chỉnh sửa hãng tàu",
+      "deleteShippingLine": "Xóa hãng tàu",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa hãng tàu này không? Hành động này không thể hoàn tác.",
+      "code": "Mã hãng tàu",
+      "name": "Tên hãng tàu",
+      "contactPerson": "Người liên hệ",
+      "email": "Email",
+      "phone": "Hotline / SĐT",
+      "website": "Website",
+      "trackingUrl": "URL tra cứu container",
+      "notes": "Ghi chú",
+      "status": "Trạng thái",
+      "active": "Đang hoạt động",
+      "inactive": "Tạm ngưng",
+      "noShippingLines": "Chưa có hãng tàu nào",
+      "searchPlaceholder": "Tìm kiếm theo mã hãng tàu, tên, người liên hệ..."
+    },
+    "ports": {
+      "title": "Quản lý cảng & cửa khẩu",
+      "subtitle": "Quản lý danh mục cảng biển, cảng cạn ICD, cửa khẩu và sân bay",
+      "addPort": "Thêm cảng mới",
+      "editPort": "Chỉnh sửa cảng",
+      "deletePort": "Xóa cảng",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa cảng này không? Hành động này không thể hoàn tác.",
+      "code": "Mã cảng (UN/LOCODE)",
+      "name": "Tên cảng / Điểm trung chuyển",
+      "country": "Quốc gia",
+      "countryCode": "Mã QG",
+      "city": "Thành phố / Tỉnh",
+      "type": "Phân loại",
+      "address": "Địa chỉ / Khu vực",
+      "notes": "Ghi chú",
+      "status": "Trạng thái",
+      "active": "Đang hoạt động",
+      "inactive": "Tạm ngưng",
+      "noPorts": "Chưa có cảng nào trong danh mục",
+      "searchPlaceholder": "Tìm kiếm theo mã cảng, tên cảng, thành phố, quốc gia...",
+      "filterAll": "Tất cả loại cảng",
+      "types": {
+        "SEAPORT": "Cảng biển",
+        "INLAND_PORT": "Cảng sông / Nội địa",
+        "ICD": "Cảng cạn (ICD)",
+        "BORDER_GATE": "Cửa khẩu đường bộ",
+        "AIRPORT": "Sân bay"
+      }
+    }
+  },
+  "settingsPage": {
+    "title": "Cài đặt hệ thống",
+    "subtitle": "Quản lý và cấu hình các tham số vận hành LogiFlow",
+    "searchPlaceholder": "Tìm kiếm nhóm cài đặt...",
+    "kpi": {
+      "users": "Thành viên",
+      "roles": "Vai trò",
+      "alertRules": "Quy tắc cảnh báo",
+      "currency": "Tiền tệ chính",
+      "systemVersion": "Phiên bản"
+    },
+    "manage": "Cấu hình",
+    "viewDetails": "Xem chi tiết",
+    "close": "Đóng",
+    "saveChanges": "Lưu thay đổi",
+    "groups": {
+      "usersRoles": {
+        "title": "Người dùng & Phân quyền",
+        "description": "Tài khoản nhân sự và phân quyền vai trò RBAC",
+        "badge": "2 Thành viên"
+      },
+      "shipmentConfig": {
+        "title": "Cấu hình Lô hàng",
+        "description": "Mã vận đơn tự động, quy trình trạng thái và container",
+        "badge": "14 Trạng thái"
+      },
+      "alertsNotifications": {
+        "title": "Cảnh báo & Thông báo",
+        "description": "Cảnh báo trễ cảng Cát Lái, kiểm hóa và email",
+        "badge": "4 Quy tắc"
+      },
+      "companyProfile": {
+        "title": "Thông tin Doanh nghiệp",
+        "description": "Hồ sơ công ty, mã số thuế và văn phòng chi nhánh",
+        "badge": "2 Chi nhánh"
+      },
+      "financeCurrency": {
+        "title": "Tài chính & Tiền tệ",
+        "description": "Tiền tệ chính, tỷ giá hạch toán và danh mục thu chi",
+        "badge": "USD / VND"
+      },
+      "securityIntegrations": {
+        "title": "Bảo mật & Tích hợp",
+        "description": "Thời hạn phiên đăng nhập JWT và API Keys",
+        "badge": "JWT Auth"
+      }
+    },
+    "shipmentPage": {
+      "title": "Cấu hình Lô hàng & Vận hành",
+      "subtitle": "Thiết lập quy tắc mã vận đơn, chu trình 14 trạng thái, quy cách container và tuyến đường mặc định",
+      "backToSettings": "Quay lại Cài đặt",
+      "tabs": {
+        "tracking": "Mã vận đơn",
+        "fees": "Phí mặc định",
+        "stages": "Chu trình trạng thái",
+        "containers": "Loại Container",
+        "routes": "Lộ trình & Cửa khẩu",
+        "documents": "Chứng từ bắt buộc"
+      },
+      "fees": {
+        "title": "Định mức các khoản phí mặc định cho lô hàng mới",
+        "subtitle": "Các khoản chi phí tiêu chuẩn sẽ được tự động thiết lập và hạch toán khi tạo mới lô hàng",
+        "totalEstimate": "Tổng định mức chi phí mặc định",
+        "activeCount": "Khoản phí kích hoạt",
+        "addFee": "Thêm khoản phí mới",
+        "feeName": "Tên khoản phí",
+        "category": "Phân loại / Nhóm",
+        "type": "Loại phí",
+        "amount": "Số tiền định mức",
+        "currency": "Tiền tệ",
+        "billable": "Thu lại khách hàng",
+        "notes": "Ghi chú & Mục đích",
+        "active": "Kích hoạt"
+      },
+      "tracking": {
+        "title": "Quy tắc sinh mã vận đơn tự động",
+        "prefix": "Tiền tố mã vận đơn (Prefix)",
+        "autoGenerate": "Tự động sinh mã khi tạo lô hàng mới",
+        "format": "Định dạng mã",
+        "preview": "Mẫu mã vận đơn xem trước",
+        "sample": "Mã mẫu:"
+      },
+      "stages": {
+        "title": "Chu trình 14 trạng thái vận chuyển",
+        "description": "Quản lý quy trình xử lý lô hàng từ lúc khởi tạo đến khi giao hàng thành công",
+        "stage": "Trạng thái",
+        "code": "Mã trạng thái",
+        "sla": "Thời gian SLA định mức (Giờ)",
+        "active": "Áp dụng"
+      },
+      "containers": {
+        "title": "Quy cách và loại Container",
+        "code": "Mã Cont",
+        "name": "Tên loại Container",
+        "maxWeight": "Tải trọng tối đa",
+        "volume": "Thể tích (CBM)",
+        "active": "Sử dụng"
+      },
+      "routes": {
+        "title": "Lộ trình & Điểm trung chuyển mặc định",
+        "defaultMode": "Phương thức vận tải mặc định",
+        "defaultOrigin": "Cảng xuất phát mặc định (POL)",
+        "defaultTransit": "Cảng trung chuyển (Transit Port)",
+        "defaultDest": "Cảng/Điểm đích mặc định (POD)",
+        "defaultBorder": "Cửa khẩu đường bộ"
+      },
+      "saveSuccess": "Cấu hình lô hàng đã được lưu thành công!"
+    }
   },
   "financial": {
     "tabs": {
@@ -417,22 +598,30 @@
     }
   },
   "createShipment": {
-    "title": "Tạo lô hàng quá cảnh",
-    "subtitle": "Bắt đầu tuyến mới Trung Quốc → Việt Nam → Campuchia.",
-    "routing": "Tuyến đường",
-    "origin": "Điểm đi (Trung Quốc)",
-    "transit": "Quá cảnh (Việt Nam)",
-    "destination": "Điểm đến (Campuchia)",
-    "parties": "Các bên liên quan",
-    "customer": "Khách hàng (Người thanh toán)",
-    "cargo_transport": "Hàng hóa & Vận chuyển",
-    "transport_mode": "Phương thức vận chuyển",
-    "est_weight": "Khối lượng ước tính",
+    "title": "Tạo mới Lô hàng Vận chuyển",
+    "subtitle": "Khởi tạo lộ trình và hồ sơ vận tải Trung Quốc → Việt Nam → Campuchia.",
+    "routing": "Lộ trình & Cảng vận chuyển",
+    "origin": "Cảng xuất phát / Cảng đi (POL)",
+    "transit": "Cảng trung chuyển (Transit Port)",
+    "destination": "Cảng đến / Điểm đích (POD)",
+    "border": "Cửa khẩu đường bộ",
+    "parties": "Thông tin Khách hàng",
+    "customer": "Khách hàng (Bill To)",
+    "selectCustomer": "-- Chọn Khách hàng --",
+    "noCustomers": "Chưa có khách hàng trong Master Data.",
+    "cargo_transport": "Thông số Hàng hóa & Vận tải",
+    "tracking_number": "Mã vận đơn (Tracking No)",
+    "transport_mode": "Phương thức vận tải",
+    "container_type": "Quy cách Container",
+    "est_weight": "Tổng trọng lượng (KG)",
     "placeholder_weight": "VD: 15,000 kg",
-    "est_volume": "Thể tích ước tính",
+    "est_volume": "Tổng thể tích (CBM)",
     "placeholder_volume": "VD: 35 CBM",
-    "note": "* Mã vận đơn và trạng thái nháp ban đầu sẽ được tạo tự động.",
-    "creating": "Đang tạo...",
+    "dates": "Lịch trình dự kiến",
+    "etd": "Khởi hành dự kiến (ETD)",
+    "eta": "Đến dự kiến (ETA)",
+    "note": "* Mã vận đơn và trạng thái Nháp (DRAFT) được khởi tạo tự động theo cấu hình hệ thống.",
+    "creating": "Đang khởi tạo...",
     "create": "Tạo lô hàng"
   },
   "editShipment": {

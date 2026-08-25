@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Search, Plus, ArrowUpRight, ArrowDownLeft, Clock, CheckCircle2, DollarSign, LayoutGrid, Table } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Plus, ArrowUpRight, ArrowDownLeft, Clock, LayoutGrid, Table } from 'lucide-react';
 import { FinancialService } from '../../components/shipment/tabs/financial/mockService.js';
 import { FinancialRequest } from '../../components/shipment/tabs/financial/types.js';
 import { apiFetch } from '@/lib/fetch.js';
@@ -8,7 +7,6 @@ import { RequestDrawer } from '../../components/shipment/tabs/financial/componen
 import { AddRequestModal } from '../../components/shipment/tabs/financial/components/add_request_modal.js';
 
 export default function DailyOperationsTab() {
-  const { t } = useTranslation();
   const [data, setData] = useState<FinancialRequest[]>([]);
   const [trackingMap, setTrackingMap] = useState<Record<string, string>>({});
   const [selectedRequest, setSelectedRequest] = useState<FinancialRequest | null>(null);
@@ -45,7 +43,7 @@ export default function DailyOperationsTab() {
     load();
   }, []);
 
-  const getStatusBadge = (status: string, isThu: boolean) => {
+  const getStatusBadge = (status: string) => {
     let colorClass = 'bg-slate-100 text-slate-700';
     if (status === 'ĐÃ THU' || status === 'ĐÃ CHI') colorClass = 'bg-emerald-100 text-emerald-700 border-emerald-200';
     else if (status.includes('MỘT PHẦN')) colorClass = 'bg-blue-100 text-blue-700 border-blue-200';
@@ -74,7 +72,7 @@ export default function DailyOperationsTab() {
         <div>
           <div className="flex items-center gap-2">
             <span className="font-bold text-slate-900">{req.id}</span>
-            {getStatusBadge(req.status, isThu)}
+            {getStatusBadge(req.status)}
           </div>
           <div className="text-sm font-medium text-slate-700 mt-1">{req.partyName}</div>
         </div>
@@ -159,7 +157,7 @@ export default function DailyOperationsTab() {
                   <td className={`p-4 text-right text-sm font-bold ${isThu ? 'text-emerald-700' : 'text-rose-700'}`}>
                     ${req.amount.toLocaleString()}
                   </td>
-                  <td className="p-4 text-center">{getStatusBadge(req.status, isThu)}</td>
+                  <td className="p-4 text-center">{getStatusBadge(req.status)}</td>
                 </tr>
               );
             })}

@@ -1,5 +1,4 @@
-import { ArrowLeft, Edit, Package, FileText, DollarSign, CheckSquare, AlertTriangle, MoreHorizontal, Ship, Plane, Truck, Train } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Edit, Package, FileText, DollarSign, CheckSquare, AlertTriangle, MoreHorizontal, Ship, Plane, Truck, Train } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 
@@ -30,7 +29,6 @@ const MODE_ICON: Record<string, React.ReactNode> = {
 
 export default function ShipmentHeader({ shipment, onEditClick }: { shipment: Shipment, onEditClick?: () => void }) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const statusKey = `shipment.status.${shipment.status.toLowerCase().replace(/_([a-z])/g, g => g[1].toUpperCase())}`;
   const statusLabel = STATUS_CONFIG[shipment.status]?.label ? t(statusKey as string, STATUS_CONFIG[shipment.status].label) : shipment.status;
   const statusColor = STATUS_CONFIG[shipment.status]?.color ?? 'bg-slate-100 text-slate-600';

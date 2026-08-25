@@ -1,7 +1,23 @@
 import { apiFetch } from '@/lib/fetch.js';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Package, LogOut, LayoutDashboard, Settings, User, ChevronLeft, ChevronRight, Globe, Calculator } from 'lucide-react';
+import { 
+  Package, 
+  LogOut, 
+  LayoutDashboard, 
+  Settings, 
+  User, 
+  ChevronLeft, 
+  ChevronRight, 
+  ChevronDown, 
+  ChevronUp, 
+  Globe, 
+  Calculator,
+  Database,
+  Users,
+  Ship,
+  Anchor
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -12,7 +28,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const isAdmin = memberships.some((m: any) => m.role === 'admin');
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
+  
+  // Master data submenu toggle state
+  const isMasterDataActive = location.pathname.startsWith('/master-data');
+  const [masterDataOpen, setMasterDataOpen] = useState(true);
+
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    if (isMasterDataActive) {
+      setMasterDataOpen(true);
+    }
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     try {
@@ -26,16 +53,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     navigate('/login');
   };
 
-  const allNavItems = [
-    { name: t('nav.adminDashboard', 'Admin Dashboard'), path: '/admin', icon: LayoutDashboard, adminOnly: true },
-    { name: t('nav.shipments', 'Shipments'), path: '/shipments', icon: Package, adminOnly: false },
-    { name: t('nav.accounting', 'Accounting'), path: '/accounting', icon: Calculator, adminOnly: false },
+  const navItems = [
+    ...(isAdmin ? [{ name: t('nav.adminDashboard', 'Admin Dashboard'), path: '/admin', icon: LayoutDashboard }] : []),
+    { name: t('nav.shipments', 'Shipments'), path: '/shipments', icon: Package },
+    { name: t('nav.accounting', 'Accounting'), path: '/accounting', icon: Calculator },
   ];
 
-  // Admin thấy tất cả các menu, user thường chỉ thấy menu không phải adminOnly
-  const navItems = isAdmin
-    ? allNavItems
-    : allNavItems.filter((item) => !item.adminOnly);
+  const masterDataChildren = [
+    { name: t('nav.customers', 'Quản lý khách hàng'), path: '/master-data/customers', icon: Users },
+    { name: t('nav.shippingLines', 'Quản lý hãng tàu'), path: '/master-data/shipping-lines', icon: Ship },
+    { name: t('nav.ports', 'Quản lý cảng'), path: '/master-data/ports', icon: Anchor },
+  ];
 
   return (
     <div className="h-screen bg-slate-50 flex flex-col overflow-hidden">
@@ -44,7 +72,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div 
           className="flex items-center gap-3 shrink-0"
           style={{
-            width: collapsed ? '40px' : '232px', // 64px - 24px padding = 40px, 256px - 24px padding = 232px
+            width: collapsed ? '40px' : '232px',
             transition: 'width 300ms cubic-bezier(0.4,0,0.2,1)',
           }}
         >
@@ -107,7 +135,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <aside className="bg-white h-full flex flex-col overflow-hidden"
             style={{ width: '100%' }}
           >
-            <nav className="flex-1 px-3 py-6 space-y-1 overflow-hidden">
+            <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto overflow-x-hidden">
               {navItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path);
                 return (
@@ -139,14 +167,96 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   </button>
                 );
               })}
+
+              {/* Master Data Menu Group */}
+              <div className="pt-2">
+                {collapsed ? (
+                  // Collapsed View: Group icon that navigates to first child
+                  <button
+                    onClick={() => navigate('/master-data/customers')}
+                    title={t('nav.masterData', 'Master Data')}
+                    className={`w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isMasterDataActive
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }`}
+                  >
+                    <Database
+                      size={18}
+                      className={`shrink-0 ${isMasterDataActive ? 'text-blue-600' : 'text-slate-400'}`}
+                    />
+                  </button>
+                ) : (
+                  // Expanded View: Group header with Accordion
+                  <div>
+                    <button
+                      onClick={() => setMasterDataOpen(!masterDataOpen)}
+                      className={`w-full flex items-center justify-between px-2.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                        isMasterDataActive
+                          ? 'text-blue-700 bg-blue-50/50'
+                          : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Database
+                          size={18}
+                          className={`shrink-0 ${isMasterDataActive ? 'text-blue-600' : 'text-slate-400'}`}
+                        />
+                        <span className="truncate">{t('nav.masterData', 'Master Data')}</span>
+                      </div>
+                      {masterDataOpen ? (
+                        <ChevronUp size={15} className="text-slate-400 shrink-0" />
+                      ) : (
+                        <ChevronDown size={15} className="text-slate-400 shrink-0" />
+                      )}
+                    </button>
+
+                    {/* Child Submenu */}
+                    {masterDataOpen && (
+                      <div className="mt-1 ml-4 pl-3 border-l-2 border-slate-100 space-y-1">
+                        {masterDataChildren.map((child) => {
+                          const isChildActive = location.pathname === child.path;
+                          return (
+                            <button
+                              key={child.path}
+                              onClick={() => navigate(child.path)}
+                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
+                                isChildActive
+                                  ? 'bg-blue-50 text-blue-700 font-semibold'
+                                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                              }`}
+                            >
+                              <child.icon
+                                size={15}
+                                className={`shrink-0 ${isChildActive ? 'text-blue-600' : 'text-slate-400'}`}
+                              />
+                              <span className="truncate">{child.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </nav>
 
             <div className="px-3 pb-4 border-t border-slate-200 pt-4 overflow-hidden">
               <button
-                title={collapsed ? 'Settings' : undefined}
-                className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                onClick={() => navigate('/settings')}
+                title={collapsed ? t('common.settings', 'Settings') : undefined}
+                className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname.startsWith('/settings')
+                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
               >
-                <Settings size={18} className="text-slate-400 shrink-0" />
+                <Settings
+                  size={18}
+                  className={`shrink-0 ${
+                    location.pathname.startsWith('/settings') ? 'text-blue-600' : 'text-slate-400'
+                  }`}
+                />
                 <span
                   style={{
                     opacity: collapsed ? 0 : 1,
@@ -174,7 +284,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               right: '-1px',
               transform: 'translateY(-50%)',
               zIndex: 30,
-              // The handle itself: thin vertical pill
               width: hovering ? '20px' : '3px',
               height: hovering ? '32px' : '40px',
               borderRadius: '999px',

@@ -17,22 +17,28 @@ shipmentsApp.use('*', requireAuth);
 const createShipmentSchema = z.object({
   companyId: z.string().uuid(),
   customerId: z.string().uuid(),
-  originId: z.string().uuid(),
-  destinationId: z.string().uuid(),
+  originId: z.string().min(1),
+  destinationId: z.string().min(1),
   mode: z.enum(['SEA', 'AIR', 'LAND', 'RAIL']),
   weightTotal: z.string().optional(),
   volumeTotal: z.string().optional(),
+  trackingNumber: z.string().optional(),
+  estimatedDepartureDate: z.string().optional(),
+  estimatedArrivalDate: z.string().optional(),
 });
 
 const STATUSES = ['DRAFT', 'PENDING', 'BOOKED', 'CARGO_RECEIVED', 'DEPARTED_CHINA', 'IN_TRANSIT', 'ARRIVED_CAT_LAI', 'CUSTOMS_TRANSIT_DECLARED', 'CUSTOMS_CLEARANCE', 'CUSTOMS_CLEARED', 'DEPARTED_VIETNAM', 'ARRIVED_CAMBODIA', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'] as const;
 
 const updateShipmentSchema = z.object({
   customerId: z.string().uuid().optional(),
-  originId: z.string().uuid().optional(),
-  destinationId: z.string().uuid().optional(),
+  originId: z.string().min(1).optional(),
+  destinationId: z.string().min(1).optional(),
   mode: z.enum(['SEA', 'AIR', 'LAND', 'RAIL']).optional(),
   weightTotal: z.string().optional(),
   volumeTotal: z.string().optional(),
+  trackingNumber: z.string().optional(),
+  estimatedDepartureDate: z.string().optional(),
+  estimatedArrivalDate: z.string().optional(),
   status: z.enum(STATUSES).optional(),
 });
 

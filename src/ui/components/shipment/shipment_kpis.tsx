@@ -109,7 +109,7 @@ export default function ShipmentKpis({ data = DEFAULT_KPIS, variant = 'default' 
         {items.map(item => (
           <div key={item.label} className="flex items-center gap-2 shrink-0">
             <div className={`w-7 h-7 rounded flex items-center justify-center ${item.iconBg}`}>
-              {React.cloneElement(item.icon as React.ReactElement, { size: 14 })}
+              {React.cloneElement(item.icon as React.ReactElement<any>, { size: 14 })}
             </div>
             <div className="flex flex-col justify-center">
               <span className={`text-[11px] font-bold leading-tight ${item.valueClass}`}>{item.value}</span>

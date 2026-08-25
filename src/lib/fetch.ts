@@ -1,4 +1,4 @@
-export async function apiFetch(endpoint: string, options: RequestInit = {}) {
+export async function apiFetch<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('token');
   const headers = new Headers(options.headers || {});
   
@@ -29,7 +29,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   // Handle empty responses (like 204 No Content or simple OKs)
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.includes('application/json')) {
-    return response.json();
+    return response.json() as Promise<T>;
   }
-  return response.text();
+  return response.text() as unknown as T;
 }

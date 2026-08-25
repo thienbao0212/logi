@@ -3,8 +3,8 @@ import { spawn } from 'child_process';
 
 const command = process.argv[2];
 
-function runCommand(cmd: string, args: string[]) {
-  const child = spawn(cmd, args, { stdio: 'inherit', shell: true });
+function runCommand(cmd: string, args: string[], stdio: any = 'inherit') {
+  const child = spawn(cmd, args, { stdio });
   child.on('error', (err) => {
     console.error(`Failed to start subprocess: ${err.message}`);
   });
@@ -14,29 +14,29 @@ function runCommand(cmd: string, args: string[]) {
 switch (command) {
   case 'dev':
     console.log('Starting LogiFlow Dev Server...');
-    runCommand('npx', ['vite']);
-    runCommand('npx', ['tsx', 'watch', 'src/server.ts']);
+    runCommand(process.execPath, ['./node_modules/vite/bin/vite.js'], ['ignore', 'inherit', 'inherit']);
+    runCommand(process.execPath, ['./node_modules/tsx/dist/cli.mjs', 'watch', 'src/server.ts'], ['ignore', 'inherit', 'inherit']);
     break;
   case 'db:migrate':
     console.log('Running database migrations...');
-    runCommand('npx', ['drizzle-kit', 'push']);
+    runCommand(process.execPath, ['./node_modules/drizzle-kit/bin.cjs', 'push', '--force']);
     break;
   case 'db:seed':
     console.log('Seeding database...');
-    runCommand('npx', ['tsx', 'src/db/seeds/index.ts']);
+    runCommand(process.execPath, ['./node_modules/tsx/dist/cli.mjs', 'src/db/seeds/index.ts']);
     break;
   case 'db:fixtures':
     console.log('Loading fixtures...');
-    // runCommand('npx', ['tsx', 'src/db/fixtures/index.ts']);
+    // runCommand(process.execPath, ['./node_modules/tsx/dist/cli.mjs', 'src/db/fixtures/index.ts']);
     break;
   case 'lint':
-    runCommand('npx', ['eslint', '.']);
+    runCommand(process.execPath, ['./node_modules/eslint/bin/eslint.js', '.']);
     break;
   case 'typecheck':
-    runCommand('npx', ['tsc', '--noEmit']);
+    runCommand(process.execPath, ['./node_modules/typescript/bin/tsc', '--noEmit']);
     break;
   case 'build':
-    runCommand('npx', ['vite', 'build']);
+    runCommand(process.execPath, ['./node_modules/vite/bin/vite.js', 'build']);
     break;
   default:
     console.log(`Unknown command: ${command}`);
