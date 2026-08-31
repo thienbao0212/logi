@@ -390,7 +390,7 @@ export default function ShipmentConfig() {
                 {t('settingsPage.shipmentPage.title', 'Cấu hình Lô hàng & Vận hành')}
               </h1>
               <p className="text-xs text-slate-500 mt-0.5">
-                {t('settingsPage.shipmentPage.subtitle', 'Thiết lập quy tắc mã vận đơn, định mức phí mặc định, 14 trạng thái và tuyến đường')}
+                {t('settingsPage.shipmentPage.subtitle', 'Thiết lập quy tắc mã lô hàng, định mức phí mặc định, 14 trạng thái và tuyến đường')}
               </p>
             </div>
           </div>
@@ -424,7 +424,7 @@ export default function ShipmentConfig() {
           }`}
         >
           <Tag size={15} />
-          <span>{t('settingsPage.shipmentPage.tabs.tracking', 'Mã vận đơn')}</span>
+          <span>{t('settingsPage.shipmentPage.tabs.tracking', 'Mã lô hàng')}</span>
         </button>
 
         <button
@@ -497,17 +497,17 @@ export default function ShipmentConfig() {
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
             <div>
               <h3 className="text-base font-bold text-slate-900">
-                {t('settingsPage.shipmentPage.tracking.title', 'Quy tắc sinh mã vận đơn tự động')}
+                {t('settingsPage.shipmentPage.tracking.title', 'Quy tắc sinh mã lô hàng tự động')}
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Thiết lập định dạng mã vận chuyển (Tracking No) áp dụng cho mọi lô hàng mới.
+                Thiết lập định dạng mã lô hàng (Tracking No) áp dụng cho mọi lô hàng mới.
               </p>
             </div>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  {t('settingsPage.shipmentPage.tracking.prefix', 'Tiền tố mã vận đơn (Prefix)')}
+                  {t('settingsPage.shipmentPage.tracking.prefix', 'Tiền tố mã lô hàng (Prefix)')}
                 </label>
                 <input
                   type="text"
@@ -550,10 +550,10 @@ export default function ShipmentConfig() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold text-blue-400">
                 <Tag size={16} />
-                <span>{t('settingsPage.shipmentPage.tracking.preview', 'Mẫu mã vận đơn xem trước')}</span>
+                <span>{t('settingsPage.shipmentPage.tracking.preview', 'Mẫu mã lô hàng xem trước')}</span>
               </div>
               <p className="text-xs text-slate-400">
-                Mã vận đơn sẽ được gán tự động khi khởi tạo lô hàng:
+                Mã lô hàng sẽ được gán tự động khi khởi tạo lô hàng:
               </p>
               <div className="p-4 bg-slate-800/80 rounded-xl border border-slate-700/80 font-mono text-xl font-bold text-blue-400 tracking-wider text-center">
                 {getSampleTrackingCode()}

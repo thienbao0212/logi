@@ -372,7 +372,7 @@ export default function Settings() {
                 <div className="space-y-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Tiền tố mã vận đơn tự động
+                      Tiền tố mã lô hàng tự động
                     </label>
                     <input
                       type="text"

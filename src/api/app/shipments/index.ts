@@ -1,6 +1,14 @@
 import { Hono } from 'hono';
 import { AppContext } from '../../../lib/context/types.js';
-import { createShipment, listShipments, addTrackingEvent, getShipmentById, updateShipment } from '../../../services/shipment.js';
+import { 
+  createShipment, 
+  listShipments, 
+  addTrackingEvent, 
+  getShipmentById, 
+  updateShipment,
+  deleteShipment,
+  deleteAllShipments
+} from '../../../services/shipment.js';
 import { addDocumentToShipment, listShipmentDocuments } from '../../../services/documents.js';
 import {
   listContainers, addContainer, listCustoms, addCustoms,
@@ -148,6 +156,33 @@ shipmentsApp.put('/:id', async (c) => {
     return c.json({ data: shipment });
   } catch (err: any) {
     if (err.name === 'ZodError') return c.json({ error: 'BAD_REQUEST', details: err.errors }, 400);
+    if (err.code) return c.json({ error: err.code, message: err.message }, err.status || 400);
+    throw err;
+  }
+});
+
+// ── DELETE /api/shipments/all — delete all shipments for company ────────────
+shipmentsApp.delete('/all', async (c) => {
+  const ctx = c.get('ctx');
+  const companyId = c.req.query('companyId');
+  if (!companyId) return c.json({ error: 'BAD_REQUEST', message: 'Missing companyId' }, 400);
+  try {
+    const result = await deleteAllShipments(ctx, companyId);
+    return c.json({ data: result });
+  } catch (err: any) {
+    if (err.code) return c.json({ error: err.code, message: err.message }, err.status || 400);
+    throw err;
+  }
+});
+
+// ── DELETE /api/shipments/:id — delete single shipment ───────────────────────
+shipmentsApp.delete('/:id', async (c) => {
+  const ctx = c.get('ctx');
+  const shipmentId = c.req.param('id');
+  try {
+    const result = await deleteShipment(ctx, shipmentId);
+    return c.json({ data: result });
+  } catch (err: any) {
     if (err.code) return c.json({ error: err.code, message: err.message }, err.status || 400);
     throw err;
   }

@@ -110,7 +110,7 @@
       },
       "shipmentConfig": {
         "title": "Cấu hình Lô hàng",
-        "description": "Mã vận đơn tự động, quy trình trạng thái và container",
+        "description": "Mã lô hàng tự động, quy trình trạng thái và container",
         "badge": "14 Trạng thái"
       },
       "alertsNotifications": {
@@ -136,10 +136,10 @@
     },
     "shipmentPage": {
       "title": "Cấu hình Lô hàng & Vận hành",
-      "subtitle": "Thiết lập quy tắc mã vận đơn, chu trình 14 trạng thái, quy cách container và tuyến đường mặc định",
+      "subtitle": "Thiết lập quy tắc mã lô hàng, chu trình 14 trạng thái, quy cách container và tuyến đường mặc định",
       "backToSettings": "Quay lại Cài đặt",
       "tabs": {
-        "tracking": "Mã vận đơn",
+        "tracking": "Mã lô hàng",
         "fees": "Phí mặc định",
         "stages": "Chu trình trạng thái",
         "containers": "Loại Container",
@@ -162,11 +162,11 @@
         "active": "Kích hoạt"
       },
       "tracking": {
-        "title": "Quy tắc sinh mã vận đơn tự động",
-        "prefix": "Tiền tố mã vận đơn (Prefix)",
+        "title": "Quy tắc sinh mã lô hàng tự động",
+        "prefix": "Tiền tố mã lô hàng (Prefix)",
         "autoGenerate": "Tự động sinh mã khi tạo lô hàng mới",
         "format": "Định dạng mã",
-        "preview": "Mẫu mã vận đơn xem trước",
+        "preview": "Mẫu mã lô hàng xem trước",
         "sample": "Mã mẫu:"
       },
       "stages": {
@@ -353,7 +353,7 @@
     "new_shipment": "Lô hàng mới",
     "no_shipments": "Không tìm thấy lô hàng nào",
     "create_first": "Tạo lô hàng đầu tiên để bắt đầu.",
-    "col_tracking": "Mã vận đơn",
+    "col_tracking": "Mã lô hàng",
     "col_status": "Trạng thái",
     "col_route": "Tuyến đường",
     "col_mode": "Phương thức",
@@ -440,7 +440,7 @@
     },
     "overview": {
       "shipmentInfo": "Thông tin lô hàng",
-      "trackingNumber": "Mã vận đơn",
+      "trackingNumber": "Mã lô hàng",
       "type": "Loại",
       "transitCargo": "Hàng quá cảnh",
       "transportMode": "Phương thức vận chuyển",
@@ -610,7 +610,7 @@
     "selectCustomer": "-- Chọn Khách hàng --",
     "noCustomers": "Chưa có khách hàng trong Master Data.",
     "cargo_transport": "Thông số Hàng hóa & Vận tải",
-    "tracking_number": "Mã vận đơn (Tracking No)",
+    "tracking_number": "Mã lô hàng (Tracking No)",
     "transport_mode": "Phương thức vận tải",
     "container_type": "Quy cách Container",
     "est_weight": "Tổng trọng lượng (KG)",
@@ -620,7 +620,7 @@
     "dates": "Lịch trình dự kiến",
     "etd": "Khởi hành dự kiến (ETD)",
     "eta": "Đến dự kiến (ETA)",
-    "note": "* Mã vận đơn và trạng thái Nháp (DRAFT) được khởi tạo tự động theo cấu hình hệ thống.",
+    "note": "* Mã lô hàng và trạng thái Nháp (DRAFT) được khởi tạo tự động theo cấu hình hệ thống.",
     "creating": "Đang khởi tạo...",
     "create": "Tạo lô hàng"
   },

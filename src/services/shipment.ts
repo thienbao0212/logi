@@ -1,9 +1,18 @@
 import { db } from '../db/index.js';
-import { shipments, shipmentEvents, locations } from '../db/schema/shipments.js';
+import { shipments, shipmentEvents, documents, locations } from '../db/schema/shipments.js';
+import { 
+  transitContainers, 
+  transitCustoms, 
+  transitTasks, 
+  transitIssues, 
+  transitExpenses, 
+  transitRevenues, 
+  transitActivities 
+} from '../db/schema/transit.js';
 import { ports } from '../db/schema/master_data.js';
 import { AppContext } from '../lib/context/types.js';
 import { AppError } from '../lib/errors.js';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and, or, inArray } from 'drizzle-orm';
 import { requireAccess } from '../lib/access.js';
 
 async function resolveLocationId(companyId: string, locationOrPortId: string): Promise<string> {
@@ -77,7 +86,12 @@ export async function createShipment(ctx: AppContext, data: any) {
   const companyId = data.companyId;
   requireAccess(ctx, { company: { id: companyId } });
 
-  const trackingNumber = data.trackingNumber || `TRK-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const fallbackSeq = String(Math.floor(1 + Math.random() * 99)).padStart(2, '0');
+  const trackingNumber = data.trackingNumber || `QC${yy}${mm}${dd}${fallbackSeq}`;
 
   const originId = await resolveLocationId(companyId, data.originId);
   const destinationId = await resolveLocationId(companyId, data.destinationId);
@@ -163,4 +177,46 @@ export async function addTrackingEvent(ctx: AppContext, shipmentId: string, data
   await db.update(shipments).set({ status: data.status, updatedAt: new Date() }).where(eq(shipments.id, shipmentId));
 
   return event;
+}
+
+export async function deleteShipment(ctx: AppContext, shipmentId: string) {
+  const [shipment] = await db.select().from(shipments).where(eq(shipments.id, shipmentId)).limit(1);
+  if (!shipment) throw new AppError('NOT_FOUND', 'Shipment not found', 404);
+  requireAccess(ctx, { company: { id: shipment.companyId } });
+
+  // Delete all dependent child rows
+  await db.delete(transitActivities).where(eq(transitActivities.shipmentId, shipmentId));
+  await db.delete(transitRevenues).where(eq(transitRevenues.shipmentId, shipmentId));
+  await db.delete(transitExpenses).where(eq(transitExpenses.shipmentId, shipmentId));
+  await db.delete(transitIssues).where(eq(transitIssues.shipmentId, shipmentId));
+  await db.delete(transitTasks).where(eq(transitTasks.shipmentId, shipmentId));
+  await db.delete(transitCustoms).where(eq(transitCustoms.shipmentId, shipmentId));
+  await db.delete(transitContainers).where(eq(transitContainers.shipmentId, shipmentId));
+  await db.delete(documents).where(eq(documents.shipmentId, shipmentId));
+  await db.delete(shipmentEvents).where(eq(shipmentEvents.shipmentId, shipmentId));
+  await db.delete(shipments).where(eq(shipments.id, shipmentId));
+
+  return { success: true };
+}
+
+export async function deleteAllShipments(ctx: AppContext, companyId: string) {
+  requireAccess(ctx, { company: { id: companyId } });
+
+  const companyShipments = await db.select({ id: shipments.id }).from(shipments).where(eq(shipments.companyId, companyId));
+  const ids = companyShipments.map(s => s.id);
+
+  if (ids.length > 0) {
+    await db.delete(transitActivities).where(inArray(transitActivities.shipmentId, ids));
+    await db.delete(transitRevenues).where(inArray(transitRevenues.shipmentId, ids));
+    await db.delete(transitExpenses).where(inArray(transitExpenses.shipmentId, ids));
+    await db.delete(transitIssues).where(inArray(transitIssues.shipmentId, ids));
+    await db.delete(transitTasks).where(inArray(transitTasks.shipmentId, ids));
+    await db.delete(transitCustoms).where(inArray(transitCustoms.shipmentId, ids));
+    await db.delete(transitContainers).where(inArray(transitContainers.shipmentId, ids));
+    await db.delete(documents).where(inArray(documents.shipmentId, ids));
+    await db.delete(shipmentEvents).where(inArray(shipmentEvents.shipmentId, ids));
+    await db.delete(shipments).where(inArray(shipments.id, ids));
+  }
+
+  return { success: true, deletedCount: ids.length };
 }

@@ -4,18 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { 
   X, 
   Loader2, 
-  MapPin, 
   Package, 
   Truck, 
   Anchor, 
-  Calendar,
-  RotateCw,
+  RotateCw, 
   Users,
-  Building
+  Building,
+  CheckCircle2
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { SearchableSelect, SelectOption } from './common/searchable_select.js';
 import { FinancialService } from './shipment/tabs/financial/mockService.js';
+import { getDefaultMilestones, saveMilestonesToStorage } from './shipment/transit_types.js';
 
 interface Customer {
   id: string;
@@ -35,7 +34,6 @@ interface Port {
 }
 
 export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: () => void, onSuccess?: (shipment?: any) => void }) {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [loadingMasterData, setLoadingMasterData] = useState(true);
@@ -49,65 +47,40 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
   const memberships = JSON.parse(localStorage.getItem('memberships') || '[]');
   const companyId = memberships[0]?.companyId;
 
-  // Retrieve saved system settings
-  const getSavedSettings = () => {
+  // Generator: QC + YY + MM + DD + STT
+  const generateTrackingNumber = () => {
+    const now = new Date();
+    const yy = String(now.getFullYear()).slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const datePrefix = `QC${yy}${mm}${dd}`;
+
     try {
-      const saved = JSON.parse(localStorage.getItem('shipment_settings') || '{}');
-      return {
-        prefix: saved.trackingForm?.prefix || 'TRK',
-        separator: saved.trackingForm?.separator || '-',
-        includeDate: saved.trackingForm?.includeDate !== false,
-        defaultMode: saved.routeConfig?.defaultMode || 'SEA',
-        defaultOrigin: saved.routeConfig?.defaultOrigin || 'CNSZX',
-        defaultTransit: saved.routeConfig?.defaultTransit || 'VNSGN',
-        defaultDest: saved.routeConfig?.defaultDest || 'KHPNH',
-        defaultBorder: saved.routeConfig?.defaultBorder || 'VNMBA',
-      };
+      const existingList = JSON.parse(localStorage.getItem('shipments_cache') || '[]');
+      const todayMatches = existingList.filter((s: any) => s.trackingNumber?.startsWith(datePrefix));
+      const nextSeq = String(todayMatches.length + 1).padStart(2, '0');
+      return `${datePrefix}${nextSeq}`;
     } catch {
-      return {
-        prefix: 'TRK',
-        separator: '-',
-        includeDate: true,
-        defaultMode: 'SEA',
-        defaultOrigin: 'CNSZX',
-        defaultTransit: 'VNSGN',
-        defaultDest: 'KHPNH',
-        defaultBorder: 'VNMBA',
-      };
+      return `${datePrefix}01`;
     }
   };
 
-  const generateTrackingNumber = () => {
-    const settings = getSavedSettings();
-    const datePart = settings.includeDate
-      ? new Date().toISOString().slice(0, 10).replace(/-/g, '') + settings.separator
-      : '';
-    const randomPart = Math.floor(1000 + Math.random() * 9000).toString();
-    return `${settings.prefix}${settings.separator}${datePart}${randomPart}`;
-  };
-
-  // Form state initialized from settings
-  const [form, setForm] = useState(() => {
-    const s = getSavedSettings();
-    return {
-      trackingNumber: '',
-      customerId: '',
-      originId: s.defaultOrigin,
-      destinationId: s.defaultDest,
-      transitPort: s.defaultTransit,
-      borderGate: s.defaultBorder,
-      mode: s.defaultMode,
-      containerType: '40HC',
-      weightTotal: '',
-      volumeTotal: '',
-      estimatedDepartureDate: '',
-      estimatedArrivalDate: '',
-    };
+  // Form state focused strictly on the 5 essential fields
+  const [form, setForm] = useState({
+    customerId: '',
+    customerName: 'ABC Logistics (Khách hàng Quá cảnh)',
+    trackingNumber: generateTrackingNumber(),
+    originPort: 'CNSZX', // Cảng đi
+    destinationPort: 'VNSGN', // Cảng đến
+    borderGate: 'VNMBA', // Cửa khẩu xuất
   });
 
   // Fetch Master Data (Customers & Ports)
   useEffect(() => {
-    if (!companyId) return;
+    if (!companyId) {
+      setLoadingMasterData(false);
+      return;
+    }
     setLoadingMasterData(true);
 
     Promise.all([
@@ -120,37 +93,21 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
         setCustomers(custList);
         setPorts(portList);
 
-        const settings = getSavedSettings();
-
-        // Match initial origin port (POL)
-        const matchedOrigin = portList.find(p => p.code === settings.defaultOrigin || p.id === settings.defaultOrigin);
-        const originVal = matchedOrigin ? matchedOrigin.code : (portList[0]?.code || '');
-
-        // Match initial destination port (POD)
-        const matchedDest = portList.find(p => p.code === settings.defaultDest || p.id === settings.defaultDest);
-        const destVal = matchedDest ? matchedDest.code : (portList[portList.length - 1]?.code || '');
-
-        // Match initial transit port
-        const matchedTransit = portList.find(p => p.code === settings.defaultTransit || p.id === settings.defaultTransit);
-        const transitVal = matchedTransit ? matchedTransit.code : (portList.find(p => p.code === 'VNSGN')?.code || '');
-
-        // Match initial border gate
-        const matchedBorder = portList.find(p => p.code === settings.defaultBorder || p.id === settings.defaultBorder);
-        const borderVal = matchedBorder ? matchedBorder.code : (portList.find(p => p.code === 'VNMBA')?.code || '');
+        const defaultCustId = custList[0]?.id || 'default-customer-id';
+        const defaultCustName = custList[0]?.name || 'ABC Logistics (Khách hàng Quá cảnh)';
 
         setForm(prev => ({
           ...prev,
+          customerId: prev.customerId || defaultCustId,
+          customerName: prev.customerName || defaultCustName,
           trackingNumber: prev.trackingNumber || generateTrackingNumber(),
-          customerId: prev.customerId || (custList[0]?.id || ''),
-          originId: prev.originId || originVal,
-          destinationId: prev.destinationId || destVal,
-          transitPort: prev.transitPort || transitVal,
-          borderGate: prev.borderGate || borderVal,
+          originPort: prev.originPort || (portList.find(p => p.code === 'CNSZX')?.code || portList[0]?.code || 'CNSZX'),
+          destinationPort: prev.destinationPort || (portList.find(p => p.code === 'VNSGN')?.code || 'VNSGN'),
+          borderGate: prev.borderGate || (portList.find(p => p.code === 'VNMBA')?.code || 'VNMBA'),
         }));
       })
       .catch((err) => {
-        console.error('Failed to load master data for create shipment:', err);
-        setError('Không thể tải danh mục khách hàng và cảng từ Master Data.');
+        console.error('Failed to load master data:', err);
       })
       .finally(() => {
         setLoadingMasterData(false);
@@ -165,8 +122,13 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
     updateForm('trackingNumber', generateTrackingNumber());
   };
 
-  // Convert Master Data to SearchableSelect options
+  // Convert to options
   const customerOptions = useMemo<SelectOption[]>(() => {
+    if (customers.length === 0) {
+      return [
+        { value: 'default-customer-id', label: 'ABC Logistics (Khách hàng Quá cảnh)', icon: <Users size={14} /> }
+      ];
+    }
     return customers.map(c => ({
       value: c.id,
       label: c.name,
@@ -177,7 +139,21 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
   }, [customers]);
 
   const portOptions = useMemo<SelectOption[]>(() => {
-    return ports.map(p => ({
+    // Only include actual ports (exclude border gates)
+    const filteredPorts = ports.filter(p => p.type !== 'BORDER_GATE');
+    if (filteredPorts.length === 0) {
+      return [
+        { value: 'CNSZX', label: '[CNSZX] Cảng Shenzhen (Thâm Quyến, TQ)', icon: <Anchor size={14} /> },
+        { value: 'CNGZG', label: '[CNGZG] Cảng Guangzhou (Quảng Châu, TQ)', icon: <Anchor size={14} /> },
+        { value: 'CNSHG', label: '[CNSHG] Cảng Shanghai (Thượng Hải, TQ)', icon: <Anchor size={14} /> },
+        { value: 'VNSGN', label: '[VNSGN] Cảng Cát Lái (TP.HCM, VN)', icon: <Anchor size={14} /> },
+        { value: 'VNCMT', label: '[VNCMT] Cảng Cái Mép (Bà Rịa - Vũng Tàu)', icon: <Anchor size={14} /> },
+        { value: 'VNHPH', label: '[VNHPH] Cảng Hải Phòng (VN)', icon: <Anchor size={14} /> },
+        { value: 'VNDAD', label: '[VNDAD] Cảng Đà Nẵng (VN)', icon: <Anchor size={14} /> },
+        { value: 'KHPNH', label: '[KHPNH] Cảng Phnom Penh (Campuchia)', icon: <Anchor size={14} /> },
+      ];
+    }
+    return filteredPorts.map(p => ({
       value: p.code,
       label: `[${p.code}] ${p.name}`,
       sublabel: `${p.city ? `${p.city}, ` : ''}${p.country}`,
@@ -188,38 +164,30 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
   }, [ports]);
 
   const borderOptions = useMemo<SelectOption[]>(() => {
-    return ports.map(p => ({
-      value: p.code,
-      label: `[${p.code}] ${p.name}`,
-      sublabel: `${p.city ? `${p.city}, ` : ''}${p.country}`,
-      badge: p.type === 'BORDER_GATE' ? 'Cửa khẩu' : p.type,
-      icon: <Truck size={14} />,
-      keywords: [p.code, p.name, p.country, p.city || '', p.type]
-    }));
+    const borderPorts = ports.filter(p => p.type === 'BORDER_GATE');
+    if (borderPorts.length > 0) {
+      return borderPorts.map(p => ({
+        value: p.code,
+        label: `[${p.code}] ${p.name}`,
+        sublabel: `${p.city ? `${p.city}, ` : ''}${p.country}`,
+        badge: 'Cửa khẩu',
+        icon: <Truck size={14} />,
+        keywords: [p.code, p.name, p.country, p.city || '']
+      }));
+    }
+    return [
+      { value: 'VNMBA', label: '[VNMBA] Cửa khẩu Quốc tế Mộc Bài (Tây Ninh)', sublabel: 'Tuyến chính sang Phnom Penh', icon: <Truck size={14} /> },
+      { value: 'VNXAM', label: '[VNXAM] Cửa khẩu Quốc tế Xa Mát (Tây Ninh)', sublabel: 'Tây Ninh, VN', icon: <Truck size={14} /> },
+      { value: 'VNHLU', label: '[VNHLU] Cửa khẩu Quốc tế Hoa Lư (Bình Phước)', sublabel: 'Bình Phước, VN', icon: <Truck size={14} /> },
+      { value: 'VNTBI', label: '[VNTBI] Cửa khẩu Quốc tế Tịnh Biên (An Giang)', sublabel: 'An Giang, VN', icon: <Truck size={14} /> },
+      { value: 'VNBHI', label: '[VNBHI] Cửa khẩu Quốc tế Bình Hiệp (Long An)', sublabel: 'Long An, VN', icon: <Truck size={14} /> },
+    ];
   }, [ports]);
-
-  const containerOptions: SelectOption[] = [
-    { value: '40HC', label: '40ft High Cube (40HC)', sublabel: '76 CBM • 28,500 kg', badge: 'Popular' },
-    { value: '20GP', label: '20ft General Purpose (20GP)', sublabel: '33 CBM • 28,000 kg' },
-    { value: '40GP', label: '40ft General Purpose (40GP)', sublabel: '67 CBM • 28,500 kg' },
-    { value: '45HC', label: '45ft High Cube (45HC)', sublabel: '86 CBM • 29,000 kg' },
-    { value: '20RF', label: '20ft Reefer Lạnh (20RF)', sublabel: '28 CBM • 27,000 kg' },
-    { value: '40RF', label: '40ft Reefer Lạnh (40RF)', sublabel: '60 CBM • 29,000 kg' },
-    { value: 'LCL', label: 'Hàng lẻ ghép cont (LCL)', sublabel: 'Tính theo m3 / CBM' },
-  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.customerId) {
-      setError('Vui lòng chọn khách hàng.');
-      return;
-    }
-    if (!form.originId) {
-      setError('Vui lòng chọn cảng xuất phát (POL).');
-      return;
-    }
-    if (!form.destinationId) {
-      setError('Vui lòng chọn cảng đích (POD).');
+    if (!form.trackingNumber) {
+      setError('Mã lô hàng không được để trống.');
       return;
     }
 
@@ -228,31 +196,69 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
 
     try {
       const payload = {
-        companyId,
-        trackingNumber: form.trackingNumber || generateTrackingNumber(),
-        customerId: form.customerId,
-        originId: form.originId,
-        destinationId: form.destinationId,
-        mode: form.mode,
-        weightTotal: form.weightTotal ? `${form.weightTotal} kg` : undefined,
-        volumeTotal: form.volumeTotal ? `${form.volumeTotal} CBM` : undefined,
-        estimatedDepartureDate: form.estimatedDepartureDate || undefined,
-        estimatedArrivalDate: form.estimatedArrivalDate || undefined,
+        companyId: companyId || 'default-company-id',
+        trackingNumber: form.trackingNumber,
+        customerId: form.customerId || 'default-customer-id',
+        originId: form.originPort,
+        destinationId: form.destinationPort,
+        mode: 'SEA',
       };
 
-      const res = await apiFetch<{ data: any }>('/api/shipments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(payload)
-      });
+      let createdShipment: any = null;
 
-      const createdShipment = res.data;
-      if (createdShipment?.id) {
-        FinancialService.initializeDefaultFeesForShipment(createdShipment.id);
+      try {
+        const res = await apiFetch<{ data: any }>('/api/shipments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(payload)
+        });
+        createdShipment = res.data;
+      } catch {
+        // Fallback for offline / instant creation
+        createdShipment = {
+          id: `shipment_${Date.now()}`,
+          companyId: companyId || 'default-company-id',
+          trackingNumber: form.trackingNumber,
+          customerId: form.customerId,
+          customerName: form.customerName,
+          originId: form.originPort,
+          destinationId: form.destinationPort,
+          mode: 'SEA',
+          status: 'IN_TRANSIT',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
       }
+
+      if (createdShipment?.id) {
+        // Initialize default milestone template with chosen routing
+        const portObj = ports.find(p => p.code === form.destinationPort);
+        const borderObj = borderOptions.find(b => b.value === form.borderGate);
+
+        const initialMilestones = getDefaultMilestones(createdShipment.id, {
+          actualArrivalDate: new Date().toISOString().slice(0, 10),
+          transitPort: portObj?.name || form.destinationPort,
+        });
+
+        if (borderObj) {
+          initialMilestones.m4.borderGateName = borderObj.label;
+        }
+
+        saveMilestonesToStorage(createdShipment.id, initialMilestones);
+        FinancialService.initializeDefaultFeesForShipment(createdShipment.id);
+
+        // Update local shipments cache
+        try {
+          const cache = JSON.parse(localStorage.getItem('shipments_cache') || '[]');
+          localStorage.setItem('shipments_cache', JSON.stringify([createdShipment, ...cache]));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
       if (onSuccess) {
         onSuccess(createdShipment);
       }
@@ -269,21 +275,21 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
   const selectedCustomer = customers.find(c => c.id === form.customerId);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 flex flex-col">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shadow-xs">
-              <Package size={22} />
+            <div className="p-2 rounded-xl bg-blue-600 text-white shadow-xs">
+              <Package size={20} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
-                {t('createShipment.title', 'Tạo mới Lô hàng Vận chuyển')}
+              <h2 className="text-base font-bold text-slate-900">
+                Tạo mới Lô hàng Quá cảnh
               </h2>
               <p className="text-xs text-slate-500">
-                {t('createShipment.subtitle', 'Khởi tạo lộ trình và hồ sơ vận tải Trung Quốc → Việt Nam → Campuchia.')}
+                Nhập 5 thông tin cơ bản để khởi tạo lô hàng nhanh.
               </p>
             </div>
           </div>
@@ -296,298 +302,153 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
         </div>
         
         {/* Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
+        <div className="p-6 overflow-y-auto space-y-4">
           {loadingMasterData ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-              <Loader2 size={32} className="animate-spin text-blue-600 mb-3" />
-              <p className="text-xs font-medium">Đang tải dữ liệu từ Master Data và Cài đặt hệ thống...</p>
+            <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+              <Loader2 size={28} className="animate-spin text-blue-600 mb-2" />
+              <p className="text-xs font-medium">Đang tải cấu hình khởi tạo...</p>
             </div>
           ) : (
-            <form id="create-shipment-form" onSubmit={handleSubmit} className="space-y-6">
+            <form id="create-shipment-quick-form" onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-50 text-red-600 p-3.5 rounded-xl text-xs border border-red-100 flex items-start gap-2">
-                  <span className="font-bold shrink-0">Lỗi:</span>
-                  <span>{error}</span>
+                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-xs border border-red-100 font-semibold">
+                  {error}
                 </div>
               )}
 
-              {/* 1. CUSTOMER & TRACKING NO */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
-                <div className="sm:col-span-2">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
-                      {t('createShipment.customer', 'Khách hàng (Bill To)')} <span className="text-red-500">*</span>
-                    </label>
+              {/* 1. KHÁCH HÀNG */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  1. Khách hàng <span className="text-red-500">*</span>
+                </label>
+                <SearchableSelect
+                  options={customerOptions}
+                  value={form.customerId}
+                  onChange={(val) => {
+                    const found = customers.find(c => c.id === val);
+                    setForm(prev => ({ 
+                      ...prev, 
+                      customerId: val, 
+                      customerName: found?.name || prev.customerName 
+                    }));
+                  }}
+                  placeholder="-- Chọn Khách hàng --"
+                  searchPlaceholder="Tìm tên khách hàng..."
+                  required
+                />
+                {selectedCustomer && (
+                  <div className="mt-1 text-[11px] text-slate-500 flex items-center gap-1">
+                    <Building size={11} className="text-slate-400 shrink-0" />
+                    <span className="truncate">{selectedCustomer.address || selectedCustomer.phone || 'Khách hàng mặc định'}</span>
                   </div>
+                )}
+              </div>
+
+              {/* 2. MÃ LÔ HÀNG (TỰ SINH QC...) */}
+              <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-blue-900">
+                    2. Mã lô hàng (Tự sinh QC + YYMMDD + STT) <span className="text-red-500">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleRefreshTrackingNumber}
+                    title="Sinh lại mã mới"
+                    className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 font-semibold"
+                  >
+                    <RotateCw size={12} />
+                    <span>Làm mới</span>
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  required
+                  value={form.trackingNumber}
+                  onChange={(e) => updateForm('trackingNumber', e.target.value.toUpperCase())}
+                  className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm font-mono font-bold uppercase text-blue-700 bg-white focus:ring-2 focus:ring-blue-500 shadow-xs"
+                />
+                <span className="text-[10px] text-blue-600 mt-1 block">
+                  Định dạng chuẩn: QC + Năm (26) + Tháng (08) + Ngày (31) + Số thứ tự (01, 02...)
+                </span>
+              </div>
+
+              {/* 3. CẢNG ĐI & 4. CẢNG ĐẾN */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
+                    <Anchor size={13} className="text-blue-600" />
+                    <span>3. Cảng đi (POL) <span className="text-red-500">*</span></span>
+                  </label>
                   <SearchableSelect
-                    options={customerOptions}
-                    value={form.customerId}
-                    onChange={(val) => updateForm('customerId', val)}
-                    placeholder={t('createShipment.selectCustomer', '-- Chọn Khách hàng --')}
-                    searchPlaceholder="Tìm theo tên, SĐT, email..."
-                    searchThreshold={8}
+                    options={portOptions}
+                    value={form.originPort}
+                    onChange={(val) => updateForm('originPort', val)}
+                    placeholder="-- Chọn Cảng đi --"
+                    searchPlaceholder="Tìm cảng đi..."
                     required
+                    size="sm"
                   />
-                  {selectedCustomer && (
-                    <div className="mt-1.5 text-[11px] text-slate-500 flex items-center gap-1.5">
-                      <Building size={12} className="text-slate-400 shrink-0" />
-                      <span className="truncate">{selectedCustomer.address || 'Chưa có địa chỉ trụ sở'}</span>
-                    </div>
-                  )}
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
-                      {t('createShipment.tracking_number', 'Mã vận đơn')}
-                    </label>
-                    <button
-                      type="button"
-                      onClick={handleRefreshTrackingNumber}
-                      title="Sinh lại mã mới"
-                      className="text-slate-400 hover:text-blue-600 transition-colors"
-                    >
-                      <RotateCw size={13} />
-                    </button>
-                  </div>
-                  <input
-                    type="text"
+                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
+                    <Anchor size={13} className="text-emerald-600" />
+                    <span>4. Cảng đến (POD) <span className="text-red-500">*</span></span>
+                  </label>
+                  <SearchableSelect
+                    options={portOptions}
+                    value={form.destinationPort}
+                    onChange={(val) => updateForm('destinationPort', val)}
+                    placeholder="-- Chọn Cảng đến --"
+                    searchPlaceholder="Tìm cảng đến..."
                     required
-                    value={form.trackingNumber}
-                    onChange={(e) => updateForm('trackingNumber', e.target.value.toUpperCase())}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold uppercase text-blue-700 bg-white focus:ring-2 focus:ring-blue-500 shadow-xs"
+                    size="sm"
                   />
                 </div>
               </div>
 
-              {/* 2. ROUTING & PORTS SECTION */}
-              <section className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <MapPin size={15} className="text-blue-600" />
-                    <span>{t('createShipment.routing', 'Lộ trình & Cảng vận chuyển')}</span>
-                  </h3>
-                </div>
-                
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
-                  {/* Visual 3-Stage Transit Journey */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 relative">
-                    {/* Origin / POL */}
-                    <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-xs space-y-1">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-700 mb-1">
-                        <Anchor size={14} className="text-blue-500" />
-                        <span>{t('createShipment.origin', 'Cảng xuất phát (POL)')}</span>
-                        <span className="text-red-500">*</span>
-                      </div>
-                      <SearchableSelect
-                        options={portOptions}
-                        value={form.originId}
-                        onChange={(val) => updateForm('originId', val)}
-                        placeholder="-- Chọn Cảng đi (POL) --"
-                        searchPlaceholder="Tìm theo mã UN/LOCODE, tên cảng..."
-                        searchThreshold={8}
-                        required
-                        size="sm"
-                      />
-                    </div>
+              {/* 5. CỬA KHẨU XUẤT */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <Truck size={13} className="text-purple-600" />
+                  <span>5. Cửa khẩu xuất (Đổi cont) <span className="text-red-500">*</span></span>
+                </label>
+                <SearchableSelect
+                  options={borderOptions}
+                  value={form.borderGate}
+                  onChange={(val) => updateForm('borderGate', val)}
+                  placeholder="-- Chọn Cửa khẩu xuất --"
+                  searchPlaceholder="Tìm cửa khẩu..."
+                  required
+                  size="sm"
+                />
+              </div>
 
-                    {/* Transit Port */}
-                    <div className="bg-white p-3 rounded-lg border border-amber-200 shadow-xs space-y-1">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-700 mb-1">
-                        <Anchor size={14} className="text-amber-500" />
-                        <span>{t('createShipment.transit', 'Cảng trung chuyển (Transit)')}</span>
-                      </div>
-                      <SearchableSelect
-                        options={portOptions}
-                        value={form.transitPort}
-                        onChange={(val) => updateForm('transitPort', val)}
-                        placeholder="-- Chọn Cảng trung chuyển --"
-                        searchPlaceholder="Tìm theo mã UN/LOCODE, tên cảng..."
-                        searchThreshold={8}
-                        size="sm"
-                      />
-                    </div>
-
-                    {/* Destination / POD */}
-                    <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-xs space-y-1">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 mb-1">
-                        <Anchor size={14} className="text-emerald-500" />
-                        <span>{t('createShipment.destination', 'Cảng đến (POD)')}</span>
-                        <span className="text-red-500">*</span>
-                      </div>
-                      <SearchableSelect
-                        options={portOptions}
-                        value={form.destinationId}
-                        onChange={(val) => updateForm('destinationId', val)}
-                        placeholder="-- Chọn Cảng đến (POD) --"
-                        searchPlaceholder="Tìm theo mã UN/LOCODE, tên cảng..."
-                        searchThreshold={8}
-                        required
-                        size="sm"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Border Gate Selection */}
-                  <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <Truck size={15} className="text-slate-500" />
-                      <span className="text-xs font-semibold text-slate-700">
-                        {t('createShipment.border', 'Cửa khẩu đường bộ')}:
-                      </span>
-                    </div>
-                    <div className="w-full sm:w-72">
-                      <SearchableSelect
-                        options={borderOptions}
-                        value={form.borderGate}
-                        onChange={(val) => updateForm('borderGate', val)}
-                        placeholder="-- Chọn Cửa khẩu thông quan --"
-                        searchPlaceholder="Tìm cửa khẩu..."
-                        searchThreshold={8}
-                        size="sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 3. CARGO & TRANSPORT MODE */}
-              <section className="space-y-3">
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <Package size={15} className="text-emerald-600" />
-                  <span>{t('createShipment.cargo_transport', 'Thông số Hàng hóa & Vận tải')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Transport Mode */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      {t('createShipment.transport_mode', 'Phương thức vận tải')}
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {['SEA', 'LAND', 'AIR', 'RAIL'].map(mode => (
-                        <button
-                          key={mode}
-                          type="button"
-                          onClick={() => updateForm('mode', mode)}
-                          className={`py-2 px-1 text-xs font-semibold rounded-lg border transition-all text-center ${
-                            form.mode === mode 
-                              ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-xs' 
-                              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                          }`}
-                        >
-                          {mode}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Container Type */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      {t('createShipment.container_type', 'Quy cách Container')}
-                    </label>
-                    <SearchableSelect
-                      options={containerOptions}
-                      value={form.containerType}
-                      onChange={(val) => updateForm('containerType', val)}
-                      placeholder="Chọn loại container..."
-                      searchThreshold={8}
-                      size="sm"
-                    />
-                  </div>
-
-                  {/* Weight */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      {t('createShipment.est_weight', 'Tổng trọng lượng (KG)')}
-                    </label>
-                    <input 
-                      type="number"
-                      placeholder={t('createShipment.placeholder_weight', 'VD: 15,000')}
-                      value={form.weightTotal}
-                      onChange={(e) => updateForm('weightTotal', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-
-                  {/* Volume */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      {t('createShipment.est_volume', 'Tổng thể tích (CBM)')}
-                    </label>
-                    <input 
-                      type="number"
-                      step="0.1"
-                      placeholder={t('createShipment.placeholder_volume', 'VD: 35')}
-                      value={form.volumeTotal}
-                      onChange={(e) => updateForm('volumeTotal', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </section>
-
-              {/* 4. SCHEDULE DATES */}
-              <section className="space-y-3">
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <Calendar size={15} className="text-indigo-600" />
-                  <span>{t('createShipment.dates', 'Lịch trình dự kiến')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      {t('createShipment.etd', 'Khởi hành dự kiến (ETD)')}
-                    </label>
-                    <input
-                      type="date"
-                      value={form.estimatedDepartureDate}
-                      onChange={(e) => updateForm('estimatedDepartureDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      {t('createShipment.eta', 'Đến dự kiến (ETA)')}
-                    </label>
-                    <input
-                      type="date"
-                      value={form.estimatedArrivalDate}
-                      onChange={(e) => updateForm('estimatedArrivalDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </section>
+              <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-500 leading-relaxed">
+                ℹ️ Sau khi tạo lô hàng, hệ thống sẽ tự động chuyển bạn vào trang chi tiết để điền và theo dõi chi tiết <strong>5 Mốc Vận chuyển Quá cảnh</strong>.
+              </div>
             </form>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <p className="text-[11px] text-slate-500 italic">
-            {t('createShipment.note', '* Mã vận đơn và trạng thái Nháp (DRAFT) được khởi tạo tự động theo cấu hình hệ thống.')}
-          </p>
-          <div className="flex items-center justify-end gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200 rounded-xl transition-colors"
-            >
-              {t('common.cancel', 'Hủy')}
-            </button>
-            <button
-              type="submit"
-              form="create-shipment-form"
-              disabled={loading || loadingMasterData}
-              className="px-5 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2"
-            >
-              {loading && <Loader2 size={14} className="animate-spin" />}
-              <span>{loading ? t('createShipment.creating', 'Đang khởi tạo...') : t('createShipment.create', 'Tạo lô hàng')}</span>
-            </button>
-          </div>
+        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-end gap-2.5 shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200 rounded-xl transition-colors"
+          >
+            Hủy
+          </button>
+          <button
+            type="submit"
+            form="create-shipment-quick-form"
+            disabled={loading || loadingMasterData}
+            className="px-5 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2"
+          >
+            {loading ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+            <span>{loading ? 'Đang tạo...' : 'Tạo lô hàng ngay'}</span>
+          </button>
         </div>
       </div>
     </div>

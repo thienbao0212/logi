@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Search, X, Check } from 'lucide-react';
 
 export interface SelectOption {
@@ -54,8 +55,67 @@ export function SearchableSelect({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  // Position coordinates for Portal (Appended to body)
+  const [coords, setCoords] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    placement: 'bottom' | 'top';
+    maxHeight: number;
+  }>({
+    top: 0,
+    left: 0,
+    width: 0,
+    placement: 'bottom',
+    maxHeight: 280,
+  });
+
+  const updatePosition = () => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // If space below is less than 220px and space above is larger, open upward
+    const shouldOpenTop = spaceBelow < 220 && spaceAbove > spaceBelow;
+    const maxHeight = shouldOpenTop
+      ? Math.min(320, Math.max(140, spaceAbove - 16))
+      : Math.min(320, Math.max(140, spaceBelow - 16));
+
+    setCoords({
+      top: shouldOpenTop ? rect.top - 4 : rect.bottom + 4,
+      left: rect.left,
+      width: rect.width,
+      placement: shouldOpenTop ? 'top' : 'bottom',
+      maxHeight,
+    });
+  };
+
+  useLayoutEffect(() => {
+    if (isOpen) {
+      updatePosition();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScrollOrResize = () => {
+      updatePosition();
+    };
+
+    window.addEventListener('resize', handleScrollOrResize);
+    window.addEventListener('scroll', handleScrollOrResize, true);
+
+    return () => {
+      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+    };
+  }, [isOpen]);
 
   // Determine if search input should be visible
   const isSearchVisible = typeof searchable === 'boolean' 
@@ -81,16 +141,22 @@ export function SearchableSelect({
     });
   }, [options, searchQuery]);
 
-  // Close on outside click
+  // Close on outside click (Checks both container and portal dropdown)
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        containerRef.current && !containerRef.current.contains(target) &&
+        dropdownRef.current && !dropdownRef.current.contains(target)
+      ) {
         setIsOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen]);
 
   // Auto focus search input when opened
   useEffect(() => {
@@ -270,15 +336,22 @@ export function SearchableSelect({
         </div>
       </button>
 
-      {/* Popover / Dropdown Menu */}
-      {isOpen && (
+      {/* Popover / Dropdown Menu appended directly to document.body via Portal */}
+      {isOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className={`absolute left-0 right-0 z-50 mt-1.5 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden animate-fade-in ${dropdownClassName}`}
-          style={{ minWidth: '100%' }}
+          ref={dropdownRef}
+          className={`fixed z-[99999] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-100 flex flex-col ${dropdownClassName}`}
+          style={{
+            top: coords.placement === 'top' ? 'auto' : `${coords.top}px`,
+            bottom: coords.placement === 'top' ? `${window.innerHeight - coords.top}px` : 'auto',
+            left: `${coords.left}px`,
+            width: `${coords.width}px`,
+            maxHeight: `${coords.maxHeight}px`,
+          }}
         >
           {/* Search Header when items > searchThreshold */}
           {isSearchVisible && (
-            <div className="p-2 border-b border-slate-100 bg-slate-50/70">
+            <div className="p-2 border-b border-slate-100 bg-slate-50/80 shrink-0">
               <div className="relative flex items-center">
                 <Search size={14} className="absolute left-2.5 text-slate-400 pointer-events-none" />
                 <input
@@ -312,7 +385,7 @@ export function SearchableSelect({
           <div
             ref={listRef}
             role="listbox"
-            className="max-h-60 overflow-y-auto p-1.5 divide-y divide-slate-50 space-y-0.5"
+            className="overflow-y-auto p-1.5 divide-y divide-slate-50 space-y-0.5 flex-1 custom-scrollbar"
           >
             {filteredOptions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-center text-slate-400">
@@ -390,14 +463,15 @@ export function SearchableSelect({
             )}
           </div>
 
-          {/* Optional Footer: Count info */}
+          {/* Footer: Count info */}
           {filteredOptions.length > 0 && (
-            <div className="px-3 py-1.5 bg-slate-50 border-t border-slate-100 text-[10px] text-slate-400 flex items-center justify-between">
+            <div className="px-3 py-1.5 bg-slate-50 border-t border-slate-100 text-[10px] text-slate-400 flex items-center justify-between shrink-0">
               <span>{filteredOptions.length} kết quả</span>
               {isSearchVisible && <span className="italic">Gõ để tìm kiếm</span>}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
