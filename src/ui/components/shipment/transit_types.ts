@@ -348,6 +348,203 @@ export function validateMilestone5(m5: MilestoneEmptyReturn): MilestoneValidatio
   };
 }
 
+// ── Timeline Logic & Inconsistency Scanner ───────────────────────────────────
+
+export interface TimelineIssue {
+  id: string;
+  type: 'ERROR' | 'WARNING'; // ERROR: logic bất hợp lý; WARNING: trễ hạn hoặc nguy cơ phát sinh phí
+  milestones: ('m1' | 'm2' | 'm3' | 'm4' | 'm5')[];
+  fieldKeys: string[];
+  title: string;
+  message: string;
+  suggestion?: string;
+}
+
+/**
+ * Quét toàn bộ dòng thời gian của lô hàng qua 5 mốc vận chuyển
+ * để phát hiện các lỗi logic ngày tháng, vi phạm quy trình logistics hoặc trễ hạn DEM/DET.
+ */
+export function scanShipmentTimeline(data: TransitMilestonesData): TimelineIssue[] {
+  const issues: TimelineIssue[] = [];
+
+  const parseDate = (d?: string) => {
+    if (!d) return null;
+    const parts = d.split('-');
+    if (parts.length !== 3) return null;
+    const dateObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    return isNaN(dateObj.getTime()) ? null : dateObj;
+  };
+
+  const m1Arrival = parseDate(data.m1?.arrivalDate);
+  const m1Dem = parseDate(data.m1?.demExpiryDate);
+  const m2Clearance = parseDate(data.m2?.clearanceDate);
+  const m3Departure = parseDate(data.m3?.departureDate);
+  const m3Arrival = parseDate(data.m3?.destinationArrivalDate);
+  const m3Det = parseDate(data.m3?.detExpiryDate);
+  const m4BorderPass = parseDate(data.m4?.borderPassDate);
+  const m5Return = parseDate(data.m5?.actualReturnDate);
+
+  // 1. Mốc 2 vs Mốc 1: Ngày thông quan trước ngày hàng đến
+  if (m1Arrival && m2Clearance && m2Clearance < m1Arrival) {
+    issues.push({
+      id: 'clearance_before_arrival',
+      type: 'ERROR',
+      milestones: ['m1', 'm2'],
+      fieldKeys: ['clearanceDate', 'arrivalDate'],
+      title: 'Ngày thông quan trước ngày hàng đến cảng',
+      message: `Ngày thông quan (${data.m2.clearanceDate}) không thể diễn ra trước khi tàu cập cảng (${data.m1.arrivalDate}).`,
+      suggestion: 'Điều chỉnh ngày thông quan bằng hoặc sau ngày hàng đến cảng.',
+    });
+  }
+
+  // 2. Mốc 2 vs Mốc 1: Thông quan quá hạn DEM (Lưu bãi cảng)
+  if (m1Dem && m2Clearance && m2Clearance > m1Dem) {
+    issues.push({
+      id: 'clearance_after_dem',
+      type: 'WARNING',
+      milestones: ['m1', 'm2'],
+      fieldKeys: ['clearanceDate', 'demExpiryDate'],
+      title: 'Thông quan trễ hơn hạn DEM',
+      message: `Ngày thông quan (${data.m2.clearanceDate}) vượt quá hạn lưu bãi DEM (${data.m1.demExpiryDate}). Lô hàng sẽ phát sinh phí phạt lưu bãi tại cảng.`,
+      suggestion: 'Kiểm tra và bổ sung phụ phí lưu bãi cảng phát sinh vào bảng đối chiếu tài chính.',
+    });
+  }
+
+  // 3. Mốc 3 vs Mốc 2: Xe rời cảng trước khi thông quan
+  if (m2Clearance && m3Departure && m3Departure < m2Clearance) {
+    issues.push({
+      id: 'departure_before_clearance',
+      type: 'ERROR',
+      milestones: ['m2', 'm3'],
+      fieldKeys: ['departureDate', 'clearanceDate'],
+      title: 'Xe rời cảng trước ngày thông quan',
+      message: `Xe vận chuyển rời cảng (${data.m3.departureDate}) trước khi tờ khai hải quan được thông quan (${data.m2.clearanceDate}).`,
+      suggestion: 'Chỉ xuất bãi vận chuyển sau khi hải quan đã cấp phép thông quan.',
+    });
+  }
+
+  // 4. Mốc 3 vs Mốc 1: Xe rời cảng trước ngày hàng đến
+  if (m1Arrival && m3Departure && m3Departure < m1Arrival) {
+    issues.push({
+      id: 'departure_before_arrival',
+      type: 'ERROR',
+      milestones: ['m1', 'm3'],
+      fieldKeys: ['departureDate', 'arrivalDate'],
+      title: 'Xe rời cảng trước ngày tàu đến',
+      message: `Ngày xe rời cảng (${data.m3.departureDate}) không thể trước ngày tàu cập cảng (${data.m1.arrivalDate}).`,
+      suggestion: 'Kiểm tra lại ngày xuất bãi xe container.',
+    });
+  }
+
+  // 5. Mốc 3 vs Mốc 1: Xe rời cảng sau hạn DEM
+  if (m1Dem && m3Departure && m3Departure > m1Dem) {
+    issues.push({
+      id: 'departure_after_dem',
+      type: 'WARNING',
+      milestones: ['m1', 'm3'],
+      fieldKeys: ['departureDate', 'demExpiryDate'],
+      title: 'Xe lấy cont trễ hơn hạn DEM',
+      message: `Xe lấy container rời cảng (${data.m3.departureDate}) sau hạn lưu bãi DEM (${data.m1.demExpiryDate}).`,
+      suggestion: 'Lô hàng có nguy cơ bị cảng / hãng tàu truy thu phí lưu bãi DEM.',
+    });
+  }
+
+  // 6. Mốc 3: Ngày đến đích trước ngày rời cảng
+  if (m3Departure && m3Arrival && m3Arrival < m3Departure) {
+    issues.push({
+      id: 'arrival_before_departure',
+      type: 'ERROR',
+      milestones: ['m3'],
+      fieldKeys: ['destinationArrivalDate', 'departureDate'],
+      title: 'Ngày xe tới đích trước ngày rời cảng',
+      message: `Ngày xe tới cảng đích (${data.m3.destinationArrivalDate}) không thể trước ngày xe rời cảng xuất phát (${data.m3.departureDate}).`,
+      suggestion: 'Cập nhật lại ngày xe đến điểm giao hàng đích.',
+    });
+  }
+
+  // 7. Mốc 4 vs Mốc 3: Hàng qua cửa khẩu trước khi rời cảng
+  if (m3Departure && m4BorderPass && m4BorderPass < m3Departure) {
+    issues.push({
+      id: 'border_before_departure',
+      type: 'ERROR',
+      milestones: ['m3', 'm4'],
+      fieldKeys: ['borderPassDate', 'departureDate'],
+      title: 'Hàng qua cửa khẩu trước khi xe rời cảng',
+      message: `Ngày qua cửa khẩu (${data.m4.borderPassDate}) trước ngày xe chở container rời cảng (${data.m3.departureDate}).`,
+      suggestion: 'Kiểm tra lại ngày qua cửa khẩu biên giới.',
+    });
+  }
+
+  // 8. Mốc 4 vs Mốc 3: Hàng qua cửa khẩu sau khi đã tới đích
+  if (m3Arrival && m4BorderPass && m4BorderPass > m3Arrival) {
+    issues.push({
+      id: 'border_after_destination',
+      type: 'ERROR',
+      milestones: ['m3', 'm4'],
+      fieldKeys: ['borderPassDate', 'destinationArrivalDate'],
+      title: 'Hàng qua cửa khẩu sau ngày tới đích',
+      message: `Ngày qua cửa khẩu (${data.m4.borderPassDate}) diễn ra sau ngày xe tới cảng đích (${data.m3.destinationArrivalDate}).`,
+      suggestion: 'Kiểm tra lại thứ tự ngày qua biên giới và ngày giao hàng.',
+    });
+  }
+
+  // 9. Mốc 5 vs Mốc 3: Trả rỗng trước ngày xe tới đích
+  if (m3Arrival && m5Return && m5Return < m3Arrival) {
+    issues.push({
+      id: 'return_before_destination',
+      type: 'ERROR',
+      milestones: ['m3', 'm5'],
+      fieldKeys: ['actualReturnDate', 'destinationArrivalDate'],
+      title: 'Trả rỗng trước ngày giao hàng tới đích',
+      message: `Ngày trả vỏ cont rỗng (${data.m5.actualReturnDate}) trước ngày xe giao hàng tới điểm đích (${data.m3.destinationArrivalDate}).`,
+      suggestion: 'Container chỉ được trả rỗng về depot sau khi đã rút ruột giao hàng tại điểm đích.',
+    });
+  }
+
+  // 10. Mốc 5 vs Mốc 3: Trả rỗng trễ hơn hạn DET của hãng tàu (Phạt DET)
+  if (m3Det && m5Return && m5Return > m3Det) {
+    issues.push({
+      id: 'return_after_det',
+      type: 'WARNING',
+      milestones: ['m3', 'm5'],
+      fieldKeys: ['actualReturnDate', 'detExpiryDate'],
+      title: 'Trả rỗng trễ hạn DET (Phát sinh phạt lưu vỏ)',
+      message: `Ngày trả rỗng thực tế (${data.m5.actualReturnDate}) trễ hơn hạn DET miễn phí (${data.m3.detExpiryDate}). Hãng tàu sẽ tính phí phạt DET!`,
+      suggestion: 'Đính kèm chứng từ phạt DET vào bảng đối chiếu chi phí để quyết toán.',
+    });
+  }
+
+  // 11. Kiểm tra năm bất thường (gõ nhầm năm)
+  const allDates = [
+    { label: 'Ngày hàng đến', val: m1Arrival, str: data.m1?.arrivalDate },
+    { label: 'Ngày thông quan', val: m2Clearance, str: data.m2?.clearanceDate },
+    { label: 'Ngày xe rời cảng', val: m3Departure, str: data.m3?.departureDate },
+    { label: 'Ngày tới đích', val: m3Arrival, str: data.m3?.destinationArrivalDate },
+    { label: 'Ngày qua cửa khẩu', val: m4BorderPass, str: data.m4?.borderPassDate },
+    { label: 'Ngày trả rỗng', val: m5Return, str: data.m5?.actualReturnDate },
+  ];
+
+  const currentYear = new Date().getFullYear();
+  allDates.forEach((item) => {
+    if (item.val) {
+      const year = item.val.getFullYear();
+      if (year < currentYear - 2 || year > currentYear + 2) {
+        issues.push({
+          id: `unusual_year_${item.label}`,
+          type: 'WARNING',
+          milestones: ['m1'],
+          fieldKeys: [],
+          title: `Năm bất thường tại ${item.label}`,
+          message: `${item.label} đang để năm ${year} (${item.str}), vui lòng kiểm tra lại.`,
+          suggestion: 'Kiểm tra lại định dạng YYYY-MM-DD.',
+        });
+      }
+    }
+  });
+
+  return issues;
+}
+
 // ── Default Mock Factory ──────────────────────────────────────────────────────
 
 export function getDefaultMilestones(_shipmentId: string, initialData?: any): TransitMilestonesData {

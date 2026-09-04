@@ -47,21 +47,64 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
   const memberships = JSON.parse(localStorage.getItem('memberships') || '[]');
   const companyId = memberships[0]?.companyId;
 
-  // Generator: QC + YY + MM + DD + STT
+  // Generator: Prefix (QC) + Date (YYMMDD/YYYYMMDD) + Incremental Sequence Number (01, 02, 03...)
   const generateTrackingNumber = () => {
+    let prefix = 'QC';
+    let separator = '';
+    let includeDate = true;
+    let dateFormat = 'YYMMDD';
+    let seqDigits = 2;
+
+    try {
+      const savedSettings = JSON.parse(localStorage.getItem('shipment_settings') || '{}');
+      if (savedSettings.trackingForm) {
+        prefix = savedSettings.trackingForm.prefix ?? 'QC';
+        separator = savedSettings.trackingForm.separator ?? '';
+        includeDate = savedSettings.trackingForm.includeDate ?? true;
+        dateFormat = savedSettings.trackingForm.dateFormat ?? 'YYMMDD';
+        seqDigits = savedSettings.trackingForm.seqDigits ?? 2;
+      }
+    } catch {
+      // Use standard default QC + YYMMDD + 01
+    }
+
     const now = new Date();
-    const yy = String(now.getFullYear()).slice(-2);
+    const yyyy = String(now.getFullYear());
+    const yy = yyyy.slice(-2);
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
-    const datePrefix = `QC${yy}${mm}${dd}`;
+
+    let dateStr = '';
+    if (includeDate) {
+      dateStr = (dateFormat === 'YYYYMMDD' ? `${yyyy}${mm}${dd}` : `${yy}${mm}${dd}`);
+    }
+
+    let basePrefix = '';
+    if (separator) {
+      basePrefix = dateStr ? `${prefix}${separator}${dateStr}${separator}` : `${prefix}${separator}`;
+    } else {
+      basePrefix = `${prefix}${dateStr}`;
+    }
 
     try {
       const existingList = JSON.parse(localStorage.getItem('shipments_cache') || '[]');
-      const todayMatches = existingList.filter((s: any) => s.trackingNumber?.startsWith(datePrefix));
-      const nextSeq = String(todayMatches.length + 1).padStart(2, '0');
-      return `${datePrefix}${nextSeq}`;
+      const matchingNumbers = existingList
+        .map((s: any) => s.trackingNumber)
+        .filter((tn: any) => typeof tn === 'string' && tn.startsWith(basePrefix));
+
+      let maxSeq = 0;
+      for (const tn of matchingNumbers) {
+        const remainder = tn.slice(basePrefix.length);
+        const parsed = parseInt(remainder, 10);
+        if (!isNaN(parsed) && parsed > maxSeq) {
+          maxSeq = parsed;
+        }
+      }
+
+      const nextSeq = String(maxSeq + 1).padStart(seqDigits, '0');
+      return `${basePrefix}${nextSeq}`;
     } catch {
-      return `${datePrefix}01`;
+      return `${basePrefix}${String(1).padStart(seqDigits, '0')}`;
     }
   };
 

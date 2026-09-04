@@ -14,6 +14,8 @@
   "nav": {
     "adminDashboard": "Bảng điều khiển Admin",
     "shipments": "Lô hàng",
+    "shipmentManagement": "Quản lý lô hàng",
+    "shipmentFinancial": "Tài chính lô hàng",
     "accounting": "Kế toán",
     "masterData": "Master Data",
     "customers": "Quản lý khách hàng",

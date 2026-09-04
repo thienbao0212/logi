@@ -68,9 +68,9 @@ export function ChiTab({ shipment }: ChiTabProps) {
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium text-sm transition-colors shadow-sm whitespace-nowrap"
+          className="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap"
         >
-          <Plus size={16} /> {t('financial.actions.createChi', 'Create Expense Request')}
+          <Plus size={15} /> <span>{t('financial.actions.createChi', 'Create Expense Request')}</span>
         </button>
       </div>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -43,18 +43,30 @@ export default function Settings() {
     setActiveModalGroup(groupId);
   };
 
-  // Dynamic states for modal interactions
+  const [copiedKey, setCopiedKey] = useState(false);
+
+  // Dynamic states for modal interactions persisted in localStorage
+  const savedSettings = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('system_settings') || '{}');
+    } catch {
+      return {};
+    }
+  }, []);
+
   const [alertSettings, setAlertSettings] = useState({
     catLaiDelay: true,
     catLaiHours: 24,
     customsHold: true,
     emailNotification: true,
+    ...savedSettings.alertSettings,
   });
 
   const [shipmentSettings, setShipmentSettings] = useState({
     trackingPrefix: 'TRK',
     defaultMode: 'SEA',
     defaultOrigin: 'Shenzhen Port',
+    ...savedSettings.shipmentSettings,
   });
 
   const [companySettings, setCompanySettings] = useState({
@@ -63,12 +75,14 @@ export default function Settings() {
     address: '123 Nguyen Hue, District 1, HCMC',
     branchHCMC: 'Cat Lai Port Operations Center',
     branchCambodia: 'Phnom Penh River Terminal',
+    ...savedSettings.companySettings,
   });
 
   const [currencySettings, setCurrencySettings] = useState({
     primaryCurrency: 'USD',
     rateVND: 25450,
     rateKHR: 4100,
+    ...savedSettings.currencySettings,
   });
 
   const settingGroups: SettingGroup[] = [
@@ -549,10 +563,16 @@ export default function Settings() {
                         className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono text-slate-600"
                       />
                       <button
-                        onClick={() => alert('API Key đã được sao chép')}
-                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors shrink-0"
+                        onClick={() => {
+                          navigator.clipboard.writeText('logiflow_live_sec_key_9988223311aa');
+                          setCopiedKey(true);
+                          setTimeout(() => setCopiedKey(false), 2000);
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
+                          copiedKey ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
                       >
-                        Copy
+                        {copiedKey ? 'Đã chép!' : 'Copy'}
                       </button>
                     </div>
                   </div>
@@ -572,7 +592,8 @@ export default function Settings() {
               <button
                 type="button"
                 onClick={() => {
-                  alert('Cài đặt đã được cập nhật!');
+                  const toSave = { alertSettings, shipmentSettings, companySettings, currencySettings };
+                  localStorage.setItem('system_settings', JSON.stringify(toSave));
                   setActiveModalGroup(null);
                 }}
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all"

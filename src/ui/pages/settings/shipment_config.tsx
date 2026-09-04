@@ -24,6 +24,7 @@ import {
   CreditCard
 } from 'lucide-react';
 import { SearchableSelect, SelectOption } from '../../components/common/searchable_select.js';
+import CurrencyInput from '../../components/common/currency_input.js';
 
 interface Port {
   id: string;
@@ -172,14 +173,15 @@ export default function ShipmentConfig() {
     try {
       const saved = JSON.parse(localStorage.getItem('shipment_settings') || '{}');
       return saved.trackingForm || {
-        prefix: 'TRK',
-        separator: '-',
+        prefix: 'QC',
+        separator: '',
         includeDate: true,
-        randomLength: 4,
+        dateFormat: 'YYMMDD',
+        seqDigits: 2,
         autoGenerate: true,
       };
     } catch {
-      return { prefix: 'TRK', separator: '-', includeDate: true, randomLength: 4, autoGenerate: true };
+      return { prefix: 'QC', separator: '', includeDate: true, dateFormat: 'YYMMDD', seqDigits: 2, autoGenerate: true };
     }
   });
 
@@ -265,10 +267,24 @@ export default function ShipmentConfig() {
   };
 
   const getSampleTrackingCode = () => {
-    const p = trackingForm.prefix || 'TRK';
-    const s = trackingForm.separator || '-';
-    const dateStr = trackingForm.includeDate ? '20260824' + s : '';
-    return `${p}${s}${dateStr}8392`;
+    const p = trackingForm.prefix || 'QC';
+    const s = trackingForm.separator || '';
+    const now = new Date();
+    const yyyy = String(now.getFullYear());
+    const yy = yyyy.slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+
+    let dateStr = '';
+    if (trackingForm.includeDate) {
+      dateStr = trackingForm.dateFormat === 'YYYYMMDD' ? `${yyyy}${mm}${dd}` : `${yy}${mm}${dd}`;
+    }
+
+    const seqStr = String(1).padStart(trackingForm.seqDigits || 2, '0');
+    if (s) {
+      return dateStr ? `${p}${s}${dateStr}${s}${seqStr}` : `${p}${s}${seqStr}`;
+    }
+    return `${p}${dateStr}${seqStr}`;
   };
 
   const portOptions = useMemo<SelectOption[]>(() => {
@@ -500,7 +516,7 @@ export default function ShipmentConfig() {
                 {t('settingsPage.shipmentPage.tracking.title', 'Quy tắc sinh mã lô hàng tự động')}
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Thiết lập định dạng mã lô hàng (Tracking No) áp dụng cho mọi lô hàng mới.
+                Thiết lập định dạng mã lô hàng (Tracking No) áp dụng cho mọi lô hàng mới theo số thứ tự liên tiếp.
               </p>
             </div>
 
@@ -511,10 +527,12 @@ export default function ShipmentConfig() {
                 </label>
                 <input
                   type="text"
+                  placeholder="VD: QC"
                   value={trackingForm.prefix}
                   onChange={(e) => setTrackingForm({ ...trackingForm, prefix: e.target.value.toUpperCase() })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-mono font-bold text-slate-800 uppercase focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
+                <span className="text-[11px] text-slate-400 mt-1 block">Mặc định: QC (Lô hàng Quá cảnh)</span>
               </div>
 
               <div>
@@ -524,23 +542,44 @@ export default function ShipmentConfig() {
                   onChange={(e) => setTrackingForm({ ...trackingForm, separator: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
                 >
-                  <option value="-">Gạch nối ( - )</option>
-                  <option value="_">Gạch dưới ( _ )</option>
-                  <option value="">Không có (Liền nhau)</option>
+                  <option value="">Không có - Liền nhau (VD: QC26083101)</option>
+                  <option value="-">Gạch nối ( - ) (VD: QC-260831-01)</option>
+                  <option value="_">Gạch dưới ( _ ) (VD: QC_260831_01)</option>
                 </select>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
-                <div>
-                  <div className="text-xs font-semibold text-slate-800">Chèn ngày tháng vào mã (YYYYMMDD)</div>
-                  <div className="text-[11px] text-slate-500">Giúp định danh ngày mở hồ sơ lô hàng</div>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={trackingForm.includeDate}
-                  onChange={(e) => setTrackingForm({ ...trackingForm, includeDate: e.target.checked })}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Định dạng ngày tháng</label>
+                <select
+                  value={trackingForm.includeDate ? (trackingForm.dateFormat || 'YYMMDD') : 'NONE'}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === 'NONE') {
+                      setTrackingForm({ ...trackingForm, includeDate: false });
+                    } else {
+                      setTrackingForm({ ...trackingForm, includeDate: true, dateFormat: val });
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                  <option value="YYMMDD">YYMMDD - Năm 2 số + Tháng + Ngày (VD: 260831)</option>
+                  <option value="YYYYMMDD">YYYYMMDD - Năm 4 số + Tháng + Ngày (VD: 20260831)</option>
+                  <option value="NONE">Không chèn ngày tháng</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Số chữ số thứ tự (STT tăng dần)</label>
+                <select
+                  value={trackingForm.seqDigits || 2}
+                  onChange={(e) => setTrackingForm({ ...trackingForm, seqDigits: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
+                >
+                  <option value={2}>2 chữ số (01, 02, 03... 99)</option>
+                  <option value={3}>3 chữ số (001, 002, 003... 999)</option>
+                  <option value={4}>4 chữ số (0001, 0002... 9999)</option>
+                </select>
+                <span className="text-[11px] text-slate-400 mt-1 block">Tự động tăng theo số lượng lô hàng trong ngày (không phải số ngẫu nhiên).</span>
               </div>
             </div>
           </div>
@@ -553,16 +592,34 @@ export default function ShipmentConfig() {
                 <span>{t('settingsPage.shipmentPage.tracking.preview', 'Mẫu mã lô hàng xem trước')}</span>
               </div>
               <p className="text-xs text-slate-400">
-                Mã lô hàng sẽ được gán tự động khi khởi tạo lô hàng:
+                Mã lô hàng sẽ được sinh tự động tăng dần theo số thứ tự khi tạo lô hàng mới:
               </p>
-              <div className="p-4 bg-slate-800/80 rounded-xl border border-slate-700/80 font-mono text-xl font-bold text-blue-400 tracking-wider text-center">
+              <div className="p-4 bg-slate-800/80 rounded-xl border border-slate-700/80 font-mono text-2xl font-bold text-blue-400 tracking-wider text-center">
                 {getSampleTrackingCode()}
+              </div>
+              <div className="p-3 bg-slate-800/40 rounded-lg text-xs text-slate-400 space-y-1">
+                <div className="flex justify-between">
+                  <span>Lô hàng thứ 1:</span>
+                  <span className="font-mono text-emerald-400">{getSampleTrackingCode()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Lô hàng thứ 2:</span>
+                  <span className="font-mono text-emerald-400">
+                    {getSampleTrackingCode().slice(0, -(trackingForm.seqDigits || 2)) + String(2).padStart(trackingForm.seqDigits || 2, '0')}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Lô hàng thứ 8:</span>
+                  <span className="font-mono text-emerald-400">
+                    {getSampleTrackingCode().slice(0, -(trackingForm.seqDigits || 2)) + String(8).padStart(trackingForm.seqDigits || 2, '0')}
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
-              <span>Định dạng: Prefix + Date + Random</span>
-              <span className="text-emerald-400 font-semibold">● Đang hoạt động</span>
+              <span>Quy tắc: Prefix + Ngày tháng + STT tăng dần</span>
+              <span className="text-emerald-400 font-semibold">● Đang áp dụng</span>
             </div>
           </div>
         </div>
@@ -1064,13 +1121,10 @@ export default function ShipmentConfig() {
                 <label className="block font-semibold text-slate-700 mb-1">
                   Số tiền định mức (VND) <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  step="10000"
+                <CurrencyInput
                   required
                   value={feeForm.amount}
-                  onChange={(e) => setFeeForm({ ...feeForm, amount: Number(e.target.value) })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  onChange={(val) => setFeeForm({ ...feeForm, amount: val })}
                 />
               </div>
 

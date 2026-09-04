@@ -100,7 +100,7 @@ export default function FilterDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 z-50 mt-1.5 w-60 rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/60 focus:outline-none overflow-hidden animate-in fade-in zoom-in-95 duration-150 origin-top-left">
+        <div className="absolute left-0 z-50 mt-1.5 w-60 rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/60 focus:outline-none overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100 origin-top-left">
           <div className="py-1.5 max-h-72 overflow-y-auto custom-scrollbar">
             {options.map((option) => {
               const isSelected = selectedValues.includes(option.value);

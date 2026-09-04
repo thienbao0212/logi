@@ -86,30 +86,31 @@ export default function ShipmentDetail() {
     setLoading(true);
     setError(null);
     try {
-      const r = await apiFetch(`/api/shipments/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      if (r.ok) {
-        const { data } = await r.json();
-        setShipment(data);
-        if (data?.id) {
-          const mData = loadMilestonesFromStorage(data.id, data);
-          setMilestones(mData);
-          setCosts(loadShipmentCostsFromStorage(data.id));
-        }
-      } else {
+      let data: any = null;
+      try {
+        const r = await apiFetch(`/api/shipments/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        data = r?.data ?? r;
+      } catch {
+        // Fallback to searching company shipments
         const memberships = JSON.parse(localStorage.getItem('memberships') || '[]');
         const companyId = memberships[0]?.companyId;
-        if (!companyId) throw new Error('No company');
-        const json = await apiFetch(`/api/shipments?companyId=${companyId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const found = (json.data ?? []).find((s: Shipment) => s.id === id);
-        if (!found) throw new Error('Shipment not found');
-        setShipment(found);
-        if (found?.id) {
-          const mData = loadMilestonesFromStorage(found.id, found);
-          setMilestones(mData);
-          setCosts(loadShipmentCostsFromStorage(found.id));
+        if (companyId) {
+          const json = await apiFetch(`/api/shipments?companyId=${companyId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          data = (json?.data ?? []).find((s: Shipment) => s.id === id);
         }
+      }
+
+      if (!data || (!data.id && !data.trackingNumber)) {
+        throw new Error('Shipment not found');
+      }
+
+      setShipment(data);
+      if (data?.id) {
+        const mData = loadMilestonesFromStorage(data.id, data);
+        setMilestones(mData);
+        setCosts(loadShipmentCostsFromStorage(data.id));
       }
     } catch (e: any) {
       setError(e.message ?? 'Failed to load');
@@ -200,7 +201,11 @@ export default function ShipmentDetail() {
 
       {/* Fixed Header Area */}
       <div className="shrink-0 flex flex-col z-20">
-        <ShipmentHeader shipment={shipment} onEditClick={() => setIsEditing(true)} />
+        <ShipmentHeader 
+          shipment={shipment} 
+          onEditClick={() => setIsEditing(true)} 
+          onTabChange={(tabKey) => setActiveTab(tabKey)}
+        />
       </div>
 
       <div className="flex-1 flex flex-col gap-4 p-6 overflow-y-auto min-h-0 relative">
@@ -347,7 +352,11 @@ export default function ShipmentDetail() {
               )}
             </div>
 
-            <ShipmentRightPanel shipment={shipment} />
+            <ShipmentRightPanel 
+              shipment={shipment} 
+              milestones={milestones}
+              onNavigateTab={(tabKey) => setActiveTab(tabKey)}
+            />
           </div>
 
         </div>
@@ -363,7 +372,7 @@ export default function ShipmentDetail() {
             <div>
               <h3 className="text-base font-bold text-slate-900">Chúc mừng! Đã hoàn thành 5 mốc</h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Lô hàng <strong className="font-mono text-blue-700">{shipment.trackingNumber}</strong> đã được điền đủ 100% các trường thông tin bắt buộc và tự động chuyển sang <strong>Tab 1: Các lô hàng đã hoàn thành</strong>.
+                Lô hàng <strong className="font-mono text-blue-700">{shipment.trackingNumber}</strong> đã được điền đủ 100% các trường thông tin bắt buộc và tự động chuyển sang <strong>Tab Đã hoàn thành</strong>.
               </p>
             </div>
             <div className="pt-2 flex gap-3">

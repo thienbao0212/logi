@@ -16,7 +16,8 @@ import {
   Database,
   Users,
   Ship,
-  Anchor
+  Anchor,
+  BarChart3
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,11 +30,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
   
+  // Shipments submenu toggle state
+  const isShipmentsActive = location.pathname.startsWith('/shipments');
+  const [shipmentsOpen, setShipmentsOpen] = useState(true);
+
   // Master data submenu toggle state
   const isMasterDataActive = location.pathname.startsWith('/master-data');
   const [masterDataOpen, setMasterDataOpen] = useState(true);
 
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    if (isShipmentsActive) {
+      setShipmentsOpen(true);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (isMasterDataActive) {
@@ -53,10 +64,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     navigate('/login');
   };
 
-  const navItems = [
-    ...(isAdmin ? [{ name: t('nav.adminDashboard', 'Admin Dashboard'), path: '/admin', icon: LayoutDashboard }] : []),
-    { name: t('nav.shipments', 'Shipments'), path: '/shipments', icon: Package },
-    { name: t('nav.accounting', 'Accounting'), path: '/accounting', icon: Calculator },
+  const shipmentsChildren = [
+    { 
+      name: t('nav.shipmentManagement', 'Quản lý lô hàng'), 
+      path: '/shipments', 
+      icon: Package,
+      isActive: (pathname: string) => pathname === '/shipments' || (pathname.startsWith('/shipments/') && pathname !== '/shipments/financial')
+    },
+    { 
+      name: t('nav.shipmentFinancial', 'Tài chính lô hàng'), 
+      path: '/shipments/financial', 
+      icon: BarChart3,
+      isActive: (pathname: string) => pathname === '/shipments/financial'
+    },
   ];
 
   const masterDataChildren = [
@@ -136,37 +156,133 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             style={{ width: '100%' }}
           >
             <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto overflow-x-hidden">
-              {navItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.path);
-                return (
+              {/* Admin Dashboard if applicable */}
+              {isAdmin && (
+                <button
+                  onClick={() => navigate('/admin')}
+                  title={collapsed ? t('nav.adminDashboard', 'Admin Dashboard') : undefined}
+                  className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    location.pathname.startsWith('/admin')
+                      ? 'bg-blue-50 text-blue-700 font-semibold'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  <LayoutDashboard
+                    size={18}
+                    className={`shrink-0 ${location.pathname.startsWith('/admin') ? 'text-blue-600' : 'text-slate-400'}`}
+                  />
+                  <span
+                    style={{
+                      opacity: collapsed ? 0 : 1,
+                      maxWidth: collapsed ? '0px' : '200px',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      transition: 'opacity 200ms ease, max-width 300ms cubic-bezier(0.4,0,0.2,1)',
+                    }}
+                  >
+                    {t('nav.adminDashboard', 'Admin Dashboard')}
+                  </span>
+                </button>
+              )}
+
+              {/* Shipments Menu Group (Lô hàng với 2 submenu: Quản lý lô hàng & Tài chính lô hàng) */}
+              <div>
+                {collapsed ? (
+                  // Collapsed View: Group icon that navigates to first child
                   <button
-                    key={item.path}
-                    onClick={() => navigate(item.path)}
-                    title={collapsed ? item.name : undefined}
-                    className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      isActive
+                    onClick={() => navigate('/shipments')}
+                    title={t('nav.shipments', 'Lô hàng')}
+                    className={`w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isShipmentsActive
                         ? 'bg-blue-50 text-blue-700'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
-                    <item.icon
+                    <Package
                       size={18}
-                      className={`shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`}
+                      className={`shrink-0 ${isShipmentsActive ? 'text-blue-600' : 'text-slate-400'}`}
                     />
-                    <span
-                      style={{
-                        opacity: collapsed ? 0 : 1,
-                        maxWidth: collapsed ? '0px' : '200px',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        transition: 'opacity 200ms ease, max-width 300ms cubic-bezier(0.4,0,0.2,1)',
-                      }}
-                    >
-                      {item.name}
-                    </span>
                   </button>
-                );
-              })}
+                ) : (
+                  // Expanded View: Group header with Accordion
+                  <div>
+                    <button
+                      onClick={() => setShipmentsOpen(!shipmentsOpen)}
+                      className={`w-full flex items-center justify-between px-2.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                        isShipmentsActive
+                          ? 'text-blue-700 bg-blue-50/50'
+                          : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Package
+                          size={18}
+                          className={`shrink-0 ${isShipmentsActive ? 'text-blue-600' : 'text-slate-400'}`}
+                        />
+                        <span className="truncate">{t('nav.shipments', 'Lô hàng')}</span>
+                      </div>
+                      {shipmentsOpen ? (
+                        <ChevronUp size={15} className="text-slate-400 shrink-0" />
+                      ) : (
+                        <ChevronDown size={15} className="text-slate-400 shrink-0" />
+                      )}
+                    </button>
+
+                    {/* Child Submenu */}
+                    {shipmentsOpen && (
+                      <div className="mt-1 ml-4 pl-3 border-l-2 border-slate-100 space-y-1">
+                        {shipmentsChildren.map((child) => {
+                          const isChildActive = child.isActive(location.pathname);
+                          return (
+                            <button
+                              key={child.path}
+                              onClick={() => navigate(child.path)}
+                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
+                                isChildActive
+                                  ? 'bg-blue-50 text-blue-700 font-semibold'
+                                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                              }`}
+                            >
+                              <child.icon
+                                size={15}
+                                className={`shrink-0 ${isChildActive ? 'text-blue-600' : 'text-slate-400'}`}
+                              />
+                              <span className="truncate">{child.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Accounting Navigation Button */}
+              <button
+                onClick={() => navigate('/accounting')}
+                title={collapsed ? t('nav.accounting', 'Accounting') : undefined}
+                className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname.startsWith('/accounting')
+                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <Calculator
+                  size={18}
+                  className={`shrink-0 ${location.pathname.startsWith('/accounting') ? 'text-blue-600' : 'text-slate-400'}`}
+                />
+                <span
+                  style={{
+                    opacity: collapsed ? 0 : 1,
+                    maxWidth: collapsed ? '0px' : '200px',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    transition: 'opacity 200ms ease, max-width 300ms cubic-bezier(0.4,0,0.2,1)',
+                  }}
+                >
+                  {t('nav.accounting', 'Accounting')}
+                </span>
+              </button>
 
               {/* Master Data Menu Group */}
               <div className="pt-2">

@@ -1,31 +1,85 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
-  BarChart3, 
   BookOpen, 
-  Columns, 
-  LayoutDashboard
+  LayoutDashboard,
+  Calculator,
+  ArrowDownLeft,
+  ArrowUpRight,
+  Receipt,
+  Layers
 } from 'lucide-react';
 
-import ShipmentPnlTab from './shipment_pnl_tab.js';
-import OperationsTab from './operations.js';
+import ReceivablesTab from './receivables.js';
+import PayablesTab from './payables.js';
 import CashbookTab from './cashbook.js';
 import OverviewTab from './overview.js';
+import InvoicesTab from './invoices.js';
+import ExpensesTab from './expenses.js';
+import { FinancialService } from '../../components/shipment/tabs/financial/mockService.js';
+
+type AccountingTabType = 'receivables' | 'payables' | 'cashbook' | 'overview' | 'invoices' | 'expenses';
 
 interface TabItem {
-  id: 'pnl' | 'operations' | 'cashbook' | 'overview';
+  id: AccountingTabType;
   label: string;
   icon: any;
-  badge?: string;
+  badgeCount?: number;
+  badgeClass?: string;
 }
 
 export default function AccountingDashboard() {
-  const [activeTab, setActiveTab] = useState<'pnl' | 'operations' | 'cashbook' | 'overview'>('pnl');
+  const [activeTab, setActiveTab] = useState<AccountingTabType>('receivables');
+  const [counts, setCounts] = useState<{ thu: number; chi: number }>({ thu: 0, chi: 0 });
+
+  useEffect(() => {
+    const loadCounts = async () => {
+      try {
+        const reqs = await FinancialService.getRequests('');
+        const thuCount = reqs.filter(r => r.type === 'THU' && r.status !== 'ĐÃ THU').length;
+        const chiCount = reqs.filter(r => r.type === 'CHI' && r.status !== 'ĐÃ CHI').length;
+        setCounts({ thu: thuCount, chi: chiCount });
+      } catch (e) {
+        console.error('Failed to load request counts', e);
+      }
+    };
+    loadCounts();
+  }, [activeTab]);
 
   const tabs: TabItem[] = [
-    { id: 'pnl', label: 'Doanh thu - Chi phí - Lợi nhuận Lô hàng', icon: BarChart3, badge: 'Trọng tâm' },
-    { id: 'operations', label: 'Nhật ký Thu / Chi', icon: Columns },
-    { id: 'cashbook', label: 'Sổ quỹ tiền mặt', icon: BookOpen },
-    { id: 'overview', label: 'Báo cáo Tổng quan', icon: LayoutDashboard },
+    { 
+      id: 'receivables', 
+      label: 'Công nợ Phải thu (AR)', 
+      icon: ArrowDownLeft,
+      badgeCount: counts.thu,
+      badgeClass: 'bg-emerald-100 text-emerald-800'
+    },
+    { 
+      id: 'payables', 
+      label: 'Công nợ Phải trả (AP)', 
+      icon: ArrowUpRight,
+      badgeCount: counts.chi,
+      badgeClass: 'bg-rose-100 text-rose-800'
+    },
+    { 
+      id: 'cashbook', 
+      label: 'Sổ quỹ Tiền mặt & Ngân hàng', 
+      icon: BookOpen 
+    },
+    {
+      id: 'invoices',
+      label: 'Hóa đơn VAT',
+      icon: Receipt,
+    },
+    {
+      id: 'expenses',
+      label: 'Chi phí Hoạt động',
+      icon: Layers,
+    },
+    { 
+      id: 'overview', 
+      label: 'Báo cáo & Tổng quan Tài chính', 
+      icon: LayoutDashboard 
+    },
   ];
 
   return (
@@ -35,16 +89,16 @@ export default function AccountingDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-              <BarChart3 size={24} className="text-blue-600" />
-              <span>Quản lý Tài chính & Hiệu quả Kinh doanh (P&L)</span>
+              <Calculator size={24} className="text-blue-600" />
+              <span>Quản lý Kế toán & Sổ quỹ Doanh nghiệp</span>
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Đối chiếu chi phí trực tiếp từng lô, chi phí quản lý phân bổ, doanh thu và theo dõi lợi nhuận ròng để tối ưu hóa kinh doanh.
+              Quản lý toàn diện công nợ phải thu khách hàng, công nợ phải trả đối tác/hãng tàu, sổ quỹ tiền mặt ngân hàng và báo cáo dòng tiền.
             </p>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs - Modern Segmented Underline Styling */}
         <div className="flex items-center gap-2 mt-6 border-b border-slate-200 overflow-x-auto hide-scrollbar">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -61,11 +115,9 @@ export default function AccountingDashboard() {
               >
                 <Icon size={16} className={isActive ? 'text-blue-600' : 'text-slate-400'} />
                 <span>{tab.label}</span>
-                {tab.badge && (
-                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
-                    isActive ? 'bg-blue-100 text-blue-800' : 'bg-slate-200/70 text-slate-600'
-                  }`}>
-                    {tab.badge}
+                {typeof tab.badgeCount === 'number' && tab.badgeCount > 0 && (
+                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${tab.badgeClass}`}>
+                    {tab.badgeCount}
                   </span>
                 )}
               </button>
@@ -76,9 +128,11 @@ export default function AccountingDashboard() {
 
       {/* Content Area */}
       <div className="flex-1 overflow-auto p-8 pt-6">
-        {activeTab === 'pnl' && <ShipmentPnlTab />}
-        {activeTab === 'operations' && <OperationsTab />}
+        {activeTab === 'receivables' && <ReceivablesTab />}
+        {activeTab === 'payables' && <PayablesTab />}
         {activeTab === 'cashbook' && <CashbookTab />}
+        {activeTab === 'invoices' && <InvoicesTab />}
+        {activeTab === 'expenses' && <ExpensesTab />}
         {activeTab === 'overview' && <OverviewTab />}
       </div>
     </div>

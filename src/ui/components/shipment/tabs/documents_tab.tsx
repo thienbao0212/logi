@@ -43,8 +43,7 @@ export default function DocumentsTab({ shipment }: { shipment: Shipment }) {
     apiFetch(`/api/shipments/${shipment.id}/documents`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((r) => r.json())
-      .then((j) => setDocuments(j.data ?? []))
+      .then((j) => setDocuments(j?.data ?? j ?? []))
       .catch(() => setDocuments([]))
       .finally(() => setLoading(false));
   }, [shipment.id]);

@@ -7,6 +7,7 @@ import './i18n.js'
 import Login from './ui/pages/login.js'
 import AdminDashboard from './ui/pages/admin_dashboard.js'
 import ShipmentList from './ui/pages/shipment_list.js'
+import ShipmentFinancial from './ui/pages/shipment_financial.js'
 import ShipmentDetail from './ui/pages/shipment_detail.js'
 import AccountingDashboard from './ui/pages/accounting/index.js'
 import CustomerList from './ui/pages/master_data/customer_list.js'
@@ -34,6 +35,11 @@ if (rootElement) {
           <Route path="/shipments" element={
             <PrivateRoute role="logistic">
               <ShipmentList />
+            </PrivateRoute>
+          } />
+          <Route path="/shipments/financial" element={
+            <PrivateRoute role="logistic">
+              <ShipmentFinancial />
             </PrivateRoute>
           } />
           <Route path="/shipments/:id" element={

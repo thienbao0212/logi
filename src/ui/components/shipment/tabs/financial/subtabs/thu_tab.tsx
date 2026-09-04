@@ -63,9 +63,9 @@ export function ThuTab({ shipment }: ThuTabProps) {
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm transition-colors shadow-sm"
+          className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap"
         >
-          <Plus size={16} /> {t('financial.actions.createThu', 'Create Revenue Request')}
+          <Plus size={15} /> <span>{t('financial.actions.createThu', 'Create Revenue Request')}</span>
         </button>
       </div>
 

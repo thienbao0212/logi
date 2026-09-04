@@ -48,12 +48,20 @@ export default function EditShipmentModal({
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(form)
-      });
+      }).catch(() => {});
       
+      // Update cache in localStorage
+      try {
+        const cache = JSON.parse(localStorage.getItem('shipments_cache') || '[]');
+        const updatedCache = cache.map((s: any) => s.id === shipment.id ? { ...s, ...form, updatedAt: new Date().toISOString() } : s);
+        localStorage.setItem('shipments_cache', JSON.stringify(updatedCache));
+      } catch (e) {
+        console.error(e);
+      }
 
       onSuccess();
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Lỗi cập nhật lô hàng');
     } finally {
       setLoading(false);
     }

@@ -19,6 +19,7 @@ import {
   saveShipmentPnl, 
   formatAccountingCurrency 
 } from '../../components/shipment/transit_types.js';
+import CurrencyInput from '../../components/common/currency_input.js';
 
 interface ShipmentPnlRow {
   id: string;
@@ -361,30 +362,30 @@ export default function ShipmentPnlTab() {
           <button
             type="button"
             onClick={() => setBulkModal({ open: true, type: 'management', value: '800000' })}
-            className="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-white hover:bg-purple-50 hover:border-purple-300 text-purple-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
             title="Áp dụng chi phí quản lý cho toàn bộ các lô hàng"
           >
-            <Sparkles size={14} />
+            <Sparkles size={14} className="text-purple-600" />
             <span>Gán CP quản lý loạt</span>
           </button>
 
           <button
             type="button"
             onClick={() => setBulkModal({ open: true, type: 'revenue', value: '3400000' })}
-            className="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-white hover:bg-blue-50 hover:border-blue-300 text-blue-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
             title="Áp dụng doanh thu tiêu chuẩn cho toàn bộ các lô hàng"
           >
-            <DollarSign size={14} />
+            <DollarSign size={14} className="text-blue-600" />
             <span>Gán doanh thu loạt</span>
           </button>
 
           <button
             type="button"
             onClick={handleExportCsv}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
           >
-            <Download size={14} />
-            <span>Xuất Excel / CSV</span>
+            <Download size={14} className="text-slate-500" />
+            <span>Xuất Excel</span>
           </button>
         </div>
       </div>
@@ -473,16 +474,11 @@ export default function ShipmentPnlTab() {
 
                       {/* Chi phí quản lý (Editable inline) */}
                       <td className="p-3.5 text-right">
-                        <div className="inline-flex items-center justify-end">
-                          <input
-                            type="text"
-                            value={row.managementCost.toLocaleString('vi-VN')}
-                            onChange={(e) => {
-                              const rawVal = Number(e.target.value.replace(/[^0-9]/g, '')) || 0;
-                              handleUpdatePnlField(row.id, 'managementCost', rawVal);
-                            }}
-                            className="w-28 text-right px-2 py-1 font-mono font-semibold text-slate-800 bg-slate-50 border border-transparent hover:border-slate-300 focus:border-blue-500 focus:bg-white rounded-lg focus:outline-none transition-all text-xs"
-                            title="Bấm để chỉnh sửa chi phí quản lý của lô này"
+                        <div className="inline-flex items-center justify-end w-32">
+                          <CurrencyInput
+                            size="sm"
+                            value={row.managementCost}
+                            onChange={(val) => handleUpdatePnlField(row.id, 'managementCost', val)}
                           />
                         </div>
                       </td>
@@ -494,16 +490,11 @@ export default function ShipmentPnlTab() {
 
                       {/* Doanh thu lô (Editable inline) */}
                       <td className="p-3.5 text-right">
-                        <div className="inline-flex items-center justify-end">
-                          <input
-                            type="text"
-                            value={row.revenue.toLocaleString('vi-VN')}
-                            onChange={(e) => {
-                              const rawVal = Number(e.target.value.replace(/[^0-9]/g, '')) || 0;
-                              handleUpdatePnlField(row.id, 'revenue', rawVal);
-                            }}
-                            className="w-28 text-right px-2 py-1 font-mono font-bold text-blue-900 bg-slate-50 border border-transparent hover:border-slate-300 focus:border-blue-500 focus:bg-white rounded-lg focus:outline-none transition-all text-xs"
-                            title="Bấm để chỉnh sửa doanh thu thu khách của lô này"
+                        <div className="inline-flex items-center justify-end w-32">
+                          <CurrencyInput
+                            size="sm"
+                            value={row.revenue}
+                            onChange={(val) => handleUpdatePnlField(row.id, 'revenue', val)}
                           />
                         </div>
                       </td>
@@ -614,15 +605,10 @@ export default function ShipmentPnlTab() {
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Số tiền (VNĐ) <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  value={Number(bulkModal.value.replace(/[^0-9]/g, '') || 0).toLocaleString('vi-VN')}
-                  onChange={(e) => {
-                    const rawVal = e.target.value.replace(/[^0-9]/g, '');
-                    setBulkModal({ ...bulkModal, value: rawVal });
-                  }}
-                  className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 bg-white focus:ring-2 focus:ring-blue-500"
-                  autoFocus
+                <CurrencyInput
+                  size="lg"
+                  value={Number(bulkModal.value) || 0}
+                  onChange={(val) => setBulkModal({ ...bulkModal, value: String(val) })}
                 />
               </div>
             </div>

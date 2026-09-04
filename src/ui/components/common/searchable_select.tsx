@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Search, X, Check } from 'lucide-react';
 
@@ -66,16 +66,10 @@ export function SearchableSelect({
     width: number;
     placement: 'bottom' | 'top';
     maxHeight: number;
-  }>({
-    top: 0,
-    left: 0,
-    width: 0,
-    placement: 'bottom',
-    maxHeight: 280,
-  });
+  } | null>(null);
 
-  const updatePosition = () => {
-    if (!containerRef.current) return;
+  const calculatePosition = () => {
+    if (!containerRef.current) return null;
     const rect = containerRef.current.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
@@ -86,26 +80,32 @@ export function SearchableSelect({
       ? Math.min(320, Math.max(140, spaceAbove - 16))
       : Math.min(320, Math.max(140, spaceBelow - 16));
 
-    setCoords({
+    return {
       top: shouldOpenTop ? rect.top - 4 : rect.bottom + 4,
       left: rect.left,
       width: rect.width,
-      placement: shouldOpenTop ? 'top' : 'bottom',
+      placement: shouldOpenTop ? ('top' as const) : ('bottom' as const),
       maxHeight,
-    });
+    };
   };
 
-  useLayoutEffect(() => {
-    if (isOpen) {
-      updatePosition();
+  const handleToggle = () => {
+    if (disabled) return;
+    if (!isOpen) {
+      const pos = calculatePosition();
+      if (pos) setCoords(pos);
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
     }
-  }, [isOpen]);
+  };
 
   useEffect(() => {
     if (!isOpen) return;
 
     const handleScrollOrResize = () => {
-      updatePosition();
+      const pos = calculatePosition();
+      if (pos) setCoords(pos);
     };
 
     window.addEventListener('resize', handleScrollOrResize);
@@ -272,10 +272,10 @@ export function SearchableSelect({
       <button
         type="button"
         disabled={disabled}
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onClick={handleToggle}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between gap-2 border bg-white transition-all text-left outline-none ${
+        className={`w-full flex items-center justify-between gap-2 border bg-white transition-colors text-left outline-none ${
           sizeClasses[size]
         } ${
           disabled
@@ -337,10 +337,10 @@ export function SearchableSelect({
       </button>
 
       {/* Popover / Dropdown Menu appended directly to document.body via Portal */}
-      {isOpen && typeof document !== 'undefined' && createPortal(
+      {isOpen && coords && coords.width > 0 && typeof document !== 'undefined' && createPortal(
         <div
           ref={dropdownRef}
-          className={`fixed z-[99999] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-100 flex flex-col ${dropdownClassName}`}
+          className={`fixed z-[99999] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100 flex flex-col ${dropdownClassName}`}
           style={{
             top: coords.placement === 'top' ? 'auto' : `${coords.top}px`,
             bottom: coords.placement === 'top' ? `${window.innerHeight - coords.top}px` : 'auto',

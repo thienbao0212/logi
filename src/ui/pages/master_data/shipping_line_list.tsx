@@ -200,9 +200,9 @@ export default function ShippingLineList() {
 
         <button
           onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shrink-0"
+          className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 shrink-0"
         >
-          <Plus size={18} />
+          <Plus size={15} />
           <span>{t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}</span>
         </button>
       </div>
