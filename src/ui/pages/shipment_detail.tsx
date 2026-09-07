@@ -1,6 +1,6 @@
 import { apiFetch } from '@/lib/fetch.js';
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { 
   Layers, 
@@ -63,12 +63,22 @@ export default function ShipmentDetail() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const requestedTab = searchParams.get('tab') || (location.state as any)?.tab;
+
   const [shipment, setShipment] = useState<Shipment | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('milestones');
+  const [activeTab, setActiveTab] = useState(requestedTab || 'milestones');
   const [isEditing, setIsEditing] = useState(false);
   const [headerExtraElement, setHeaderExtraElement] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (requestedTab) {
+      setActiveTab(requestedTab);
+    }
+  }, [requestedTab]);
 
   // Local milestone & cost state for reactive banners
   const [milestones, setMilestones] = useState<TransitMilestonesData | null>(null);
@@ -171,26 +181,26 @@ export default function ShipmentDetail() {
   const isCompletedShipment = shipment.status === 'COMPLETED' || shipment.status === 'DELIVERED';
 
   return (
-    <div className="flex flex-col absolute inset-0 bg-slate-50 overflow-hidden">
+    <div className="flex flex-col absolute inset-0 bg-transparent overflow-hidden">
       
       {/* Teleport mini status to Global App Header */}
       {headerExtraElement && createPortal(
         <div className="flex items-center gap-3 w-full">
           <button
             onClick={() => navigate('/shipments')}
-            className="flex items-center justify-center w-8 h-8 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 -ml-2"
+            className="flex items-center justify-center w-8 h-8 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 -ml-2"
             title="Quay lại Danh sách Lô hàng"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <div className="flex items-center gap-2">
-            <span className="font-mono font-bold text-xs text-blue-700">{shipment.trackingNumber}</span>
+            <span className="font-mono font-bold text-xs text-blue-700 dark:text-blue-400">{shipment.trackingNumber}</span>
             {isCompletedShipment ? (
-              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-300">
+              <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold rounded-full border border-emerald-300 dark:border-emerald-800">
                 ĐÃ HOÀN THÀNH
               </span>
             ) : (
-              <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-semibold rounded-full">
+              <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 text-[10px] font-semibold rounded-full border border-blue-200 dark:border-blue-800">
                 ĐANG THỰC HIỆN
               </span>
             )}
@@ -225,10 +235,10 @@ export default function ShipmentDetail() {
         <div className="flex gap-5 items-start">
           
           {/* Main area with Tabs */}
-          <div className="flex-1 min-w-0 flex flex-col bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden">
+          <div className="flex-1 min-w-0 flex flex-col bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800/90 rounded-2xl shadow-xs overflow-hidden">
             
             {/* Tab Navigation Header */}
-            <div className="flex border-b border-slate-200 overflow-x-auto sticky top-[-24px] z-30 bg-white/95 backdrop-blur-md shadow-xs px-2 hide-scrollbar">
+            <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto sticky top-[-24px] z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xs px-2 hide-scrollbar">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.key;
@@ -238,11 +248,11 @@ export default function ShipmentDetail() {
                     onClick={() => setActiveTab(tab.key)}
                     className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold whitespace-nowrap border-b-2 transition-all ${
                       isActive
-                        ? 'border-blue-600 text-blue-700 bg-blue-50/50'
-                        : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                        ? 'border-blue-600 dark:border-blue-400 text-blue-700 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
+                        : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
                     }`}
                   >
-                    <Icon size={15} className={isActive ? 'text-blue-600' : 'text-slate-400'} />
+                    <Icon size={15} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -284,7 +294,7 @@ export default function ShipmentDetail() {
               {activeTab === 'tasks_issues' && (
                 <div className="space-y-6">
                   <TasksTab shipment={shipment} token={token} />
-                  <div className="border-t border-slate-200 pt-6">
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
                     <IssuesTab shipment={shipment} token={token} />
                   </div>
                 </div>
@@ -302,8 +312,8 @@ export default function ShipmentDetail() {
           <div className="w-80 shrink-0 hidden lg:block space-y-4">
             
             {/* Quick Status Card */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
+            <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-3">
+              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center justify-between">
                 <span>Trạng thái Vận hành</span>
                 {isCompletedShipment ? (
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
@@ -312,32 +322,32 @@ export default function ShipmentDetail() {
                 )}
               </h4>
               
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/60 text-xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Mã lô hàng:</span>
-                  <span className="font-mono font-bold text-blue-700">{shipment.trackingNumber}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Mã lô hàng:</span>
+                  <span className="font-mono font-bold text-blue-700 dark:text-blue-400">{shipment.trackingNumber}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Tiến độ mốc:</span>
-                  <span className="font-bold text-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400">Tiến độ mốc:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
                     {milestones ? (
                       checkAllMilestonesCompleted(milestones) ? '5/5 Mốc hoàn thành' : 'Đang xử lý'
                     ) : 'Chưa nhập'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Hạn DEM cảng:</span>
-                  <span className="font-mono font-semibold text-red-600">{milestones?.m1?.demExpiryDate || '—'}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Hạn DEM cảng:</span>
+                  <span className="font-mono font-semibold text-red-600 dark:text-red-400">{milestones?.m1?.demExpiryDate || '—'}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Hạn DET lưu vỏ:</span>
-                  <span className="font-mono font-semibold text-purple-700">{milestones?.m3?.detExpiryDate || '—'}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Hạn DET lưu vỏ:</span>
+                  <span className="font-mono font-semibold text-purple-700 dark:text-purple-400">{milestones?.m3?.detExpiryDate || '—'}</span>
                 </div>
               </div>
 
               {isCompletedShipment ? (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-semibold flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <span>Lô hàng đã hoàn thành đủ 5 mốc & đã được chuyển sang Tab Đã hoàn thành!</span>
                 </div>
               ) : (
@@ -365,28 +375,28 @@ export default function ShipmentDetail() {
       {/* Modal Chúc mừng hoàn thành 5 mốc */}
       {completionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 text-center space-y-4 border border-slate-200">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md p-6 text-center space-y-4 border border-slate-200 dark:border-slate-800">
+            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 size={36} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">Chúc mừng! Đã hoàn thành 5 mốc</h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Lô hàng <strong className="font-mono text-blue-700">{shipment.trackingNumber}</strong> đã được điền đủ 100% các trường thông tin bắt buộc và tự động chuyển sang <strong>Tab Đã hoàn thành</strong>.
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Chúc mừng! Đã hoàn thành 5 mốc</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                Lô hàng <strong className="font-mono text-blue-700 dark:text-blue-400">{shipment.trackingNumber}</strong> đã được điền đủ 100% các trường thông tin bắt buộc và tự động chuyển sang <strong>Tab Đã hoàn thành</strong>.
               </p>
             </div>
             <div className="pt-2 flex gap-3">
               <button
                 type="button"
                 onClick={() => setCompletionModal(false)}
-                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+                className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition-colors"
               >
                 Ở lại trang này
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/shipments')}
-                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs"
+                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
               >
                 Về danh sách lô hàng
               </button>

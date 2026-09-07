@@ -106,37 +106,37 @@ function InvoiceModal({
   const partnerLabel = type === 'OUT' ? 'Tên khách hàng *' : 'Tên nhà cung cấp *';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/80 dark:border-slate-800 w-full max-w-lg max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
           <div className="flex items-center gap-2.5">
-            <Receipt size={18} className={type === 'OUT' ? 'text-blue-600' : 'text-rose-600'} />
-            <span className="font-bold text-slate-900 text-sm">{isEdit ? 'Chỉnh sửa' : 'Thêm mới'} — {typeLabel}</span>
+            <Receipt size={18} className={type === 'OUT' ? 'text-blue-600 dark:text-blue-400' : 'text-rose-600 dark:text-rose-400'} />
+            <span className="font-bold text-slate-900 dark:text-white text-sm">{isEdit ? 'Chỉnh sửa' : 'Thêm mới'} — {typeLabel}</span>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">
+          <button type="button" onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400">
             <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <div className="overflow-auto px-6 py-4 space-y-4">
+        <div className="overflow-auto px-6 py-4 space-y-4 custom-scrollbar">
           {/* Row: Số HĐ + Ngày */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Số hóa đơn</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Số hóa đơn</label>
               <input
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
                 value={form.invoiceNumber || ''}
                 onChange={e => set('invoiceNumber', e.target.value)}
                 placeholder="0000001"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Ngày hóa đơn *</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Ngày hóa đơn *</label>
               <input
                 type="date"
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
                 value={form.date || ''}
                 onChange={e => set('date', e.target.value)}
               />
@@ -145,9 +145,9 @@ function InvoiceModal({
 
           {/* Partner */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">{partnerLabel}</label>
+            <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">{partnerLabel}</label>
             <input
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
               value={form.partnerName || ''}
               onChange={e => set('partnerName', e.target.value)}
               placeholder={type === 'OUT' ? 'Công ty TNHH ABC...' : 'Hãng tàu / Cảng vụ...'}
@@ -157,18 +157,18 @@ function InvoiceModal({
           {/* Row: MST + Mã lô */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">MST đối tác</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">MST đối tác</label>
               <input
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
                 value={form.partnerTaxCode || ''}
                 onChange={e => set('partnerTaxCode', e.target.value)}
                 placeholder="0123456789"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Mã lô hàng</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Mã lô hàng</label>
               <input
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
                 value={form.trackingNumber || ''}
                 onChange={e => set('trackingNumber', e.target.value)}
                 placeholder="LG-2025-001"
@@ -178,9 +178,9 @@ function InvoiceModal({
 
           {/* Description */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Nội dung / Diễn giải</label>
+            <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Nội dung / Diễn giải</label>
             <input
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
               value={form.description || ''}
               onChange={e => set('description', e.target.value)}
               placeholder={type === 'OUT' ? 'Dịch vụ vận chuyển lô hàng...' : 'Phí dịch vụ hãng tàu, phí cảng...'}
@@ -190,19 +190,19 @@ function InvoiceModal({
           {/* Row: Tiền + VAT rate */}
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Tiền trước thuế *</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Tiền trước thuế *</label>
               <input
                 type="number"
                 min={0}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none"
                 value={form.subtotal || 0}
                 onChange={e => set('subtotal', Number(e.target.value))}
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Thuế suất VAT</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Thuế suất VAT</label>
               <select
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                 value={form.vatRate || 10}
                 onChange={e => set('vatRate', Number(e.target.value))}
               >
@@ -213,11 +213,11 @@ function InvoiceModal({
               </select>
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Tiền VAT</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Tiền VAT</label>
               <input
                 type="number"
                 readOnly
-                className="w-full px-3 py-2 rounded-lg border border-slate-100 bg-slate-50 text-xs font-mono text-slate-600"
+                className="w-full px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-xs font-mono text-slate-600 dark:text-slate-400"
                 value={form.vatAmount || 0}
               />
             </div>
@@ -226,17 +226,17 @@ function InvoiceModal({
           {/* Total + Status */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Tổng tiền (đã VAT)</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Tổng tiền (đã VAT)</label>
               <input
                 readOnly
-                className="w-full px-3 py-2 rounded-lg border border-slate-100 bg-blue-50 text-xs font-mono font-bold text-blue-800"
+                className="w-full px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-700 bg-blue-50 dark:bg-blue-950/40 text-xs font-mono font-bold text-blue-800 dark:text-blue-300"
                 value={fmtVND(form.total || 0)}
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">Trạng thái</label>
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-1">Trạng thái</label>
               <select
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                 value={form.status || 'DRAFT'}
                 onChange={e => set('status', e.target.value as InvoiceStatus)}
               >
@@ -249,8 +249,8 @@ function InvoiceModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-100 shrink-0">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50">
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800">
             Hủy bỏ
           </button>
           <button
@@ -327,57 +327,55 @@ export default function InvoicesTab() {
     link.click();
   };
 
-  const vatPayableColor = vatSummary.vatPayable > 0 ? 'text-rose-700' : vatSummary.vatPayable < 0 ? 'text-emerald-700' : 'text-slate-700';
-
   return (
     <div className="space-y-5">
       {/* ── VAT Monthly Summary ─────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Receipt size={16} className="text-blue-600" />
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Tóm tắt Thuế VAT tháng</h2>
+            <Receipt size={16} className="text-blue-600 dark:text-blue-400" />
+            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">Tóm tắt Thuế VAT tháng</h2>
           </div>
           <input
             type="month"
-            className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500/30 outline-none"
+            className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-blue-500/30 outline-none"
             value={selectedMonth}
             onChange={e => setSelectedMonth(e.target.value)}
           />
         </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-center">
-            <div className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-1">VAT Đầu ra (Bán)</div>
-            <div className="text-xl font-black text-emerald-800 font-mono">{fmtVND(vatSummary.vatOut)}</div>
-            <div className="text-[10px] text-emerald-600 mt-0.5">Thuế thu từ khách hàng</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/60 text-center">
+            <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">VAT Đầu ra (Bán)</div>
+            <div className="text-xl font-black text-emerald-800 dark:text-emerald-300 font-mono">{fmtVND(vatSummary.vatOut)}</div>
+            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5">Thuế thu từ khách hàng</div>
           </div>
-          <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 text-center">
-            <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-1">VAT Đầu vào (Mua)</div>
-            <div className="text-xl font-black text-blue-800 font-mono">{fmtVND(vatSummary.vatIn)}</div>
-            <div className="text-[10px] text-blue-600 mt-0.5">Thuế được khấu trừ đầu vào</div>
+          <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-800/60 text-center">
+            <div className="text-[11px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">VAT Đầu vào (Mua)</div>
+            <div className="text-xl font-black text-blue-800 dark:text-blue-300 font-mono">{fmtVND(vatSummary.vatIn)}</div>
+            <div className="text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">Thuế được khấu trừ đầu vào</div>
           </div>
-          <div className={`p-4 rounded-xl border text-center ${vatSummary.vatPayable >= 0 ? 'bg-rose-50 border-rose-100' : 'bg-slate-50 border-slate-200'}`}>
-            <div className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${vatSummary.vatPayable >= 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
+          <div className={`p-4 rounded-xl border text-center ${vatSummary.vatPayable >= 0 ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-100 dark:border-rose-800/60' : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700'}`}>
+            <div className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${vatSummary.vatPayable >= 0 ? 'text-rose-700 dark:text-rose-400' : 'text-emerald-700 dark:text-emerald-400'}`}>
               {vatSummary.vatPayable >= 0 ? 'VAT Phải nộp' : 'VAT Được hoàn'}
             </div>
-            <div className={`text-xl font-black font-mono ${vatPayableColor}`}>{fmtVND(Math.abs(vatSummary.vatPayable))}</div>
-            <div className={`text-[10px] mt-0.5 ${vatSummary.vatPayable >= 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+            <div className={`text-xl font-black font-mono ${vatSummary.vatPayable > 0 ? 'text-rose-700 dark:text-rose-400' : vatSummary.vatPayable < 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}`}>{fmtVND(Math.abs(vatSummary.vatPayable))}</div>
+            <div className={`text-[10px] mt-0.5 ${vatSummary.vatPayable >= 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
               {vatSummary.vatPayable >= 0 ? 'Đầu ra − Đầu vào' : 'Đầu vào > Đầu ra → được hoàn'}
             </div>
           </div>
         </div>
         {vatSummary.vatPayable > 0 && (
-          <div className="mt-3 flex items-center gap-2 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
-            <AlertCircle size={14} className="shrink-0 text-amber-600" />
+          <div className="mt-3 flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800/60 text-xs text-amber-800 dark:text-amber-300">
+            <AlertCircle size={14} className="shrink-0 text-amber-600 dark:text-amber-400" />
             <span>Tháng <strong>{selectedMonth}</strong> có <strong>{fmtVND(vatSummary.vatPayable)}</strong> VAT phải nộp cho cơ quan thuế.</span>
           </div>
         )}
       </div>
 
       {/* ── Invoice List ──────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs overflow-hidden">
         {/* Sub-tabs */}
-        <div className="flex items-center gap-0 border-b border-slate-100">
+        <div className="flex items-center gap-0 border-b border-slate-100 dark:border-slate-800">
           {([['OUT', 'Hóa đơn Đầu ra (Bán)', 'ArrowUpRight'], ['IN', 'Hóa đơn Đầu vào (Mua)', 'ArrowDownLeft']] as const).map(([key, label]) => {
             const isActive = subTab === key;
             const Icon = key === 'OUT' ? ArrowUpRight : ArrowDownLeft;
@@ -388,13 +386,13 @@ export default function InvoicesTab() {
                 onClick={() => setSubTab(key)}
                 className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold border-b-2 transition-all ${
                   isActive
-                    ? key === 'OUT' ? 'border-blue-600 text-blue-700' : 'border-rose-600 text-rose-700'
-                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                    ? key === 'OUT' ? 'border-blue-600 dark:border-blue-500 text-blue-700 dark:text-blue-400' : 'border-rose-600 dark:border-rose-500 text-rose-700 dark:text-rose-400'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                 }`}
               >
                 <Icon size={14} />
                 {label}
-                <span className={`ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono ${isActive ? 'bg-slate-100' : 'bg-slate-100 text-slate-500'}`}>
+                <span className={`ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono ${isActive ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'}`}>
                   {invoices.filter(i => i.type === key).length}
                 </span>
               </button>
@@ -403,7 +401,7 @@ export default function InvoicesTab() {
         </div>
 
         {/* Toolbar */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 border-b border-slate-100">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex flex-wrap items-center gap-2 flex-1">
             <SearchInput
               value={search}
@@ -418,8 +416,8 @@ export default function InvoicesTab() {
               options={[
                 { id: 'ALL', label: 'Tất cả' },
                 { id: 'DRAFT', label: 'Bản nháp' },
-                { id: 'ISSUED', label: 'Đã phát hành', activeClass: 'bg-white text-emerald-700 shadow-2xs font-bold' },
-                { id: 'CANCELLED', label: 'Đã hủy', activeClass: 'bg-white text-rose-700 shadow-2xs font-bold' },
+                { id: 'ISSUED', label: 'Đã phát hành', activeClass: 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-2xs font-bold' },
+                { id: 'CANCELLED', label: 'Đã hủy', activeClass: 'bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-400 shadow-2xs font-bold' },
               ]}
             />
 
@@ -447,7 +445,7 @@ export default function InvoicesTab() {
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse min-w-[900px]">
-            <thead className="bg-slate-50 border-b border-slate-100 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+            <thead className="bg-slate-50/90 dark:bg-slate-950/90 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
               <tr>
                 <th className="px-4 py-3">Số HĐ</th>
                 <th className="px-4 py-3">Ngày</th>
@@ -462,18 +460,18 @@ export default function InvoicesTab() {
                 <th className="px-4 py-3 text-center">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {filtered.map(inv => (
-                <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="px-4 py-3 font-mono font-bold text-slate-800">{inv.invoiceNumber}</td>
-                  <td className="px-4 py-3 text-slate-600">{inv.date}</td>
-                  <td className="px-4 py-3 font-medium text-slate-800 max-w-[160px] truncate">{inv.partnerName}</td>
-                  <td className="px-4 py-3 text-slate-500 font-mono">{inv.partnerTaxCode || '—'}</td>
-                  <td className="px-4 py-3 font-mono text-blue-700">{inv.trackingNumber || '—'}</td>
-                  <td className="px-4 py-3 text-slate-500 max-w-[160px] truncate">{inv.description || '—'}</td>
-                  <td className="px-4 py-3 text-right font-mono text-slate-700">{fmtVND(inv.subtotal)}</td>
-                  <td className="px-4 py-3 text-right font-mono text-amber-700">{fmtVND(inv.vatAmount)} ({inv.vatRate}%)</td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-slate-900">{fmtVND(inv.total)}</td>
+                <tr key={inv.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                  <td className="px-4 py-3 font-mono font-bold text-slate-800 dark:text-slate-200">{inv.invoiceNumber}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{inv.date}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200 max-w-[160px] truncate">{inv.partnerName}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400 font-mono">{inv.partnerTaxCode || '—'}</td>
+                  <td className="px-4 py-3 font-mono text-blue-700 dark:text-blue-400">{inv.trackingNumber || '—'}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400 max-w-[160px] truncate">{inv.description || '—'}</td>
+                  <td className="px-4 py-3 text-right font-mono text-slate-700 dark:text-slate-300">{fmtVND(inv.subtotal)}</td>
+                  <td className="px-4 py-3 text-right font-mono text-amber-700 dark:text-amber-400">{fmtVND(inv.vatAmount)} ({inv.vatRate}%)</td>
+                  <td className="px-4 py-3 text-right font-mono font-bold text-slate-900 dark:text-white">{fmtVND(inv.total)}</td>
                   <td className="px-4 py-3">
                     {inv.status === 'ISSUED' && <Badge variant="success" dot size="sm">Đã phát hành</Badge>}
                     {inv.status === 'DRAFT' && <Badge variant="neutral" dot size="sm">Bản nháp</Badge>}
@@ -481,10 +479,10 @@ export default function InvoicesTab() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
-                      <button type="button" onClick={() => handleOpenEdit(inv)} className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-600">
+                      <button type="button" onClick={() => handleOpenEdit(inv)} className="p-1.5 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-950/60 text-blue-600 dark:text-blue-400">
                         <Edit3 size={13} />
                       </button>
-                      <button type="button" onClick={() => handleDelete(inv.id)} className="p-1.5 rounded-lg hover:bg-red-100 text-red-500">
+                      <button type="button" onClick={() => handleDelete(inv.id)} className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-950/60 text-red-500 dark:text-red-400">
                         <Trash2 size={13} />
                       </button>
                     </div>
@@ -493,9 +491,9 @@ export default function InvoicesTab() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="px-4 py-12 text-center text-slate-400 text-xs italic">
+                  <td colSpan={11} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500 text-xs italic">
                     <div className="flex flex-col items-center gap-2">
-                      <FileText size={24} className="text-slate-300" />
+                      <FileText size={24} className="text-slate-300 dark:text-slate-600" />
                       <span>Chưa có hóa đơn nào. Nhấn <strong>Thêm hóa đơn</strong> để bắt đầu.</span>
                     </div>
                   </td>

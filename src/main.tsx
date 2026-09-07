@@ -13,15 +13,19 @@ import AccountingDashboard from './ui/pages/accounting/index.js'
 import CustomerList from './ui/pages/master_data/customer_list.js'
 import ShippingLineList from './ui/pages/master_data/shipping_line_list.js'
 import PortList from './ui/pages/master_data/port_list.js'
+import VendorList from './ui/pages/master_data/vendor_list.js'
+import ChargeList from './ui/pages/master_data/charge_list.js'
 import Settings from './ui/pages/settings.js'
 import ShipmentConfig from './ui/pages/settings/shipment_config.js'
 import PrivateRoute from './ui/components/private_route.js'
+import { ThemeProvider } from './ui/context/theme_context.js'
 
 const rootElement = document.getElementById('root')
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      <BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
@@ -60,6 +64,18 @@ if (rootElement) {
             </PrivateRoute>
           } />
 
+          <Route path="/master-data/vendors" element={
+            <PrivateRoute role="logistic">
+              <VendorList />
+            </PrivateRoute>
+          } />
+
+          <Route path="/master-data/charges" element={
+            <PrivateRoute role="logistic">
+              <ChargeList />
+            </PrivateRoute>
+          } />
+
           <Route path="/master-data/shipping-lines" element={
             <PrivateRoute role="logistic">
               <ShippingLineList />
@@ -85,6 +101,7 @@ if (rootElement) {
           } />
         </Routes>
       </BrowserRouter>
-    </StrictMode>
+    </ThemeProvider>
+  </StrictMode>
   )
 }

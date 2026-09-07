@@ -19,6 +19,8 @@
     "accounting": "Kế toán",
     "masterData": "Master Data",
     "customers": "Quản lý khách hàng",
+    "vendors": "Nhà cung cấp & Đối tác",
+    "charges": "Biểu phí Logistics",
     "shippingLines": "Quản lý hãng tàu",
     "ports": "Quản lý cảng"
   },

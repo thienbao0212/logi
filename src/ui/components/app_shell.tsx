@@ -17,11 +17,18 @@ import {
   Users,
   Ship,
   Anchor,
-  BarChart3
+  BarChart3,
+  Truck,
+  Receipt,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/ui/context/theme_context.js';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const { t, i18n } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -38,8 +45,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const isMasterDataActive = location.pathname.startsWith('/master-data');
   const [masterDataOpen, setMasterDataOpen] = useState(true);
 
-  const { t, i18n } = useTranslation();
-
   useEffect(() => {
     if (isShipmentsActive) {
       setShipmentsOpen(true);
@@ -55,7 +60,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const handleLogout = async () => {
     try {
       await apiFetch('/api/auth/logout', { method: 'POST' });
-    } catch (e) {
+    } catch {
       // ignore
     }
     localStorage.removeItem('token');
@@ -69,34 +74,30 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       name: t('nav.shipmentManagement', 'Quản lý lô hàng'), 
       path: '/shipments', 
       icon: Package,
-      isActive: (pathname: string) => pathname === '/shipments' || (pathname.startsWith('/shipments/') && pathname !== '/shipments/financial')
+      isActive: (pathname: string) => pathname === '/shipments' || (pathname.startsWith('/shipments/') && !pathname.startsWith('/shipments/financial'))
     },
     { 
       name: t('nav.shipmentFinancial', 'Tài chính lô hàng'), 
       path: '/shipments/financial', 
       icon: BarChart3,
-      isActive: (pathname: string) => pathname === '/shipments/financial'
+      isActive: (pathname: string) => pathname.startsWith('/shipments/financial')
     },
   ];
 
   const masterDataChildren = [
-    { name: t('nav.customers', 'Quản lý khách hàng'), path: '/master-data/customers', icon: Users },
-    { name: t('nav.shippingLines', 'Quản lý hãng tàu'), path: '/master-data/shipping-lines', icon: Ship },
-    { name: t('nav.ports', 'Quản lý cảng'), path: '/master-data/ports', icon: Anchor },
+    { name: t('nav.customers', 'Khách hàng'), path: '/master-data/customers', icon: Users },
+    { name: t('nav.vendors', 'Nhà cung cấp'), path: '/master-data/vendors', icon: Truck },
+    { name: t('nav.charges', 'Biểu phí'), path: '/master-data/charges', icon: Receipt },
+    { name: t('nav.shippingLines', 'Hãng tàu'), path: '/master-data/shipping-lines', icon: Ship },
+    { name: t('nav.ports', 'Cảng biển'), path: '/master-data/ports', icon: Anchor },
   ];
 
   return (
-    <div className="h-screen bg-slate-50 flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-10 relative shadow-sm">
-        <div 
-          className="flex items-center gap-3 shrink-0"
-          style={{
-            width: collapsed ? '40px' : '232px',
-            transition: 'width 300ms cubic-bezier(0.4,0,0.2,1)',
-          }}
-        >
-          <div className="w-8 h-8 rounded bg-blue-600 text-white flex items-center justify-center shrink-0">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
+      {/* Top Navigation Bar */}
+      <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-6 shrink-0 z-10 transition-colors duration-200">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
             <Package size={20} />
           </div>
           {/* Logo text fades out when collapsed */}
@@ -108,7 +109,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               whiteSpace: 'nowrap',
               transition: 'max-width 300ms cubic-bezier(0.4,0,0.2,1), opacity 200ms ease',
             }}
-            className="font-bold text-slate-900 tracking-tight text-lg"
+            className="font-bold text-slate-900 dark:text-white tracking-tight text-lg"
           >
             LogiFlow
           </span>
@@ -117,26 +118,40 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {/* Dynamic header content injected from pages via Portal */}
         <div id="app-header-extra" className="flex-1 flex justify-start items-center pl-6 pr-4 overflow-hidden min-w-0" />
 
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng (Light Mode)' : 'Chuyển sang Giao diện Tối (Dark Mode)'}
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? (
+              <Sun size={19} className="text-amber-400 hover:rotate-45 transition-transform duration-300" />
+            ) : (
+              <Moon size={19} className="text-slate-600 dark:text-slate-400 hover:-rotate-12 transition-transform duration-300" />
+            )}
+          </button>
+
           <button
             onClick={() => i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors p-2 rounded-full hover:bg-slate-100"
+            className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors px-2.5 py-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer text-xs font-semibold"
             title="Switch Language"
           >
-            <Globe size={20} />
-            <span className="text-sm font-semibold uppercase">{i18n.language === 'vi' ? 'EN' : 'VI'}</span>
+            <Globe size={18} />
+            <span className="uppercase">{i18n.language === 'vi' ? 'EN' : 'VI'}</span>
           </button>
           
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700">
-            <User size={16} className="text-slate-500" />
-            <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-transparent dark:border-slate-700/60">
+            <User size={15} className="text-slate-500 dark:text-slate-400" />
+            <span className="text-xs sm:text-sm font-medium">{user.firstName} {user.lastName}</span>
           </div>
           <button
             onClick={handleLogout}
-            className="text-slate-500 hover:text-slate-900 transition-colors p-2 rounded-full hover:bg-slate-100"
+            className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
             title="Log out"
           >
-            <LogOut size={20} />
+            <LogOut size={19} />
           </button>
         </div>
       </header>
@@ -152,7 +167,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }}
         >
           {/* Sidebar */}
-          <aside className="bg-white h-full flex flex-col overflow-hidden"
+          <aside
+            className="bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-full flex flex-col overflow-hidden transition-colors duration-200"
             style={{ width: '100%' }}
           >
             <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto overflow-x-hidden">
@@ -163,13 +179,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   title={collapsed ? t('nav.adminDashboard', 'Admin Dashboard') : undefined}
                   className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname.startsWith('/admin')
-                      ? 'bg-blue-50 text-blue-700 font-semibold'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                   }`}
                 >
                   <LayoutDashboard
                     size={18}
-                    className={`shrink-0 ${location.pathname.startsWith('/admin') ? 'text-blue-600' : 'text-slate-400'}`}
+                    className={`shrink-0 ${location.pathname.startsWith('/admin') ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                   />
                   <span
                     style={{
@@ -194,13 +210,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     title={t('nav.shipments', 'Lô hàng')}
                     className={`w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isShipmentsActive
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                     }`}
                   >
                     <Package
                       size={18}
-                      className={`shrink-0 ${isShipmentsActive ? 'text-blue-600' : 'text-slate-400'}`}
+                      className={`shrink-0 ${isShipmentsActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                     />
                   </button>
                 ) : (
@@ -210,14 +226,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                       onClick={() => setShipmentsOpen(!shipmentsOpen)}
                       className={`w-full flex items-center justify-between px-2.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                         isShipmentsActive
-                          ? 'text-blue-700 bg-blue-50/50'
-                          : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                          ? 'text-blue-700 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-950/40'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <Package
                           size={18}
-                          className={`shrink-0 ${isShipmentsActive ? 'text-blue-600' : 'text-slate-400'}`}
+                          className={`shrink-0 ${isShipmentsActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                         />
                         <span className="truncate">{t('nav.shipments', 'Lô hàng')}</span>
                       </div>
@@ -230,7 +246,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
                     {/* Child Submenu */}
                     {shipmentsOpen && (
-                      <div className="mt-1 ml-4 pl-3 border-l-2 border-slate-100 space-y-1">
+                      <div className="mt-1 ml-4 pl-3 border-l-2 border-slate-100 dark:border-slate-800 space-y-1">
                         {shipmentsChildren.map((child) => {
                           const isChildActive = child.isActive(location.pathname);
                           return (
@@ -239,13 +255,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                               onClick={() => navigate(child.path)}
                               className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
                                 isChildActive
-                                  ? 'bg-blue-50 text-blue-700 font-semibold'
-                                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-semibold'
+                                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                               }`}
                             >
                               <child.icon
                                 size={15}
-                                className={`shrink-0 ${isChildActive ? 'text-blue-600' : 'text-slate-400'}`}
+                                className={`shrink-0 ${isChildActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                               />
                               <span className="truncate">{child.name}</span>
                             </button>
@@ -263,13 +279,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 title={collapsed ? t('nav.accounting', 'Accounting') : undefined}
                 className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname.startsWith('/accounting')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
                 <Calculator
                   size={18}
-                  className={`shrink-0 ${location.pathname.startsWith('/accounting') ? 'text-blue-600' : 'text-slate-400'}`}
+                  className={`shrink-0 ${location.pathname.startsWith('/accounting') ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                 />
                 <span
                   style={{
@@ -293,13 +309,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     title={t('nav.masterData', 'Master Data')}
                     className={`w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isMasterDataActive
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                     }`}
                   >
                     <Database
                       size={18}
-                      className={`shrink-0 ${isMasterDataActive ? 'text-blue-600' : 'text-slate-400'}`}
+                      className={`shrink-0 ${isMasterDataActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                     />
                   </button>
                 ) : (
@@ -309,14 +325,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                       onClick={() => setMasterDataOpen(!masterDataOpen)}
                       className={`w-full flex items-center justify-between px-2.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                         isMasterDataActive
-                          ? 'text-blue-700 bg-blue-50/50'
-                          : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                          ? 'text-blue-700 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-950/40'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <Database
                           size={18}
-                          className={`shrink-0 ${isMasterDataActive ? 'text-blue-600' : 'text-slate-400'}`}
+                          className={`shrink-0 ${isMasterDataActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                         />
                         <span className="truncate">{t('nav.masterData', 'Master Data')}</span>
                       </div>
@@ -329,7 +345,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
                     {/* Child Submenu */}
                     {masterDataOpen && (
-                      <div className="mt-1 ml-4 pl-3 border-l-2 border-slate-100 space-y-1">
+                      <div className="mt-1 ml-4 pl-3 border-l-2 border-slate-100 dark:border-slate-800 space-y-1">
                         {masterDataChildren.map((child) => {
                           const isChildActive = location.pathname === child.path;
                           return (
@@ -338,13 +354,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                               onClick={() => navigate(child.path)}
                               className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
                                 isChildActive
-                                  ? 'bg-blue-50 text-blue-700 font-semibold'
-                                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-semibold'
+                                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                               }`}
                             >
                               <child.icon
                                 size={15}
-                                className={`shrink-0 ${isChildActive ? 'text-blue-600' : 'text-slate-400'}`}
+                                className={`shrink-0 ${isChildActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                               />
                               <span className="truncate">{child.name}</span>
                             </button>
@@ -357,20 +373,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             </nav>
 
-            <div className="px-3 pb-4 border-t border-slate-200 pt-4 overflow-hidden">
+            <div className="px-3 pb-4 border-t border-slate-200 dark:border-slate-800 pt-4 overflow-hidden">
               <button
                 onClick={() => navigate('/settings')}
                 title={collapsed ? t('common.settings', 'Settings') : undefined}
                 className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname.startsWith('/settings')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
                 <Settings
                   size={18}
                   className={`shrink-0 ${
-                    location.pathname.startsWith('/settings') ? 'text-blue-600' : 'text-slate-400'
+                    location.pathname.startsWith('/settings') ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'
                   }`}
                 />
                 <span
@@ -403,7 +419,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               width: hovering ? '20px' : '3px',
               height: hovering ? '32px' : '40px',
               borderRadius: '999px',
-              background: hovering ? '#3b82f6' : '#e2e8f0',
+              background: hovering ? '#3b82f6' : (theme === 'dark' ? '#334155' : '#e2e8f0'),
               border: 'none',
               cursor: 'pointer',
               display: 'flex',
@@ -430,10 +446,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <main
-          className="flex-1 overflow-y-auto relative"
-          style={{ borderLeft: '1px solid #e2e8f0' }}
+          className="flex-1 overflow-y-auto relative transition-colors duration-200 bg-gradient-to-br from-slate-50 via-slate-100/50 to-blue-50/30 dark:from-[#090d18] dark:via-[#0b1325] dark:to-[#070b14]"
+          style={{ borderLeft: theme === 'dark' ? '1px solid #1e293b' : '1px solid #e2e8f0' }}
         >
-          <div className="w-full mx-auto h-full flex flex-col">
+          {/* Subtle Ambient Radial Lighting Effects */}
+          <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-blue-500/5 dark:bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-1/2 left-10 w-[500px] h-[400px] bg-indigo-500/5 dark:bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-0 right-10 w-[400px] h-[300px] bg-indigo-600/5 dark:bg-indigo-600/8 rounded-full blur-[100px] pointer-events-none" />
+          
+          {/* Subtle Dot Grid */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.25] dark:opacity-[0.12] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px]" />
+
+          <div className="w-full mx-auto h-full flex flex-col relative z-10">
             {children}
           </div>
         </main>

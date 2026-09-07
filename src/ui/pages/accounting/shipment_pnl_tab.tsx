@@ -6,12 +6,10 @@ import {
   TrendingDown, 
   DollarSign, 
   Layers, 
-  Download, 
-  Search, 
-  Edit3, 
   Sparkles, 
   BarChart3, 
-  Info
+  Info,
+  Edit3
 } from 'lucide-react';
 import { 
   getShipmentDirectCost, 
@@ -19,7 +17,14 @@ import {
   saveShipmentPnl, 
   formatAccountingCurrency 
 } from '../../components/shipment/transit_types.js';
-import CurrencyInput from '../../components/common/currency_input.js';
+import {
+  Button,
+  ExportButton,
+  SearchInput,
+  SegmentedControl,
+  CurrencyInput,
+  Modal,
+} from '../../components/common/index.js';
 
 interface ShipmentPnlRow {
   id: string;
@@ -247,46 +252,46 @@ export default function ShipmentPnlTab() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: Doanh thu */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tổng Doanh thu lô</span>
-            <h3 className="text-xl font-bold text-slate-900 font-mono">
-              {totals.totalRevenue.toLocaleString('vi-VN')} <span className="text-xs font-normal text-slate-500">VNĐ</span>
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng Doanh thu lô</span>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white font-mono">
+              {totals.totalRevenue.toLocaleString('vi-VN')} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">VNĐ</span>
             </h3>
-            <p className="text-[11px] text-slate-500">
-              Trung bình: <strong className="font-mono text-slate-700">{totals.count > 0 ? Math.round(totals.totalRevenue / totals.count).toLocaleString('vi-VN') : 0}</strong> đ/lô
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              Trung bình: <strong className="font-mono text-slate-700 dark:text-slate-300">{totals.count > 0 ? Math.round(totals.totalRevenue / totals.count).toLocaleString('vi-VN') : 0}</strong> đ/lô
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-800/60">
             <DollarSign size={24} />
           </div>
         </div>
 
         {/* Card 2: Chi phí */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tổng Chi phí</span>
-            <h3 className="text-xl font-bold text-slate-900 font-mono">
-              {totals.totalCost.toLocaleString('vi-VN')} <span className="text-xs font-normal text-slate-500">VNĐ</span>
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng Chi phí</span>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white font-mono">
+              {totals.totalCost.toLocaleString('vi-VN')} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">VNĐ</span>
             </h3>
-            <p className="text-[11px] text-slate-500">
-              Trực tiếp: <span className="font-mono text-amber-700 font-bold">{totals.totalDirect.toLocaleString('vi-VN')}</span> đ
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              Trực tiếp: <span className="font-mono text-amber-700 dark:text-amber-400 font-bold">{totals.totalDirect.toLocaleString('vi-VN')}</span> đ
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-100 dark:border-amber-800/60">
             <Layers size={24} />
           </div>
         </div>
 
         {/* Card 3: Lợi nhuận ròng */}
-        <div className={`p-5 rounded-2xl border shadow-xs flex items-center justify-between ${
+        <div className={`p-5 rounded-2xl border shadow-xs flex items-center justify-between backdrop-blur-xl ${
           totals.totalNetProfit >= 0 
-            ? 'bg-emerald-50/60 border-emerald-200 text-emerald-950' 
-            : 'bg-red-50/60 border-red-200 text-red-950'
+            ? 'bg-emerald-50/60 dark:bg-emerald-950/40 border-emerald-200/80 dark:border-emerald-800/60 text-emerald-950 dark:text-emerald-200' 
+            : 'bg-red-50/60 dark:bg-red-950/40 border-red-200/80 dark:border-red-800/60 text-red-950 dark:text-red-200'
         }`}>
           <div className="space-y-1">
             <span className="text-[11px] font-bold uppercase tracking-wider opacity-80">Lợi nhuận ròng toàn kỳ</span>
-            <h3 className={`text-xl font-bold font-mono ${totals.totalNetProfit >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>
+            <h3 className={`text-xl font-bold font-mono ${totals.totalNetProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
               {formatAccountingCurrency(totals.totalNetProfit)} <span className="text-xs font-normal opacity-70">VNĐ</span>
             </h3>
             <p className="text-[11px] opacity-80 flex items-center gap-1 font-medium">
@@ -294,126 +299,107 @@ export default function ShipmentPnlTab() {
               <strong className="font-mono">{totals.marginPercentage.toFixed(1)}%</strong>
             </p>
           </div>
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
-            totals.totalNetProfit >= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${
+            totals.totalNetProfit >= 0 ? 'bg-emerald-100 dark:bg-emerald-900/60 border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300' : 'bg-red-100 dark:bg-red-900/60 border-red-200 dark:border-red-700 text-red-600 dark:text-red-300'
           }`}>
             {totals.totalNetProfit >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
           </div>
         </div>
 
         {/* Card 4: Tối ưu hóa kinh doanh */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tối ưu hóa kinh doanh</span>
-            <span className="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">Hiệu quả</span>
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tối ưu hóa kinh doanh</span>
+            <span className="text-[10px] bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60 px-2 py-0.5 rounded-full font-bold">Hiệu quả</span>
           </div>
           <div className="flex items-center gap-2 text-xs font-bold">
-            <span className="text-emerald-700">{totals.profitCount} Lô lãi</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-red-600">{totals.lossCount} Lô lỗ</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-slate-600">{totals.breakEvenCount} Hòa vốn</span>
+            <span className="text-emerald-700 dark:text-emerald-400">{totals.profitCount} Lô lãi</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <span className="text-red-600 dark:text-red-400">{totals.lossCount} Lô lỗ</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <span className="text-slate-600 dark:text-slate-400">{totals.breakEvenCount} Hòa vốn</span>
           </div>
-          <p className="text-[11px] text-slate-500 leading-tight">
-            💡 CP quản lý TB: <strong className="font-mono text-purple-700">{Math.round(totals.avgManagementCost).toLocaleString('vi-VN')} đ</strong>/lô (Tăng số lượng lô để giảm CP quản lý/lô).
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+            💡 CP quản lý TB: <strong className="font-mono text-purple-700 dark:text-purple-400">{Math.round(totals.avgManagementCost).toLocaleString('vi-VN')} đ</strong>/lô (Tăng số lượng lô để giảm CP quản lý/lô).
           </p>
         </div>
 
       </div>
 
       {/* Control Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-        
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
         {/* Search & Filter */}
-        <div className="flex items-center gap-3 flex-1">
-          <div className="relative w-full max-w-sm">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Tìm theo mã lô hàng QC, khách hàng..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-1">
+          <SearchInput
+            placeholder="Tìm theo mã lô hàng QC, khách hàng..."
+            value={searchQuery}
+            onChange={setSearchQuery}
+            maxWidth="max-w-sm"
+          />
 
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
-            {[
-              { key: 'ALL', label: 'Tất cả' },
-              { key: 'PROFIT', label: 'Có lãi (+)' },
-              { key: 'LOSS', label: 'Bị lỗ (-)' },
-            ].map(f => (
-              <button
-                key={f.key}
-                type="button"
-                onClick={() => setFilterProfit(f.key as any)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  filterProfit === f.key ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            value={filterProfit}
+            onChange={(val) => setFilterProfit(val as any)}
+            options={[
+              { id: 'ALL', label: 'Tất cả' },
+              { id: 'PROFIT', label: 'Có lãi (+)', activeClass: 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-2xs font-bold' },
+              { id: 'LOSS', label: 'Bị lỗ (-)', activeClass: 'bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-400 shadow-2xs font-bold' },
+            ]}
+          />
         </div>
 
         {/* Quick Batch Actions & Export */}
         <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setBulkModal({ open: true, type: 'management', value: '800000' })}
-            className="px-3.5 py-2 bg-white hover:bg-purple-50 hover:border-purple-300 text-purple-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
+            className="text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40"
             title="Áp dụng chi phí quản lý cho toàn bộ các lô hàng"
           >
-            <Sparkles size={14} className="text-purple-600" />
+            <Sparkles size={14} className="text-purple-600 dark:text-purple-400 mr-1.5" />
             <span>Gán CP quản lý loạt</span>
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setBulkModal({ open: true, type: 'revenue', value: '3400000' })}
-            className="px-3.5 py-2 bg-white hover:bg-blue-50 hover:border-blue-300 text-blue-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
+            className="text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40"
             title="Áp dụng doanh thu tiêu chuẩn cho toàn bộ các lô hàng"
           >
-            <DollarSign size={14} className="text-blue-600" />
+            <DollarSign size={14} className="text-blue-600 dark:text-blue-400 mr-1.5" />
             <span>Gán doanh thu loạt</span>
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            onClick={handleExportCsv}
-            className="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
-          >
-            <Download size={14} className="text-slate-500" />
-            <span>Xuất Excel</span>
-          </button>
+          <ExportButton onExport={handleExportCsv} />
         </div>
       </div>
 
       {/* Main P&L Table */}
-      <div className="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden flex flex-col">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-800/80 overflow-hidden flex flex-col">
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-3">
-            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="py-20 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-3">
+            <div className="w-8 h-8 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
             <span className="text-xs font-medium">Đang tải và tính toán doanh thu chi phí từng lô...</span>
           </div>
         ) : filteredRows.length === 0 ? (
-          <div className="py-20 flex flex-col items-center justify-center text-slate-400 text-center">
-            <BarChart3 size={36} className="text-slate-300 mb-2" />
-            <p className="text-sm font-bold text-slate-700">Chưa có dữ liệu lô hàng</p>
-            <p className="text-xs text-slate-400 mt-1">Hãy tạo lô hàng mới và nhập chi phí tại các mốc để theo dõi báo cáo P&L.</p>
+          <div className="py-20 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-center">
+            <BarChart3 size={36} className="text-slate-300 dark:text-slate-600 mb-2" />
+            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Chưa có dữ liệu lô hàng</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Hãy tạo lô hàng mới và nhập chi phí tại các mốc để theo dõi báo cáo P&L.</p>
           </div>
         ) : (
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse text-xs whitespace-nowrap">
               <thead>
-                <tr className="bg-slate-100/90 text-slate-700 font-bold border-b border-slate-200 text-[11px] uppercase tracking-wider">
+                <tr className="bg-slate-100/90 dark:bg-slate-950/90 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200/80 dark:border-slate-800/80 text-[11px] uppercase tracking-wider">
                   <th className="p-3.5 text-center w-12">STT</th>
                   <th className="p-3.5 min-w-[160px]">MÃ LÔ HÀNG</th>
                   <th className="p-3.5 text-right min-w-[180px]">
                     <div className="flex items-center justify-end gap-1">
                       <span>TỔNG CHI PHÍ TRỰC TIẾP</span>
-                      <span className="text-[10px] bg-blue-100 text-blue-800 px-1 py-0.2 rounded font-normal lowercase">tự động</span>
+                      <span className="text-[10px] bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 px-1 py-0.2 rounded font-normal lowercase">tự động</span>
                     </div>
                   </th>
                   <th className="p-3.5 text-right min-w-[160px]">
@@ -422,7 +408,7 @@ export default function ShipmentPnlTab() {
                       <Edit3 size={11} className="text-slate-400" />
                     </div>
                   </th>
-                  <th className="p-3.5 text-right min-w-[170px] bg-slate-100/60 font-black text-slate-900">
+                  <th className="p-3.5 text-right min-w-[170px] bg-slate-100/60 dark:bg-slate-950/60 font-black text-slate-900 dark:text-white">
                     TỔNG CHI PHÍ
                   </th>
                   <th className="p-3.5 text-right min-w-[160px]">
@@ -431,13 +417,13 @@ export default function ShipmentPnlTab() {
                       <Edit3 size={11} className="text-slate-400" />
                     </div>
                   </th>
-                  <th className="p-3.5 text-right min-w-[180px] bg-slate-100/60 font-black">
+                  <th className="p-3.5 text-right min-w-[180px] bg-slate-100/60 dark:bg-slate-950/60 font-black text-slate-900 dark:text-white">
                     LỢI NHUẬN RÒNG
                   </th>
                   <th className="p-3.5 w-10 text-center"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {filteredRows.map((row, idx) => {
                   const isProfit = row.netProfit > 0;
                   const isLoss = row.netProfit < 0;
@@ -445,30 +431,30 @@ export default function ShipmentPnlTab() {
                   return (
                     <tr 
                       key={row.id} 
-                      className="hover:bg-blue-50/40 transition-colors group"
+                      className="hover:bg-blue-50/40 dark:hover:bg-blue-950/20 transition-colors group"
                     >
                       {/* STT */}
-                      <td className="p-3.5 text-center text-slate-500 font-mono">
+                      <td className="p-3.5 text-center text-slate-500 dark:text-slate-400 font-mono">
                         {idx + 1}
                       </td>
 
                       {/* Mã lô hàng */}
                       <td className="p-3.5">
                         <div 
-                          onClick={() => navigate(`/shipments/${row.id}`)}
+                          onClick={() => navigate(`/shipments/${row.id}?tab=financial`)}
                           className="cursor-pointer group-hover:underline"
                         >
-                          <span className="font-mono font-bold text-blue-700 text-xs">
+                          <span className="font-mono font-bold text-blue-700 dark:text-blue-400 text-xs">
                             {row.trackingNumber}
                           </span>
-                          <div className="text-[11px] text-slate-500 truncate max-w-[160px]">
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[160px]">
                             {row.customerName}
                           </div>
                         </div>
                       </td>
 
                       {/* Tổng chi phí trực tiếp (Tự động đồng bộ từ 5 mốc & Tab Tài chính) */}
-                      <td className="p-3.5 text-right font-mono font-bold text-amber-800">
+                      <td className="p-3.5 text-right font-mono font-bold text-amber-800 dark:text-amber-300">
                         {row.directCost > 0 ? row.directCost.toLocaleString('vi-VN') : '0'}
                       </td>
 
@@ -484,7 +470,7 @@ export default function ShipmentPnlTab() {
                       </td>
 
                       {/* Tổng chi phí = directCost + managementCost */}
-                      <td className="p-3.5 text-right font-mono font-black text-slate-900 bg-slate-50/50">
+                      <td className="p-3.5 text-right font-mono font-black text-slate-900 dark:text-white bg-slate-50/50 dark:bg-slate-950/30">
                         {row.totalCost.toLocaleString('vi-VN')}
                       </td>
 
@@ -500,14 +486,14 @@ export default function ShipmentPnlTab() {
                       </td>
 
                       {/* Lợi nhuận ròng (Theo đúng chuẩn: > 0 xanh, = 0 gạch ngang, < 0 đỏ trong ngoặc) */}
-                      <td className={`p-3.5 text-right font-mono font-bold bg-slate-50/50 ${
+                      <td className={`p-3.5 text-right font-mono font-bold bg-slate-50/50 dark:bg-slate-950/30 ${
                         isProfit 
-                          ? 'text-emerald-700' 
+                          ? 'text-emerald-700 dark:text-emerald-400' 
                           : isLoss 
-                          ? 'text-red-600 font-extrabold' 
-                          : 'text-slate-500 font-normal'
+                          ? 'text-red-600 dark:text-red-400 font-extrabold' 
+                          : 'text-slate-500 dark:text-slate-400 font-normal'
                       }`}>
-                        <span className={`inline-block px-2 py-0.5 rounded ${isLoss ? 'bg-red-50 border border-red-200' : isProfit ? 'bg-emerald-50 border border-emerald-200' : ''}`}>
+                        <span className={`inline-block px-2 py-0.5 rounded ${isLoss ? 'bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/60' : isProfit ? 'bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60' : ''}`}>
                           {formatAccountingCurrency(row.netProfit)}
                         </span>
                       </td>
@@ -516,8 +502,8 @@ export default function ShipmentPnlTab() {
                       <td className="p-3.5 text-center">
                         <button
                           type="button"
-                          onClick={() => navigate(`/shipments/${row.id}`)}
-                          className="text-slate-400 hover:text-blue-600 transition-colors p-1"
+                          onClick={() => navigate(`/shipments/${row.id}?tab=financial`)}
+                          className="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-1"
                           title="Xem chi tiết các mốc & chi phí của lô này"
                         >
                           →
@@ -530,26 +516,26 @@ export default function ShipmentPnlTab() {
 
               {/* STICKY / HIGHLIGHTED TOTAL SUMMARY ROW */}
               <tfoot>
-                <tr className="bg-slate-900 text-white font-bold text-xs border-t-2 border-slate-800 shadow-xl">
-                  <td className="p-4 text-center font-bold text-slate-300">
+                <tr className="bg-slate-900 dark:bg-slate-950 text-white font-bold text-xs border-t-2 border-slate-800 dark:border-slate-700 shadow-xl">
+                  <td className="p-4 text-center font-bold text-slate-300 dark:text-slate-400">
                     Tổng
                   </td>
-                  <td className="p-4 font-mono font-bold text-blue-300">
+                  <td className="p-4 font-mono font-bold text-blue-300 dark:text-blue-400">
                     {totals.count} lô hàng
                   </td>
-                  <td className="p-4 text-right font-mono text-amber-300 font-black text-sm">
+                  <td className="p-4 text-right font-mono text-amber-300 dark:text-amber-400 font-black text-sm">
                     {totals.totalDirect.toLocaleString('vi-VN')}
                   </td>
-                  <td className="p-4 text-right font-mono text-purple-300 font-bold text-sm">
+                  <td className="p-4 text-right font-mono text-purple-300 dark:text-purple-400 font-bold text-sm">
                     {totals.totalManagement.toLocaleString('vi-VN')}
                   </td>
-                  <td className="p-4 text-right font-mono text-white font-black text-sm bg-slate-950">
+                  <td className="p-4 text-right font-mono text-white font-black text-sm bg-slate-950 dark:bg-black">
                     {totals.totalCost.toLocaleString('vi-VN')}
                   </td>
-                  <td className="p-4 text-right font-mono text-blue-200 font-black text-sm">
+                  <td className="p-4 text-right font-mono text-blue-200 dark:text-blue-300 font-black text-sm">
                     {totals.totalRevenue.toLocaleString('vi-VN')}
                   </td>
-                  <td className={`p-4 text-right font-mono font-black text-sm bg-slate-950 ${
+                  <td className={`p-4 text-right font-mono font-black text-sm bg-slate-950 dark:bg-black ${
                     totals.totalNetProfit >= 0 ? 'text-emerald-400' : 'text-red-400'
                   }`}>
                     {formatAccountingCurrency(totals.totalNetProfit)}
@@ -562,76 +548,60 @@ export default function ShipmentPnlTab() {
         )}
 
         {/* Footer Note explaining formula */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-4">
+        <div className="p-4 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Info size={14} className="text-blue-600 shrink-0" />
+            <Info size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
             <span>
               <strong>Công thức:</strong> [Tổng chi phí] = [Tổng CP trực tiếp] + [CP quản lý] • [Lợi nhuận ròng] = [Doanh thu lô] - [Tổng chi phí].
             </span>
           </div>
-          <div className="text-slate-400 italic">
+          <div className="text-slate-400 dark:text-slate-500 italic">
             * Dữ liệu chi phí trực tiếp tự động đồng bộ từ Tab Tài chính của từng lô. Bấm vào số tiền để chỉnh sửa nhanh.
           </div>
         </div>
       </div>
 
       {/* Modal Áp dụng hàng loạt (Batch Apply) */}
-      {bulkModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-slate-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <Sparkles size={16} className="text-blue-600" />
-                <span>
-                  {bulkModal.type === 'management' 
-                    ? 'Áp dụng Chi phí quản lý hàng loạt' 
-                    : 'Áp dụng Doanh thu tiêu chuẩn hàng loạt'}
-                </span>
-              </h3>
-              <button
-                type="button"
-                onClick={() => setBulkModal({ ...bulkModal, open: false })}
-                className="text-slate-400 hover:text-slate-600 text-sm"
-              >
-                ✕
-              </button>
-            </div>
+      <Modal
+        isOpen={bulkModal.open}
+        onClose={() => setBulkModal({ ...bulkModal, open: false })}
+        title={
+          bulkModal.type === 'management'
+            ? 'Áp dụng Chi phí quản lý hàng loạt'
+            : 'Áp dụng Doanh thu tiêu chuẩn hàng loạt'
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-xs text-slate-600">
+            Nhập số tiền áp dụng đồng loạt cho tất cả <strong>{shipments.length} lô hàng</strong> trong kỳ này:
+          </p>
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Số tiền (VNĐ) <span className="text-red-500">*</span>
+            </label>
+            <CurrencyInput
+              size="lg"
+              value={Number(bulkModal.value) || 0}
+              onChange={(val) => setBulkModal({ ...bulkModal, value: String(val) })}
+            />
+          </div>
 
-            <div className="space-y-3">
-              <p className="text-xs text-slate-600">
-                Nhập số tiền áp dụng đồng loạt cho tất cả <strong>{shipments.length} lô hàng</strong> trong kỳ này:
-              </p>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Số tiền (VNĐ) <span className="text-red-500">*</span>
-                </label>
-                <CurrencyInput
-                  size="lg"
-                  value={Number(bulkModal.value) || 0}
-                  onChange={(val) => setBulkModal({ ...bulkModal, value: String(val) })}
-                />
-              </div>
-            </div>
-
-            <div className="pt-3 flex gap-2.5">
-              <button
-                type="button"
-                onClick={() => setBulkModal({ ...bulkModal, open: false })}
-                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
-              >
-                Hủy
-              </button>
-              <button
-                type="button"
-                onClick={handleApplyBulk}
-                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs"
-              >
-                Xác nhận áp dụng loạt
-              </button>
-            </div>
+          <div className="pt-3 flex gap-2.5 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setBulkModal({ ...bulkModal, open: false })}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleApplyBulk}
+            >
+              Xác nhận áp dụng loạt
+            </Button>
           </div>
         </div>
-      )}
+      </Modal>
 
     </div>
   );

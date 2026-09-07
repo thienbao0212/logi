@@ -32,12 +32,12 @@ export const CATEGORY_LABELS: Record<ExpenseCategory, string> = {
 };
 
 export const CATEGORY_COLORS: Record<ExpenseCategory, string> = {
-  SALARY: 'bg-blue-100 text-blue-800 border-blue-200',
-  OFFICE: 'bg-purple-100 text-purple-800 border-purple-200',
-  UTILITIES: 'bg-amber-100 text-amber-800 border-amber-200',
-  MARKETING: 'bg-pink-100 text-pink-800 border-pink-200',
-  TRANSPORT: 'bg-orange-100 text-orange-800 border-orange-200',
-  OTHER: 'bg-slate-100 text-slate-700 border-slate-200',
+  SALARY: 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800/60',
+  OFFICE: 'bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-800/60',
+  UTILITIES: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/60',
+  MARKETING: 'bg-pink-100 dark:bg-pink-950/60 text-pink-800 dark:text-pink-300 border-pink-200 dark:border-pink-800/60',
+  TRANSPORT: 'bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-800/60',
+  OTHER: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
 };
 
 const EXPENSE_KEY = 'logiflow_operating_expenses';

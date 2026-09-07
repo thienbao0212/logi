@@ -52,7 +52,7 @@ export function CurrencyInput({
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label className="block text-xs font-semibold text-slate-700 select-none">
+        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 select-none">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
@@ -68,21 +68,21 @@ export function CurrencyInput({
           onBlur={() => setIsFocused(false)}
           onChange={handleChange}
           placeholder={placeholder}
-          className={`w-full border rounded-xl font-mono font-bold text-slate-900 bg-slate-50/70 hover:bg-white focus:bg-white transition-all outline-none text-right shadow-2xs ${
+          className={`w-full border rounded-xl font-mono font-bold text-slate-900 dark:text-white bg-slate-50/70 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 transition-all outline-none text-right shadow-2xs ${
             error
-              ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+              ? 'border-red-300 dark:border-red-800 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
           } ${sizeClasses[size]} ${className}`}
         />
-        <span className="absolute right-3 text-xs text-slate-400 font-mono font-semibold pointer-events-none select-none">
+        <span className="absolute right-3 text-xs text-slate-400 dark:text-slate-500 font-mono font-semibold pointer-events-none select-none">
           {currencySymbol}
         </span>
       </div>
 
       {error ? (
-        <p className="text-[11px] font-medium text-red-600 mt-1">{error}</p>
+        <p className="text-[11px] font-medium text-red-600 dark:text-red-400 mt-1">{error}</p>
       ) : helperText ? (
-        <p className="text-[11px] text-slate-500 mt-1">{helperText}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{helperText}</p>
       ) : null}
     </div>
   );

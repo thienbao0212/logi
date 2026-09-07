@@ -179,9 +179,9 @@ function StatusSelectDropdown({
               width: '270px',
               zIndex: 99999,
             }}
-            className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/90 p-1.5 animate-in fade-in-0 zoom-in-95 duration-100 space-y-1"
+            className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800/90 p-1.5 animate-in fade-in-0 zoom-in-95 duration-100 space-y-1"
           >
-            <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+            <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
               Cập nhật trạng thái duyệt chi
             </div>
 
@@ -199,8 +199,8 @@ function StatusSelectDropdown({
                   }}
                   className={`w-full text-left p-2 rounded-xl transition-colors flex items-start gap-2.5 ${
                     isSelected
-                      ? 'bg-blue-50/80 text-blue-900 border border-blue-200/80 shadow-2xs'
-                      : 'hover:bg-slate-100/70 text-slate-700'
+                      ? 'bg-blue-50/80 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100 border border-blue-200/80 dark:border-blue-800/50 shadow-2xs'
+                      : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                   }`}
                 >
                   <div className={`p-1.5 rounded-lg border shrink-0 mt-0.5 ${opt.colorClass}`}>
@@ -209,10 +209,10 @@ function StatusSelectDropdown({
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold leading-tight">{opt.label}</span>
-                      {isSelected && <Check size={13} className="text-blue-600 shrink-0" />}
+                      <span className="text-xs font-bold leading-tight text-slate-900 dark:text-white">{opt.label}</span>
+                      {isSelected && <Check size={13} className="text-blue-600 dark:text-blue-400 shrink-0" />}
                     </div>
-                    <p className="text-[10px] text-slate-500 mt-0.5 leading-snug truncate">
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug truncate">
                       {opt.desc}
                     </p>
                   </div>
@@ -353,57 +353,57 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
       {/* 4 Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Tổng chi phí cơ bản */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">
             <span>Chi phí cơ bản (Từ 5 mốc *)</span>
-            <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center font-bold">★</div>
+            <div className="w-6 h-6 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">★</div>
           </div>
-          <div className="text-lg font-bold text-slate-900 font-mono">{formatVND(mandatoryTotal)}</div>
-          <div className="text-[11px] text-slate-400 mt-1">Đồng bộ tự động từ các trường có dấu *</div>
+          <div className="text-lg font-bold text-slate-900 dark:text-white font-mono">{formatVND(mandatoryTotal)}</div>
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Đồng bộ tự động từ các trường có dấu *</div>
         </div>
 
         {/* Card 2: Phụ phí phát sinh */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">
             <span>Phụ phí phát sinh thêm</span>
-            <div className="w-6 h-6 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center font-bold">+</div>
+            <div className="w-6 h-6 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">+</div>
           </div>
-          <div className="text-lg font-bold text-amber-700 font-mono">{formatVND(extraTotal)}</div>
-          <div className="text-[11px] text-slate-400 mt-1">Lưu đêm, nâng hạ, kiểm hóa ngoài giờ...</div>
+          <div className="text-lg font-bold text-amber-700 dark:text-amber-400 font-mono">{formatVND(extraTotal)}</div>
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Lưu đêm, nâng hạ, kiểm hóa ngoài giờ...</div>
         </div>
 
         {/* Card 3: Đã chi (Có UNC) */}
-        <div className="bg-white p-4 rounded-2xl border border-emerald-200 bg-emerald-50/20 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-emerald-800 font-semibold mb-1">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/20 dark:bg-emerald-950/20 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 font-semibold mb-1">
             <span>Đã thanh toán (Có UNC)</span>
-            <CheckCircle2 size={16} className="text-emerald-600" />
+            <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400" />
           </div>
-          <div className="text-lg font-bold text-emerald-700 font-mono">{formatVND(paidTotal)}</div>
-          <div className="text-[11px] text-emerald-600 mt-1">{costs.filter(c => c.status === 'PAID').length} khoản đã có ủy nhiệm chi</div>
+          <div className="text-lg font-bold text-emerald-700 dark:text-emerald-400 font-mono">{formatVND(paidTotal)}</div>
+          <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">{costs.filter(c => c.status === 'PAID').length} khoản đã có ủy nhiệm chi</div>
         </div>
 
         {/* Card 4: Chờ kế toán duyệt/chi */}
-        <div className="bg-white p-4 rounded-2xl border border-amber-200 bg-amber-50/20 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-amber-800 font-semibold mb-1">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/20 dark:bg-amber-950/20 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 font-semibold mb-1">
             <span>Còn phải đối chiếu / Chưa chi</span>
-            <Clock size={16} className="text-amber-600" />
+            <Clock size={16} className="text-amber-600 dark:text-amber-400" />
           </div>
-          <div className="text-lg font-bold text-amber-700 font-mono">{formatVND(pendingTotal)}</div>
-          <div className="text-[11px] text-amber-600 mt-1">Tổng cộng: <strong className="text-slate-900">{formatVND(grandTotal)}</strong></div>
+          <div className="text-lg font-bold text-amber-700 dark:text-amber-400 font-mono">{formatVND(pendingTotal)}</div>
+          <div className="text-[11px] text-amber-600 dark:text-amber-400 mt-1">Tổng cộng: <strong className="text-slate-900 dark:text-white">{formatVND(grandTotal)}</strong></div>
         </div>
       </div>
 
       {/* Main Reconciliation Table Box */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-sm overflow-hidden">
         
         {/* Table Header Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70 gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 gap-3">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <DollarSign size={18} className="text-emerald-600" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <DollarSign size={18} className="text-emerald-600 dark:text-emerald-400" />
               <span>Bảng Đối chiếu Chi phí Lô hàng với Kế toán</span>
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Theo dõi việc kế toán duyệt lệnh và đối soát bằng chứng chi tiền (Ủy nhiệm chi - UNC).
             </p>
           </div>
@@ -412,7 +412,7 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="px-3.5 py-2 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
+              className="px-3.5 py-2 text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/60 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
             >
               <Plus size={14} />
               <span>Thêm phụ phí phát sinh</span>
@@ -434,8 +434,8 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
         </div>
 
         {savedAlert && (
-          <div className="mx-6 mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-xs text-emerald-800 font-semibold animate-in fade-in">
-            <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+          <div className="mx-6 mt-4 p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center gap-2 text-xs text-emerald-800 dark:text-emerald-300 font-semibold animate-in fade-in">
+            <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>Đã lưu thành công các thay đổi đối chiếu kế toán!</span>
           </div>
         )}
@@ -443,7 +443,7 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
         {/* Table Content */}
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse whitespace-nowrap">
-            <thead className="bg-slate-100/80 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+            <thead className="bg-slate-100/80 dark:bg-slate-950/90 text-slate-700 dark:text-slate-300 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200 dark:border-slate-800">
               <tr>
                 <th className="px-4 py-3.5 w-12 text-center">STT</th>
                 <th className="px-4 py-3.5">Mốc phát sinh</th>
@@ -456,19 +456,19 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {costs.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-400">
+                  <td colSpan={8} className="p-8 text-center text-slate-400 dark:text-slate-500">
                     Chưa có khoản phí nào. Vui lòng nhập thông tin tại 5 Mốc Vận chuyển hoặc bấm "Thêm phụ phí phát sinh".
                   </td>
                 </tr>
               ) : (
                 costs.map((item, idx) => (
-                  <tr key={item.id} className="hover:bg-blue-50/30 transition-colors">
+                  <tr key={item.id} className="hover:bg-blue-50/30 dark:hover:bg-slate-800/40 transition-colors">
                     
                     {/* 1. STT */}
-                    <td className="px-4 py-3.5 text-center font-bold text-slate-400 font-mono">
+                    <td className="px-4 py-3.5 text-center font-bold text-slate-400 dark:text-slate-500 font-mono">
                       {idx + 1}
                     </td>
 
@@ -476,8 +476,8 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
                     <td className="px-4 py-3.5">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold border shadow-2xs ${
                         item.isMandatoryFee 
-                          ? 'bg-blue-50 text-blue-700 border-blue-200' 
-                          : 'bg-amber-50 text-amber-800 border-amber-200'
+                          ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800' 
+                          : 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800'
                       }`}>
                         {item.milestoneLabel}
                       </span>
@@ -485,14 +485,14 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
 
                     {/* 3. Nội dung phí */}
                     <td className="px-4 py-3.5">
-                      <div className="font-bold text-slate-900 text-xs">{item.feeName}</div>
+                      <div className="font-bold text-slate-900 dark:text-white text-xs">{item.feeName}</div>
                       {item.isMandatoryFee ? (
-                        <span className="text-[10px] text-blue-600 font-medium">Khoản phí chuẩn (*)</span>
+                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">Khoản phí chuẩn (*)</span>
                       ) : (
-                        <span className="text-[10px] text-amber-600 font-medium">Phụ phí phát sinh ngoài</span>
+                        <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Phụ phí phát sinh ngoài</span>
                       )}
                       {item.notes && (
-                        <div className="text-[10px] text-slate-400 mt-0.5 max-w-xs truncate" title={item.notes}>
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 max-w-xs truncate" title={item.notes}>
                           {item.notes}
                         </div>
                       )}
@@ -514,7 +514,7 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
                         type="date"
                         value={item.requestDate || ''}
                         onChange={(e) => updateCostItem(item.id, { requestDate: e.target.value })}
-                        className="px-3 py-1.5 border border-slate-200 rounded-xl text-xs bg-slate-50/70 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none font-medium shadow-2xs transition-all"
+                        className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-xl text-xs bg-slate-50/70 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-white dark:hover:bg-slate-700 focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium shadow-2xs transition-all"
                       />
                     </td>
 
@@ -529,30 +529,30 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
                     {/* 7. Đính kèm Ủy nhiệm chi (UNC) / Bằng chứng */}
                     <td className="px-4 py-3.5">
                       {item.uncAttachmentUrl ? (
-                        <div className="flex items-center gap-2 bg-emerald-50/90 px-3 py-1.5 rounded-xl border border-emerald-200 shadow-2xs">
-                          <FileCheck size={16} className="text-emerald-600 shrink-0" />
+                        <div className="flex items-center gap-2 bg-emerald-50/90 dark:bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 shadow-2xs">
+                          <FileCheck size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                           <div className="truncate max-w-[130px]">
-                            <div className="text-[11px] font-bold text-emerald-900 truncate" title={item.uncFileName}>
+                            <div className="text-[11px] font-bold text-emerald-900 dark:text-emerald-200 truncate" title={item.uncFileName}>
                               {item.uncFileName || 'UNC_ChungTu.pdf'}
                             </div>
-                            <div className="text-[9px] text-emerald-600 font-medium">{item.uncUploadDate || 'Đã đính kèm'}</div>
+                            <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium">{item.uncUploadDate || 'Đã đính kèm'}</div>
                           </div>
                           <button
                             type="button"
                             onClick={() => setPreviewUNC({ url: item.uncAttachmentUrl!, name: item.uncFileName || 'Ủy nhiệm chi' })}
-                            className="p-1 text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100 rounded-lg transition-colors"
+                            className="p-1 text-emerald-700 dark:text-emerald-300 hover:text-emerald-900 dark:hover:text-emerald-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded-lg transition-colors"
                             title="Xem bằng chứng UNC"
                           >
                             <Eye size={13} />
                           </button>
-                          <label className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors" title="Đổi file khác">
+                          <label className="p-1 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg cursor-pointer transition-colors" title="Đổi file khác">
                             <Upload size={13} />
                             <input type="file" className="hidden" onChange={(e) => handleFileUpload(item.id, e)} />
                           </label>
                         </div>
                       ) : (
-                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-dashed border-slate-300 hover:border-blue-500 rounded-xl text-slate-600 hover:text-blue-700 bg-white hover:bg-blue-50/40 cursor-pointer transition-all shadow-2xs font-semibold text-xs">
-                          <Upload size={13} className="text-slate-400" />
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 bg-white dark:bg-slate-800 hover:bg-blue-50/40 dark:hover:bg-blue-950/40 cursor-pointer transition-all shadow-2xs font-semibold text-xs">
+                          <Upload size={13} className="text-slate-400 dark:text-slate-500" />
                           <span>Tải lên UNC</span>
                           <input type="file" className="hidden" onChange={(e) => handleFileUpload(item.id, e)} />
                         </label>
@@ -565,13 +565,13 @@ export default function ShipmentCostReconciliation({ shipmentId }: ShipmentCostR
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(item.id)}
-                          className="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                          className="text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                           title="Xóa phụ phí phát sinh này"
                         >
                           <Trash2 size={15} />
                         </button>
                       ) : (
-                        <span className="text-slate-300 text-xs">—</span>
+                        <span className="text-slate-300 dark:text-slate-600 text-xs">—</span>
                       )}
                     </td>
 

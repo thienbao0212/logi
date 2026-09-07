@@ -63,7 +63,7 @@ export function Modal({
     >
       <div
         className={`
-          bg-white rounded-2xl border border-slate-200 shadow-2xl w-full overflow-hidden max-h-[90vh] flex flex-col
+          bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl text-slate-900 dark:text-slate-100 w-full overflow-hidden max-h-[90vh] flex flex-col
           animate-in zoom-in-95 duration-150
           ${MAX_WIDTH_CLASSES[maxWidth]}
         `.trim().replace(/\s+/g, ' ')}
@@ -71,19 +71,19 @@ export function Modal({
       >
         {/* Modal Header */}
         {(title || icon) && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 shrink-0">
             <div className="flex items-center gap-3 min-w-0">
               {icon && (
-                <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 shrink-0">
                   {icon}
                 </div>
               )}
               <div className="truncate">
-                <h3 className="text-base font-bold text-slate-900 tracking-tight truncate">
+                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">
                   {title}
                 </h3>
                 {subtitle && (
-                  <p className="text-xs text-slate-500 mt-0.5 truncate">{subtitle}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{subtitle}</p>
                 )}
               </div>
             </div>
@@ -91,7 +91,7 @@ export function Modal({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors shrink-0 -mr-1"
+              className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors shrink-0 -mr-1 cursor-pointer"
             >
               <X size={16} />
             </button>
@@ -105,7 +105,7 @@ export function Modal({
 
         {/* Modal Footer */}
         {footer && (
-          <div className="px-6 py-3.5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-2.5 shrink-0">
+          <div className="px-6 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 flex items-center justify-end gap-2.5 shrink-0">
             {footer}
           </div>
         )}

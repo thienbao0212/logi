@@ -17,10 +17,10 @@ function DeadlineItem({
   status?: 'critical' | 'warning' | 'done' | 'normal' 
 }) {
   const colors = {
-    critical: 'bg-red-50 border-red-200 text-red-700 font-bold',
-    warning:  'bg-amber-50 border-amber-200 text-amber-800 font-semibold',
-    done:     'bg-emerald-50 border-emerald-200 text-emerald-700',
-    normal:   'bg-slate-50 border-slate-200 text-slate-600',
+    critical: 'bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800/60 text-red-700 dark:text-red-400 font-bold',
+    warning:  'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 font-semibold',
+    done:     'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-400',
+    normal:   'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300',
   };
   
   return (
@@ -62,33 +62,33 @@ export default function ShipmentRightPanel({
       {/* Timeline Logical Health Alert Card */}
       {timelineIssues.length > 0 && (
         <div 
-          onClick={() => onNavigateTab && onNavigateTab('transit')}
+          onClick={() => onNavigateTab && onNavigateTab('milestones')}
           className={`p-3.5 rounded-2xl border cursor-pointer hover:shadow-md transition-all ${
             errorCount > 0 
-              ? 'bg-rose-50 border-rose-200 text-rose-900' 
-              : 'bg-amber-50 border-amber-200 text-amber-900'
+              ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800/60 text-rose-900 dark:text-rose-200' 
+              : 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200'
           }`}
         >
           <div className="flex items-center gap-2 mb-1.5 font-bold text-xs">
-            {errorCount > 0 ? <AlertOctagon size={16} className="text-rose-600" /> : <AlertTriangle size={16} className="text-amber-600" />}
+            {errorCount > 0 ? <AlertOctagon size={16} className="text-rose-600 dark:text-rose-400" /> : <AlertTriangle size={16} className="text-amber-600 dark:text-amber-400" />}
             <span>Cảnh báo ngày tháng ({timelineIssues.length})</span>
           </div>
-          <p className="text-[11px] leading-relaxed text-slate-700">
+          <p className="text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
             {errorCount > 0 
               ? `Có ${errorCount} lỗi ngược logic thời gian cần kiểm tra.` 
               : `Có ${warningCount} cảnh báo quá hạn DEM/DET.`}
           </p>
-          <div className="mt-2 text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1">
+          <div className="mt-2 text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
             <span>Bấm để xem và sửa tại Tab 5 Mốc →</span>
           </div>
         </div>
       )}
 
       {/* 1. Mốc Thời Gian & Hạn Chót (Critical Dates) */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
-          <Clock size={15} className="text-blue-600" />
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <Clock size={15} className="text-blue-600 dark:text-blue-400" />
+          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
             Mốc Thời Gian Chính
           </h3>
         </div>
@@ -133,10 +133,10 @@ export default function ShipmentRightPanel({
       </div>
 
       {/* 2. Thao Tác Nhanh (Quick Actions) */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
           <Zap size={15} className="text-amber-500" />
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
             Phím Tắt Điều Hướng
           </h3>
         </div>
@@ -145,47 +145,47 @@ export default function ShipmentRightPanel({
           <button
             type="button"
             onClick={() => onNavigateTab?.('milestones')}
-            className="w-full text-left text-xs font-semibold text-slate-700 hover:text-blue-700 hover:bg-blue-50/80 p-2.5 rounded-xl transition-colors border border-slate-100 hover:border-blue-200 flex items-center gap-2"
+            className="w-full text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:bg-blue-50/80 dark:hover:bg-blue-950/40 p-2.5 rounded-xl transition-colors border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 flex items-center gap-2"
           >
-            <Layers size={14} className="text-blue-600 shrink-0" />
+            <Layers size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
             <span>Cập nhật 5 Mốc Vận chuyển</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigateTab?.('financial')}
-            className="w-full text-left text-xs font-semibold text-slate-700 hover:text-amber-700 hover:bg-amber-50/80 p-2.5 rounded-xl transition-colors border border-slate-100 hover:border-amber-200 flex items-center gap-2"
+            className="w-full text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50/80 dark:hover:bg-amber-950/40 p-2.5 rounded-xl transition-colors border border-slate-100 dark:border-slate-800 hover:border-amber-200 dark:hover:border-amber-800 flex items-center gap-2"
           >
-            <DollarSign size={14} className="text-amber-600 shrink-0" />
+            <DollarSign size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
             <span>Đối chiếu Chi phí & UNC</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigateTab?.('documents')}
-            className="w-full text-left text-xs font-semibold text-slate-700 hover:text-purple-700 hover:bg-purple-50/80 p-2.5 rounded-xl transition-colors border border-slate-100 hover:border-purple-200 flex items-center gap-2"
+            className="w-full text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-400 hover:bg-purple-50/80 dark:hover:bg-purple-950/40 p-2.5 rounded-xl transition-colors border border-slate-100 dark:border-slate-800 hover:border-purple-200 dark:hover:border-purple-800 flex items-center gap-2"
           >
-            <FileText size={14} className="text-purple-600 shrink-0" />
+            <FileText size={14} className="text-purple-600 dark:text-purple-400 shrink-0" />
             <span>Tải lên Chứng từ Lô hàng</span>
           </button>
         </div>
       </div>
 
       {/* 3. Phụ Trách Vận Hành (Assigned Operator) */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
-          <User size={15} className="text-slate-500" />
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <User size={15} className="text-slate-500 dark:text-slate-400" />
+          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
             Nhân Viên Phụ Trách
           </h3>
         </div>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0 shadow-xs">
+          <div className="w-9 h-9 rounded-xl bg-blue-600 dark:bg-blue-500 text-white text-xs flex items-center justify-center font-bold shrink-0 shadow-xs">
             OP
           </div>
           <div>
-            <p className="text-xs font-bold text-slate-900">Điều phối Vận tải Quá cảnh</p>
-            <p className="text-[11px] text-slate-500 font-medium">Logistics Ops Team</p>
+            <p className="text-xs font-bold text-slate-900 dark:text-white">Điều phối Vận tải Quá cảnh</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Logistics Ops Team</p>
           </div>
         </div>
       </div>

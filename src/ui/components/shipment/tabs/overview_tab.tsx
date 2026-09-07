@@ -60,30 +60,30 @@ function DateIndicator({ label, date }: { label: string; date: string | undefine
   const now = new Date();
   const target = date ? new Date(date) : null;
 
-  let color = 'text-slate-500';
-  let dotColor = 'bg-slate-400';
+  let color = 'text-slate-500 dark:text-slate-400';
+  let dotColor = 'bg-slate-400 dark:bg-slate-500';
   let displayDate = date ? formatDate(date) : 'TBD';
 
   if (target) {
     const diffMs = target.getTime() - now.getTime();
     const diffHours = diffMs / (1000 * 60 * 60);
     if (diffMs < 0) {
-      color = 'text-red-600';
-      dotColor = 'bg-red-500';
+      color = 'text-red-600 dark:text-red-400';
+      dotColor = 'bg-red-500 dark:bg-red-400';
     } else if (diffHours <= 48) {
-      color = 'text-yellow-600';
-      dotColor = 'bg-yellow-500';
+      color = 'text-yellow-600 dark:text-yellow-400';
+      dotColor = 'bg-yellow-500 dark:bg-yellow-400';
     } else {
-      color = 'text-green-600';
-      dotColor = 'bg-green-500';
+      color = 'text-green-600 dark:text-green-400';
+      dotColor = 'bg-green-500 dark:bg-green-400';
     }
   }
 
   return (
-    <div className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
+    <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-800/60 last:border-0">
       <div className="flex items-center gap-2">
         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotColor}`} />
-        <span className="text-sm text-slate-600">{label}</span>
+        <span className="text-sm text-slate-600 dark:text-slate-300">{label}</span>
       </div>
       <span className={`text-sm font-semibold ${color}`}>{displayDate}</span>
     </div>
@@ -92,10 +92,10 @@ function DateIndicator({ label, date }: { label: string; date: string | undefine
 
 function Card({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100 bg-slate-50">
-        <span className="text-slate-500">{icon}</span>
-        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">{title}</h3>
+    <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
+      <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
+        <span className="text-slate-500 dark:text-slate-400">{icon}</span>
+        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">{title}</h3>
       </div>
       <div className="px-5 py-4">{children}</div>
     </div>
@@ -104,9 +104,9 @@ function Card({ title, icon, children }: { title: string; icon: React.ReactNode;
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0">
-      <span className="text-sm text-slate-500">{label}</span>
-      <span className="text-sm font-medium text-slate-800 text-right max-w-[60%]">{value}</span>
+    <div className="flex items-center justify-between py-2.5 border-b border-slate-100 dark:border-slate-800/60 last:border-0">
+      <span className="text-sm text-slate-500 dark:text-slate-400">{label}</span>
+      <span className="text-sm font-medium text-slate-800 dark:text-slate-200 text-right max-w-[60%]">{value}</span>
     </div>
   );
 }

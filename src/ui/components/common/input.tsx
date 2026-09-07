@@ -31,7 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-xs font-semibold text-slate-700 select-none"
+          className="block text-xs font-semibold text-slate-700 dark:text-slate-300 select-none"
         >
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
@@ -54,11 +54,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           aria-describedby={error ? errorId : helperText ? helperId : undefined}
           className={`
             w-full py-2 text-xs rounded-xl font-medium transition-all duration-150
-            bg-slate-50/60 hover:bg-white focus:bg-white outline-none
+            bg-slate-50/60 hover:bg-white focus:bg-white dark:bg-slate-800/60 dark:hover:bg-slate-800 dark:focus:bg-slate-800 outline-none
             border
             ${error
-              ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-red-900 placeholder:text-red-300'
-              : 'border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400'
+              ? 'border-red-300 dark:border-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-red-900 dark:text-red-200 placeholder:text-red-300'
+              : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500'
             }
             ${leftIcon ? 'pl-9' : 'pl-3.5'}
             ${rightIcon || error ? 'pr-9' : 'pr-3.5'}

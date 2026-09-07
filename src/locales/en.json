@@ -19,6 +19,8 @@
     "accounting": "Accounting",
     "masterData": "Master Data",
     "customers": "Customers",
+    "vendors": "Vendors & Partners",
+    "charges": "Logistics Charges",
     "shippingLines": "Shipping Lines",
     "ports": "Ports & Gateways"
   },

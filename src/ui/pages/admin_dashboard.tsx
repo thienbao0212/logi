@@ -270,9 +270,9 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full bg-slate-50/50">
-        <div className="flex flex-col items-center gap-3 text-slate-500">
-          <Loader2 size={32} className="animate-spin text-blue-600" />
+      <div className="flex items-center justify-center h-full bg-transparent">
+        <div className="flex flex-col items-center gap-3 text-slate-500 dark:text-slate-400">
+          <Loader2 size={32} className="animate-spin text-blue-600 dark:text-blue-400" />
           <span className="text-sm font-medium">Đang tải dữ liệu Dashboard...</span>
         </div>
       </div>
@@ -280,26 +280,26 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-slate-50/50 overflow-auto">
+    <div className="flex flex-col h-full bg-transparent overflow-auto">
       <div className="px-8 pt-7 pb-6 space-y-6">
         
         {/* ── Header ──────────────────────────────────────────────────────── */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-              <Activity size={24} className="text-blue-600" />
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+              <Activity size={24} className="text-blue-600 dark:text-blue-400" />
               <span>Dashboard Tổng quan Hệ thống</span>
             </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Cập nhật lần cuối: {new Date().toLocaleString('vi-VN')} &nbsp;·&nbsp; Tổng {stats.total} lô hàng trong hệ thống
             </p>
           </div>
           <button
             type="button"
             onClick={() => setRefreshKey(k => k + 1)}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
+            className="px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 bg-white/90 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
           >
-            <RefreshCw size={14} className="text-slate-500" />
+            <RefreshCw size={14} className="text-slate-500 dark:text-slate-400" />
             <span>Làm mới</span>
           </button>
         </div>
@@ -310,50 +310,50 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => navigate('/shipments')}
-            className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-300 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left group"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Đang vận hành</span>
-              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Đang vận hành</span>
+              <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-blue-800/60 group-hover:bg-blue-600 group-hover:text-white transition-all">
                 <Package size={15} />
               </div>
             </div>
-            <div className="text-3xl font-black text-blue-700 font-mono">{stats.inProgress}</div>
-            <div className="text-[11px] text-slate-400 mt-1 font-medium">lô đang xử lý</div>
+            <div className="text-3xl font-black text-blue-700 dark:text-blue-400 font-mono">{stats.inProgress}</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">lô đang xử lý</div>
           </button>
 
           {/* 2. Đã hoàn thành */}
           <button
             type="button"
             onClick={() => navigate('/shipments')}
-            className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-emerald-300 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700 transition-all text-left group"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Đã hoàn thành</span>
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Đã hoàn thành</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-800/60 group-hover:bg-emerald-600 group-hover:text-white transition-all">
                 <CheckCircle2 size={15} />
               </div>
             </div>
-            <div className="text-3xl font-black text-emerald-700 font-mono">{stats.completed}</div>
-            <div className="text-[11px] text-slate-400 mt-1 font-medium">lô đã kết thúc</div>
+            <div className="text-3xl font-black text-emerald-700 dark:text-emerald-400 font-mono">{stats.completed}</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">lô đã kết thúc</div>
           </button>
 
           {/* 3. Cảnh báo khẩn */}
           <button
             type="button"
             onClick={() => navigate('/shipments')}
-            className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-red-300 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-red-300 dark:hover:border-red-700 transition-all text-left group"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">DEM/DET khẩn</span>
-              <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center border border-red-100 group-hover:bg-red-600 group-hover:text-white transition-all">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">DEM/DET khẩn</span>
+              <div className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center border border-red-100 dark:border-red-800/60 group-hover:bg-red-600 group-hover:text-white transition-all">
                 <AlertTriangle size={15} />
               </div>
             </div>
-            <div className="text-3xl font-black text-red-700 font-mono">{stats.demCritical}</div>
+            <div className="text-3xl font-black text-red-700 dark:text-red-400 font-mono">{stats.demCritical}</div>
             <div className="text-[11px] mt-1 font-medium">
-              <span className="text-red-600">{stats.demCritical} quá hạn</span>
-              {stats.demWarning > 0 && <span className="text-amber-500 ml-1">· {stats.demWarning} gần hạn</span>}
+              <span className="text-red-600 dark:text-red-400">{stats.demCritical} quá hạn</span>
+              {stats.demWarning > 0 && <span className="text-amber-500 dark:text-amber-400 ml-1">· {stats.demWarning} gần hạn</span>}
             </div>
           </button>
 
@@ -361,40 +361,40 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => navigate('/shipments/financial')}
-            className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-300 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left group"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tổng doanh thu</span>
-              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng doanh thu</span>
+              <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-blue-800/60 group-hover:bg-blue-600 group-hover:text-white transition-all">
                 <TrendingUp size={15} />
               </div>
             </div>
-            <div className="text-2xl font-black text-blue-700 font-mono">{fmtCompact(stats.totalRevenue)}</div>
-            <div className="text-[11px] text-slate-400 mt-1 font-medium">từ {stats.profitableCount} lô có lãi</div>
+            <div className="text-2xl font-black text-blue-700 dark:text-blue-400 font-mono">{fmtCompact(stats.totalRevenue)}</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">từ {stats.profitableCount} lô có lãi</div>
           </button>
 
           {/* 5. Lợi nhuận ròng */}
           <button
             type="button"
             onClick={() => navigate('/shipments/financial')}
-            className={`bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left group ${stats.totalProfit >= 0 ? 'hover:border-emerald-300' : 'hover:border-red-300'}`}
+            className={`bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-all text-left group ${stats.totalProfit >= 0 ? 'hover:border-emerald-300 dark:hover:border-emerald-700' : 'hover:border-red-300 dark:hover:border-red-700'}`}
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Lợi nhuận ròng</span>
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Lợi nhuận ròng</span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
                 stats.totalProfit >= 0 
-                  ? 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white' 
-                  : 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-600 group-hover:text-white'
+                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/60 group-hover:bg-emerald-600 group-hover:text-white' 
+                  : 'bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800/60 group-hover:bg-red-600 group-hover:text-white'
               }`}>
                 {stats.totalProfit >= 0 ? <TrendingUp size={15} /> : <TrendingDown size={15} />}
               </div>
             </div>
-            <div className={`text-2xl font-black font-mono ${stats.totalProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+            <div className={`text-2xl font-black font-mono ${stats.totalProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
               {stats.totalProfit < 0 ? '(' : ''}{fmtCompact(Math.abs(stats.totalProfit))}{stats.totalProfit < 0 ? ')' : ''}
             </div>
-            <div className="text-[11px] text-slate-400 mt-1 font-medium">
-              {stats.lossCount > 0 && <span className="text-red-600">{stats.lossCount} lô lỗ</span>}
-              {stats.lossCount === 0 && <span className="text-emerald-600">Tất cả có lãi</span>}
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
+              {stats.lossCount > 0 && <span className="text-red-600 dark:text-red-400">{stats.lossCount} lô lỗ</span>}
+              {stats.lossCount === 0 && <span className="text-emerald-600 dark:text-emerald-400">Tất cả có lãi</span>}
             </div>
           </button>
 
@@ -402,16 +402,16 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => navigate('/accounting')}
-            className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-purple-300 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700 transition-all text-left group"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Số dư quỹ</span>
-              <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 group-hover:bg-purple-600 group-hover:text-white transition-all">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Số dư quỹ</span>
+              <div className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-100 dark:border-purple-800/60 group-hover:bg-purple-600 group-hover:text-white transition-all">
                 <Wallet size={15} />
               </div>
             </div>
-            <div className="text-2xl font-black text-purple-700 font-mono">{fmtCompact(financialData.cashBalance)}</div>
-            <div className="text-[11px] text-slate-400 mt-1 font-medium">tiền mặt & ngân hàng</div>
+            <div className="text-2xl font-black text-purple-700 dark:text-purple-400 font-mono">{fmtCompact(financialData.cashBalance)}</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">tiền mặt & ngân hàng</div>
           </button>
         </div>
 
@@ -419,19 +419,19 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
           
           {/* Revenue Chart (2 cols) */}
-          <div className="xl:col-span-2 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
+          <div className="xl:col-span-2 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-                  <BarChart3 size={16} className="text-blue-600" />
+                <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center gap-2">
+                  <BarChart3 size={16} className="text-blue-600 dark:text-blue-400" />
                   Phân tích Doanh thu – Chi phí – Lợi nhuận (6 tháng)
                 </h2>
-                <p className="text-[11px] text-slate-500 mt-0.5">Đơn vị: VNĐ — tổng hợp theo lô hàng</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Đơn vị: VNĐ — tổng hợp theo lô hàng</p>
               </div>
               <button
                 type="button"
                 onClick={() => navigate('/shipments/financial')}
-                className="text-[11px] text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-0.5"
+                className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5"
               >
                 Xem báo cáo chi tiết <ChevronRight size={13} />
               </button>
@@ -439,12 +439,12 @@ export default function AdminDashboard() {
             <div className="h-[260px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-200/80 dark:text-slate-800/80" />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} tickFormatter={v => fmtCompact(v)} />
                   <Tooltip
-                    cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '11px' }}
+                    cursor={{ fill: 'currentColor', opacity: 0.05 }}
+                    contentStyle={{ borderRadius: '12px', backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc', fontSize: '11px' }}
                     formatter={(v: any, name?: any) => [fmtVND(Number(v)), name ?? '']}
                   />
                   <Bar dataKey="Doanh thu" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={28} />
@@ -456,24 +456,24 @@ export default function AdminDashboard() {
           </div>
 
           {/* DEM/DET Alert Panel (1 col) */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 flex flex-col">
+          <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs p-5 flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-                <AlertCircle size={16} className="text-red-600" />
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center gap-2">
+                <AlertCircle size={16} className="text-red-600 dark:text-red-400" />
                 Cảnh báo DEM / DET
               </h2>
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                stats.demCritical > 0 ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+                stats.demCritical > 0 ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/60' : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
               }`}>
                 {alertItems.length} lô
               </span>
             </div>
 
             {alertItems.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 py-8">
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-8">
                 <CheckCircle2 size={28} className="text-emerald-500 mb-2" />
                 <span className="text-xs font-medium">Tất cả lô hàng đều an toàn!</span>
-                <span className="text-[11px] text-slate-400 mt-0.5">Không có lô nào gần / quá hạn DEM·DET</span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Không có lô nào gần / quá hạn DEM·DET</span>
               </div>
             ) : (
               <div className="space-y-2.5 flex-1 overflow-auto custom-scrollbar">
@@ -482,22 +482,22 @@ export default function AdminDashboard() {
                     key={s.id}
                     type="button"
                     onClick={() => navigate(`/shipments/${s.id}`)}
-                    className="w-full text-left p-3 rounded-xl border border-slate-200/80 hover:border-red-300 hover:bg-red-50/40 transition-all group"
+                    className="w-full text-left p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 hover:border-red-300 dark:hover:border-red-800/80 hover:bg-red-50/40 dark:hover:bg-red-950/20 transition-all group"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 mb-1">
                           <ModeIcon mode={s.mode} />
-                          <span className="font-mono font-bold text-xs text-slate-900 truncate">{s.trackingNumber}</span>
+                          <span className="font-mono font-bold text-xs text-slate-900 dark:text-white truncate">{s.trackingNumber}</span>
                         </div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                        <div className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400">
                           <MapPin size={10} />
                           <span className="truncate">{s.originId || '?'} → {s.destinationId || '?'}</span>
                         </div>
                       </div>
                       <div>
                         <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${
-                          s.demAlert?.type === 'critical' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+                          s.demAlert?.type === 'critical' ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/60' : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
                         }`}>
                           {s.demAlert?.text}
                         </span>
@@ -506,10 +506,10 @@ export default function AdminDashboard() {
                     <div className="mt-1.5 flex items-center gap-1">
                       <div className="flex gap-0.5">
                         {[1,2,3,4,5].map(i => (
-                          <div key={i} className={`h-1 w-5 rounded-full ${i <= s.completedMilestones ? 'bg-emerald-500' : 'bg-slate-200'}`} />
+                          <div key={i} className={`h-1 w-5 rounded-full ${i <= s.completedMilestones ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'}`} />
                         ))}
                       </div>
-                      <span className="text-[10px] text-slate-400 ml-1">{s.completedMilestones}/5 mốc</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 ml-1">{s.completedMilestones}/5 mốc</span>
                     </div>
                   </button>
                 ))}
@@ -522,16 +522,16 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
           
           {/* Accounting Summary */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
+          <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-                <DollarSign size={16} className="text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center gap-2">
+                <DollarSign size={16} className="text-blue-600 dark:text-blue-400" />
                 Tổng quan Kế toán
               </h2>
               <button
                 type="button"
                 onClick={() => navigate('/accounting')}
-                className="text-[11px] text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-0.5"
+                className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5"
               >
                 Chi tiết <ChevronRight size={13} />
               </button>
@@ -539,70 +539,70 @@ export default function AdminDashboard() {
             
             <div className="space-y-3">
               {/* AR */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50/60 border border-emerald-100">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/60">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center">
                     <ArrowUpRight size={14} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-800">Công nợ Phải thu</div>
-                    <div className="text-[11px] text-slate-500">Accounts Receivable (AR)</div>
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Công nợ Phải thu</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Accounts Receivable (AR)</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-bold text-emerald-700 font-mono">{fmtCompact(financialData.arTotal)}</div>
+                  <div className="text-sm font-bold text-emerald-700 dark:text-emerald-400 font-mono">{fmtCompact(financialData.arTotal)}</div>
                 </div>
               </div>
 
               {/* AP */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-rose-50/60 border border-rose-100">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800/60">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center">
                     <ArrowDownRight size={14} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-800">Công nợ Phải trả</div>
-                    <div className="text-[11px] text-slate-500">Accounts Payable (AP)</div>
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Công nợ Phải trả</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Accounts Payable (AP)</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-bold text-rose-700 font-mono">{fmtCompact(financialData.apTotal)}</div>
+                  <div className="text-sm font-bold text-rose-700 dark:text-rose-400 font-mono">{fmtCompact(financialData.apTotal)}</div>
                 </div>
               </div>
 
               {/* Cash Balance */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-purple-50/60 border border-purple-100">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-purple-50/60 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-800/60">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center">
                     <Wallet size={14} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-800">Số dư quỹ thực tế</div>
-                    <div className="text-[11px] text-slate-500">Tiền mặt & Ngân hàng</div>
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Số dư quỹ thực tế</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Tiền mặt & Ngân hàng</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-sm font-bold font-mono ${financialData.cashBalance >= 0 ? 'text-purple-700' : 'text-red-700'}`}>
+                  <div className={`text-sm font-bold font-mono ${financialData.cashBalance >= 0 ? 'text-purple-700 dark:text-purple-400' : 'text-red-700 dark:text-red-400'}`}>
                     {fmtCompact(financialData.cashBalance)}
                   </div>
                 </div>
               </div>
 
               {/* Profit margin */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/60 border border-blue-100">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-800/60">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center">
                     <TrendingUp size={14} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-800">Biên lợi nhuận</div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Biên lợi nhuận</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
                       {stats.totalRevenue > 0 ? `${Math.round((stats.totalProfit / stats.totalRevenue) * 100)}% tổng doanh thu` : 'Chưa có dữ liệu'}
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-sm font-bold font-mono ${stats.totalProfit >= 0 ? 'text-blue-700' : 'text-red-700'}`}>
+                  <div className={`text-sm font-bold font-mono ${stats.totalProfit >= 0 ? 'text-blue-700 dark:text-blue-400' : 'text-red-700 dark:text-red-400'}`}>
                     {stats.totalRevenue > 0 ? `${Math.round((stats.totalProfit / stats.totalRevenue) * 100)}%` : '—'}
                   </div>
                 </div>
@@ -611,16 +611,16 @@ export default function AdminDashboard() {
           </div>
 
           {/* Shipment Status Distribution */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
+          <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-                <Package size={16} className="text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center gap-2">
+                <Package size={16} className="text-blue-600 dark:text-blue-400" />
                 Phân bổ Lô hàng
               </h2>
               <button
                 type="button"
                 onClick={() => navigate('/shipments')}
-                className="text-[11px] text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-0.5"
+                className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5"
               >
                 Xem tất cả <ChevronRight size={13} />
               </button>
@@ -629,15 +629,15 @@ export default function AdminDashboard() {
             {/* Status bars */}
             <div className="space-y-3 mb-4">
               {[
-                { label: 'Đang vận hành', count: stats.inProgress, total: stats.total, color: 'bg-blue-500', lightColor: 'bg-blue-100', textColor: 'text-blue-700' },
-                { label: 'Đã hoàn thành', count: stats.completed, total: stats.total, color: 'bg-emerald-500', lightColor: 'bg-emerald-100', textColor: 'text-emerald-700' },
-                { label: 'Đã hủy', count: stats.cancelled, total: stats.total, color: 'bg-slate-400', lightColor: 'bg-slate-100', textColor: 'text-slate-600' },
+                { label: 'Đang vận hành', count: stats.inProgress, total: stats.total, color: 'bg-blue-500', lightColor: 'bg-blue-100 dark:bg-blue-950/60', textColor: 'text-blue-700 dark:text-blue-400' },
+                { label: 'Đã hoàn thành', count: stats.completed, total: stats.total, color: 'bg-emerald-500', lightColor: 'bg-emerald-100 dark:bg-emerald-950/60', textColor: 'text-emerald-700 dark:text-emerald-400' },
+                { label: 'Đã hủy', count: stats.cancelled, total: stats.total, color: 'bg-slate-400', lightColor: 'bg-slate-100 dark:bg-slate-800', textColor: 'text-slate-600 dark:text-slate-400' },
               ].map(item => {
                 const pct = stats.total > 0 ? (item.count / stats.total) * 100 : 0;
                 return (
                   <div key={item.label}>
                     <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="text-slate-600 font-medium">{item.label}</span>
+                      <span className="text-slate-600 dark:text-slate-400 font-medium">{item.label}</span>
                       <span className={`font-bold font-mono ${item.textColor}`}>{item.count} lô ({Math.round(pct)}%)</span>
                     </div>
                     <div className={`h-2 rounded-full w-full ${item.lightColor}`}>
@@ -649,16 +649,16 @@ export default function AdminDashboard() {
             </div>
 
             {/* Mode distribution */}
-            <div className="border-t border-slate-100 pt-4">
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-3">Phân loại theo Phương thức vận tải</p>
+            <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
+              <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">Phân loại theo Phương thức vận tải</p>
               <div className="grid grid-cols-3 gap-2">
                 {modeDistribution.map(({ mode, count }) => (
-                  <div key={mode} className="text-center p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                  <div key={mode} className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                     <div className="flex justify-center mb-1">
                       <ModeIcon mode={mode} />
                     </div>
-                    <div className="text-lg font-black text-slate-900 font-mono">{count}</div>
-                    <div className="text-[10px] text-slate-500 font-medium">{ModeText[mode] || mode}</div>
+                    <div className="text-lg font-black text-slate-900 dark:text-white font-mono">{count}</div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{ModeText[mode] || mode}</div>
                   </div>
                 ))}
               </div>
@@ -666,16 +666,16 @@ export default function AdminDashboard() {
           </div>
 
           {/* P&L Summary per shipment */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 flex flex-col">
+          <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs p-5 flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-                <BarChart3 size={16} className="text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center gap-2">
+                <BarChart3 size={16} className="text-blue-600 dark:text-blue-400" />
                 P&L Nhanh – Top lô hàng
               </h2>
               <button
                 type="button"
                 onClick={() => navigate('/shipments/financial')}
-                className="text-[11px] text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-0.5"
+                className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5"
               >
                 Phân tích đầy đủ <ChevronRight size={13} />
               </button>
@@ -690,30 +690,30 @@ export default function AdminDashboard() {
                     key={s.id}
                     type="button"
                     onClick={() => navigate(`/shipments/${s.id}`)}
-                    className="w-full text-left p-3 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all"
+                    className="w-full text-left p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 transition-all"
                   >
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-1.5">
                         <ModeIcon mode={s.mode} />
-                        <span className="font-mono font-bold text-xs text-slate-900">{s.trackingNumber}</span>
+                        <span className="font-mono font-bold text-xs text-slate-900 dark:text-white">{s.trackingNumber}</span>
                       </div>
-                      <span className={`font-bold font-mono text-xs ${s.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+                      <span className={`font-bold font-mono text-xs ${s.netProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
                         {s.netProfit < 0 ? '(' : '+'}
                         {fmtCompact(Math.abs(s.netProfit))}
                         {s.netProfit < 0 ? ')' : ''}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-400">
-                      <span>DT: <span className="text-blue-600 font-semibold">{fmtCompact(s.revenue)}</span></span>
-                      <span>CP: <span className="text-rose-600 font-semibold">{fmtCompact(s.directCost)}</span></span>
-                      <span className={`font-bold ${s.netProfit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
+                      <span>DT: <span className="text-blue-600 dark:text-blue-400 font-semibold">{fmtCompact(s.revenue)}</span></span>
+                      <span>CP: <span className="text-rose-600 dark:text-rose-400 font-semibold">{fmtCompact(s.directCost)}</span></span>
+                      <span className={`font-bold ${s.netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                         {s.revenue > 0 ? `${Math.round((s.netProfit / s.revenue) * 100)}%` : '—'}
                       </span>
                     </div>
                   </button>
                 ))}
               {enrichedShipments.filter(s => s.revenue > 0).length === 0 && (
-                <div className="flex-1 flex items-center justify-center py-8 text-slate-400 text-xs italic">
+                <div className="flex-1 flex items-center justify-center py-8 text-slate-400 dark:text-slate-500 text-xs italic">
                   Chưa có dữ liệu P&L lô hàng nào.
                 </div>
               )}
@@ -722,16 +722,16 @@ export default function AdminDashboard() {
         </div>
 
         {/* ── Row 4: In-Progress Shipment Table ──────────────────────────── */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-              <Clock size={16} className="text-blue-600" />
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center gap-2">
+              <Clock size={16} className="text-blue-600 dark:text-blue-400" />
               Lô hàng đang vận hành — Theo dõi thời gian thực
             </h2>
             <button
               type="button"
               onClick={() => navigate('/shipments')}
-              className="text-[11px] text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-0.5"
+              className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5"
             >
               Xem danh sách đầy đủ <ChevronRight size={13} />
             </button>
@@ -739,8 +739,8 @@ export default function AdminDashboard() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse whitespace-nowrap text-xs min-w-[900px]">
-              <thead className="bg-slate-50/80 border-b border-slate-100">
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+              <thead className="bg-slate-50/90 dark:bg-slate-950/90 border-b border-slate-100 dark:border-slate-800">
+                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
                   <th className="px-4 py-3">Mã lô hàng</th>
                   <th className="px-4 py-3">Tuyến vận chuyển</th>
                   <th className="px-4 py-3">Khách hàng</th>
@@ -750,24 +750,24 @@ export default function AdminDashboard() {
                   <th className="px-4 py-3">Cập nhật</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {inProgressShipments.map(s => (
                   <tr
                     key={s.id}
                     onClick={() => navigate(`/shipments/${s.id}`)}
-                    className="hover:bg-blue-50/40 transition-colors cursor-pointer"
+                    className="hover:bg-blue-50/40 dark:hover:bg-blue-950/20 transition-colors cursor-pointer"
                   >
                     {/* Tracking */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <ModeIcon mode={s.mode} />
-                        <span className="font-mono font-bold text-blue-700 text-xs">{s.trackingNumber}</span>
+                        <span className="font-mono font-bold text-blue-700 dark:text-blue-400 text-xs">{s.trackingNumber}</span>
                       </div>
                     </td>
 
                     {/* Route */}
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1 text-slate-700 font-medium text-xs">
+                      <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium text-xs">
                         <span>{s.originId || '?'}</span>
                         <ChevronRight size={11} className="text-slate-400" />
                         <span>{s.destinationId || '?'}</span>
@@ -775,7 +775,7 @@ export default function AdminDashboard() {
                     </td>
 
                     {/* Customer */}
-                    <td className="px-4 py-3 text-slate-600 font-medium max-w-[140px] truncate">
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400 font-medium max-w-[140px] truncate">
                       {s.customerName || '—'}
                     </td>
 
@@ -789,12 +789,12 @@ export default function AdminDashboard() {
                               className={`h-1.5 w-6 rounded-full ${
                                 i <= s.completedMilestones ? 'bg-emerald-500' :
                                 i === s.completedMilestones + 1 ? 'bg-blue-500' :
-                                'bg-slate-200'
+                                'bg-slate-200 dark:bg-slate-700'
                               }`}
                             />
                           ))}
                         </div>
-                        <span className="text-[11px] text-slate-500 font-mono font-bold">{s.completedMilestones}/5</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono font-bold">{s.completedMilestones}/5</span>
                       </div>
                     </td>
 
@@ -803,29 +803,29 @@ export default function AdminDashboard() {
                       {s.demAlert ? (
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                           s.demAlert.type === 'critical'
-                            ? 'bg-red-100 text-red-800 border-red-300'
-                            : 'bg-amber-100 text-amber-800 border-amber-300'
+                            ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800/60'
+                            : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/60'
                         }`}>
                           ⚠ {s.demAlert.text}
                         </span>
                       ) : (
-                        <span className="text-slate-400 text-[11px]">An toàn</span>
+                        <span className="text-slate-400 dark:text-slate-500 text-[11px]">An toàn</span>
                       )}
                     </td>
 
                     {/* P&L */}
                     <td className="px-4 py-3 text-right">
                       {s.revenue > 0 ? (
-                        <span className={`font-bold font-mono text-xs ${s.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+                        <span className={`font-bold font-mono text-xs ${s.netProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
                           {s.netProfit >= 0 ? '+' : '('}{fmtCompact(Math.abs(s.netProfit))}{s.netProfit < 0 ? ')' : ''}
                         </span>
                       ) : (
-                        <span className="text-slate-400 text-[11px]">—</span>
+                        <span className="text-slate-400 dark:text-slate-500 text-[11px]">—</span>
                       )}
                     </td>
 
                     {/* Updated */}
-                    <td className="px-4 py-3 text-[11px] text-slate-400">
+                    <td className="px-4 py-3 text-[11px] text-slate-400 dark:text-slate-500">
                       {s.updatedAt ? new Date(s.updatedAt).toLocaleDateString('vi-VN') : '—'}
                     </td>
                   </tr>
@@ -833,7 +833,7 @@ export default function AdminDashboard() {
 
                 {inProgressShipments.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-slate-400 text-xs italic">
+                    <td colSpan={7} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500 text-xs italic">
                       <div className="flex flex-col items-center gap-2">
                         <CheckCircle2 size={24} className="text-emerald-500" />
                         <span>Không có lô hàng nào đang vận hành.</span>

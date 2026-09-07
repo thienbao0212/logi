@@ -176,66 +176,66 @@ export default function ReceivablesTab() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Tổng phải thu */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Tổng công nợ phải thu</span>
-            <div className="text-xl font-bold text-blue-700 font-mono mt-1">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Tổng công nợ phải thu</span>
+            <div className="text-xl font-bold text-blue-700 dark:text-blue-400 font-mono mt-1">
               ${metrics.total.toLocaleString()}
             </div>
-            <span className="text-[11px] text-slate-400 mt-0.5 block">{metrics.count} chứng từ phát sinh</span>
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 block">{metrics.count} chứng từ phát sinh</span>
           </div>
-          <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+          <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-900/40">
             <DollarSign size={20} />
           </div>
         </div>
 
         {/* Card 2: Đã thu thực tế */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Đã thu thực tế</span>
-            <div className="text-xl font-bold text-emerald-700 font-mono mt-1">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Đã thu thực tế</span>
+            <div className="text-xl font-bold text-emerald-700 dark:text-emerald-400 font-mono mt-1">
               ${metrics.paid.toLocaleString()}
             </div>
-            <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 block">
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5 block">
               {metrics.total > 0 ? Math.round((metrics.paid / metrics.total) * 100) : 0}% tổng giá trị
             </span>
           </div>
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+          <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-100 dark:border-emerald-900/40">
             <CheckCircle2 size={20} />
           </div>
         </div>
 
         {/* Card 3: Còn phải thu */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Còn phải thu (Dư nợ)</span>
-            <div className="text-xl font-bold text-amber-700 font-mono mt-1">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Còn phải thu (Dư nợ)</span>
+            <div className="text-xl font-bold text-amber-700 dark:text-amber-400 font-mono mt-1">
               ${metrics.remaining.toLocaleString()}
             </div>
-            <span className="text-[11px] text-amber-700 font-medium mt-0.5 block">Cần theo dõi thu hồi nợ</span>
+            <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium mt-0.5 block">Cần theo dõi thu hồi nợ</span>
           </div>
-          <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
+          <div className="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-100 dark:border-amber-900/40">
             <Clock size={20} />
           </div>
         </div>
 
         {/* Card 4: Chờ xử lý */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Chứng từ chờ xử lý</span>
-            <div className="text-xl font-bold text-orange-700 font-mono mt-1">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chứng từ chờ xử lý</span>
+            <div className="text-xl font-bold text-orange-700 dark:text-orange-400 font-mono mt-1">
               {metrics.pendingCount} phiếu
             </div>
-            <span className="text-[11px] text-orange-700 font-medium mt-0.5 block">Chờ duyệt / Chờ thu tiền</span>
+            <span className="text-[11px] text-orange-700 dark:text-orange-400 font-medium mt-0.5 block">Chờ duyệt / Chờ thu tiền</span>
           </div>
-          <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 border border-orange-100">
+          <div className="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 border border-orange-100 dark:border-orange-900/40">
             <AlertTriangle size={20} />
           </div>
         </div>
       </div>
 
       {/* Toolbar: Search + Quick Filter + Action buttons */}
-      <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Left: Search Box */}
         <SearchInput
           value={searchQuery}
@@ -250,10 +250,10 @@ export default function ReceivablesTab() {
           onChange={(val) => setStatusFilter(val as ReceivablesStatusFilter)}
           options={[
             { id: 'ALL', label: 'Tất cả', count: data.length },
-            { id: 'ĐÃ THU', label: 'Đã thu đủ', count: data.filter(r => r.status === 'ĐÃ THU').length, activeClass: 'bg-white text-emerald-700 shadow-2xs font-bold', activeBadge: 'bg-emerald-100 text-emerald-800' },
-            { id: 'THU MỘT PHẦN', label: 'Thu 1 phần', count: data.filter(r => r.status === 'THU MỘT PHẦN').length, activeClass: 'bg-white text-blue-700 shadow-2xs font-bold', activeBadge: 'bg-blue-100 text-blue-800' },
-            { id: 'CHỜ THU', label: 'Chờ thu', count: data.filter(r => r.status === 'CHỜ THU').length, activeClass: 'bg-white text-orange-700 shadow-2xs font-bold', activeBadge: 'bg-orange-100 text-orange-800' },
-            { id: 'CHỜ DUYỆT', label: 'Chờ duyệt', count: data.filter(r => r.status === 'CHỜ DUYỆT').length, activeClass: 'bg-white text-amber-700 shadow-2xs font-bold', activeBadge: 'bg-amber-100 text-amber-800' },
+            { id: 'ĐÃ THU', label: 'Đã thu đủ', count: data.filter(r => r.status === 'ĐÃ THU').length, activeClass: 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-2xs font-bold', activeBadge: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300' },
+            { id: 'THU MỘT PHẦN', label: 'Thu 1 phần', count: data.filter(r => r.status === 'THU MỘT PHẦN').length, activeClass: 'bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-400 shadow-2xs font-bold', activeBadge: 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300' },
+            { id: 'CHỜ THU', label: 'Chờ thu', count: data.filter(r => r.status === 'CHỜ THU').length, activeClass: 'bg-white dark:bg-slate-800 text-orange-700 dark:text-orange-400 shadow-2xs font-bold', activeBadge: 'bg-orange-100 dark:bg-orange-950/80 text-orange-800 dark:text-orange-300' },
+            { id: 'CHỜ DUYỆT', label: 'Chờ duyệt', count: data.filter(r => r.status === 'CHỜ DUYỆT').length, activeClass: 'bg-white dark:bg-slate-800 text-amber-700 dark:text-amber-400 shadow-2xs font-bold', activeBadge: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300' },
           ]}
         />
 
@@ -279,55 +279,55 @@ export default function ReceivablesTab() {
 
       {/* Aging Report Panel — Phân tích tuổi nợ theo khách hàng */}
       {showAging && (
-        <div className="bg-white rounded-2xl border border-blue-200 shadow-xs overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-blue-100 bg-blue-50/40 flex items-center gap-2">
-            <BarChart2 size={15} className="text-blue-600" />
-            <span className="text-sm font-bold text-blue-900">Phân tích Tuổi Nợ (AR Aging) — Theo khách hàng</span>
-            <span className="ml-auto text-[11px] text-blue-600 font-medium">Chỉ tính các khoản chưa thu đủ</span>
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-blue-200 dark:border-blue-900/40 shadow-xs dark:shadow-xl overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-blue-100 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-950/40 flex items-center gap-2">
+            <BarChart2 size={15} className="text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-bold text-blue-900 dark:text-blue-200">Phân tích Tuổi Nợ (AR Aging) — Theo khách hàng</span>
+            <span className="ml-auto text-[11px] text-blue-600 dark:text-blue-400 font-medium">Chỉ tính các khoản chưa thu đủ</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse min-w-[750px]">
-              <thead className="bg-slate-50 border-b border-slate-100 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+              <thead className="bg-slate-50 dark:bg-slate-950/70 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
                 <tr>
                   <th className="px-4 py-3">Khách hàng</th>
                   <th className="px-4 py-3 text-right">Chưa đến hạn</th>
-                  <th className="px-4 py-3 text-right text-amber-700">1–30 ngày</th>
-                  <th className="px-4 py-3 text-right text-orange-700">31–60 ngày</th>
-                  <th className="px-4 py-3 text-right text-red-700">61–90 ngày</th>
-                  <th className="px-4 py-3 text-right text-rose-800">Trên 90 ngày</th>
+                  <th className="px-4 py-3 text-right text-amber-700 dark:text-amber-400">1–30 ngày</th>
+                  <th className="px-4 py-3 text-right text-orange-700 dark:text-orange-400">31–60 ngày</th>
+                  <th className="px-4 py-3 text-right text-red-700 dark:text-red-400">61–90 ngày</th>
+                  <th className="px-4 py-3 text-right text-rose-800 dark:text-rose-400">Trên 90 ngày</th>
                   <th className="px-4 py-3 text-right font-bold">Tổng dư nợ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {agingReport.map(row => (
-                  <tr key={row.name} className="hover:bg-blue-50/20 transition-colors">
-                    <td className="px-4 py-3 font-semibold text-slate-800">{row.name}</td>
-                    <td className="px-4 py-3 text-right font-mono text-emerald-700">{row.current > 0 ? row.current.toLocaleString('vi-VN') : '—'}</td>
-                    <td className="px-4 py-3 text-right font-mono text-amber-700">{row.d30 > 0 ? row.d30.toLocaleString('vi-VN') : '—'}</td>
-                    <td className="px-4 py-3 text-right font-mono text-orange-700">{row.d60 > 0 ? row.d60.toLocaleString('vi-VN') : '—'}</td>
-                    <td className="px-4 py-3 text-right font-mono text-red-700">{row.d90 > 0 ? row.d90.toLocaleString('vi-VN') : '—'}</td>
-                    <td className="px-4 py-3 text-right font-mono font-bold text-rose-800">{row.over90 > 0 ? row.over90.toLocaleString('vi-VN') : '—'}</td>
-                    <td className="px-4 py-3 text-right font-mono font-black text-slate-900">{row.total.toLocaleString('vi-VN')} ₫</td>
+                  <tr key={row.name} className="hover:bg-blue-50/20 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">{row.name}</td>
+                    <td className="px-4 py-3 text-right font-mono text-emerald-700 dark:text-emerald-400">{row.current > 0 ? row.current.toLocaleString('vi-VN') : '—'}</td>
+                    <td className="px-4 py-3 text-right font-mono text-amber-700 dark:text-amber-400">{row.d30 > 0 ? row.d30.toLocaleString('vi-VN') : '—'}</td>
+                    <td className="px-4 py-3 text-right font-mono text-orange-700 dark:text-orange-400">{row.d60 > 0 ? row.d60.toLocaleString('vi-VN') : '—'}</td>
+                    <td className="px-4 py-3 text-right font-mono text-red-700 dark:text-red-400">{row.d90 > 0 ? row.d90.toLocaleString('vi-VN') : '—'}</td>
+                    <td className="px-4 py-3 text-right font-mono font-bold text-rose-800 dark:text-rose-400">{row.over90 > 0 ? row.over90.toLocaleString('vi-VN') : '—'}</td>
+                    <td className="px-4 py-3 text-right font-mono font-black text-slate-900 dark:text-white">{row.total.toLocaleString('vi-VN')} ₫</td>
                   </tr>
                 ))}
                 {agingReport.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-slate-400 text-xs italic">
+                    <td colSpan={7} className="px-4 py-8 text-center text-slate-400 dark:text-slate-500 text-xs italic">
                       Không có công nợ chưa thu — tất cả đã hoàn tất 🎉
                     </td>
                   </tr>
                 )}
               </tbody>
               {agingReport.length > 0 && (
-                <tfoot className="bg-slate-50 border-t-2 border-slate-300">
-                  <tr className="text-[11px] font-bold text-slate-700">
+                <tfoot className="bg-slate-50 dark:bg-slate-950/70 border-t-2 border-slate-300 dark:border-slate-700">
+                  <tr className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
                     <td className="px-4 py-3">TỔNG CỘNG</td>
                     {(['current', 'd30', 'd60', 'd90', 'over90'] as const).map(k => (
                       <td key={k} className="px-4 py-3 text-right font-mono">
                         {agingReport.reduce((s, r) => s + r[k], 0).toLocaleString('vi-VN')}
                       </td>
                     ))}
-                    <td className="px-4 py-3 text-right font-mono font-black text-slate-900">
+                    <td className="px-4 py-3 text-right font-mono font-black text-slate-900 dark:text-white">
                       {agingReport.reduce((s, r) => s + r.total, 0).toLocaleString('vi-VN')} ₫
                     </td>
                   </tr>
@@ -338,11 +338,11 @@ export default function ReceivablesTab() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl overflow-hidden flex flex-col">
         <div className="overflow-x-auto w-full custom-scrollbar">
           <table className="w-full text-left border-collapse whitespace-nowrap text-xs min-w-[950px]">
-            <thead className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/80">
-              <tr className="text-[11px] uppercase tracking-wider text-slate-500 font-bold">
+            <thead className="sticky top-0 z-10 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80">
+              <tr className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
                 <th className="px-4 py-3.5">Mã phiếu thu</th>
                 <th className="px-4 py-3.5">Lô hàng (Shipment)</th>
                 <th className="px-4 py-3.5">Khách hàng</th>
@@ -355,18 +355,18 @@ export default function ReceivablesTab() {
                 <th className="px-4 py-3.5 text-center">Trạng thái</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {filteredData.map(req => {
                 const shipmentTracking = trackingMap[req.shipmentId] || req.shipmentId;
                 return (
                   <tr 
-                    key={req.id}
+                    key={req.id} 
                     onClick={() => setSelectedRequest(req)}
-                    className="hover:bg-blue-50/40 transition-colors cursor-pointer group"
+                    className="hover:bg-blue-50/40 dark:hover:bg-slate-800/40 transition-colors cursor-pointer group"
                   >
-                    <td className="px-4 py-3.5 font-mono font-bold text-blue-700 group-hover:text-blue-900 group-hover:underline">
+                    <td className="px-4 py-3.5 font-mono font-bold text-blue-700 dark:text-blue-400 group-hover:text-blue-900 dark:group-hover:text-blue-300 group-hover:underline">
                       <div className="flex items-center gap-1.5">
-                        <ArrowDownLeft size={14} className="text-emerald-600 shrink-0" />
+                        <ArrowDownLeft size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>{req.id}</span>
                       </div>
                     </td>
@@ -376,43 +376,43 @@ export default function ReceivablesTab() {
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (req.shipmentId) navigate(`/shipments/${req.shipmentId}`);
+                            if (req.shipmentId) navigate(`/shipments/${req.shipmentId}?tab=financial`);
                           }}
-                          className="inline-flex items-center gap-1 font-mono font-bold text-slate-800 hover:text-blue-700 bg-slate-100 px-2 py-0.5 rounded text-[11px]"
+                          className="inline-flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200 hover:text-blue-700 dark:hover:text-blue-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[11px]"
                         >
-                          <Package size={12} className="text-slate-400" />
+                          <Package size={12} className="text-slate-400 dark:text-slate-500" />
                           <span>{shipmentTracking}</span>
                         </button>
                       ) : (
-                        <span className="text-slate-400 font-medium">Toàn hệ thống (Global)</span>
+                        <span className="text-slate-400 dark:text-slate-500 font-medium">Toàn hệ thống (Global)</span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 font-medium text-slate-800">
+                    <td className="px-4 py-3.5 font-medium text-slate-800 dark:text-slate-200">
                       <div className="flex items-center gap-1.5 truncate max-w-[180px]" title={req.partyName}>
-                        <Building2 size={13} className="text-slate-400 shrink-0" />
+                        <Building2 size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
                         <span className="truncate">{req.partyName}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-700 font-medium">
-                      <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[11px]">
+                    <td className="px-4 py-3.5 text-slate-700 dark:text-slate-300 font-medium">
+                      <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded text-[11px]">
                         {req.category}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-600 truncate max-w-[200px]" title={req.description}>
+                    <td className="px-4 py-3.5 text-slate-600 dark:text-slate-400 truncate max-w-[200px]" title={req.description}>
                       {req.description}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-bold text-slate-900 font-mono">
+                    <td className="px-4 py-3.5 text-right font-bold text-slate-900 dark:text-white font-mono">
                       ${req.amount.toLocaleString()}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-bold text-emerald-700 font-mono">
+                    <td className="px-4 py-3.5 text-right font-bold text-emerald-700 dark:text-emerald-400 font-mono">
                       ${(req.paidAmount || 0).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-bold text-amber-700 font-mono">
+                    <td className="px-4 py-3.5 text-right font-bold text-amber-700 dark:text-amber-400 font-mono">
                       ${(req.remainingAmount || (req.amount - (req.paidAmount || 0))).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3.5 text-slate-600 font-medium">
+                    <td className="px-4 py-3.5 text-slate-600 dark:text-slate-400 font-medium">
                       <div className="flex items-center gap-1">
-                        <Calendar size={12} className="text-slate-400" />
+                        <Calendar size={12} className="text-slate-400 dark:text-slate-500" />
                         <span>{req.expectedDate ? new Date(req.expectedDate).toLocaleDateString('vi-VN') : '—'}</span>
                       </div>
                     </td>
@@ -424,7 +424,7 @@ export default function ReceivablesTab() {
               })}
               {filteredData.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-12 text-center text-slate-400 text-xs italic">
+                  <td colSpan={10} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500 text-xs italic">
                     Không tìm thấy phiếu thu nào phù hợp với điều kiện tìm kiếm.
                   </td>
                 </tr>

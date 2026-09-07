@@ -15,8 +15,10 @@ import {
   User, 
   CheckCircle2, 
   XCircle,
-  AlertTriangle
+  AlertTriangle,
+  Download
 } from 'lucide-react';
+import { Button } from '../../components/common/index.js';
 
 interface ShippingLine {
   id: string;
@@ -178,79 +180,99 @@ export default function ShippingLineList() {
     }
   };
 
+  const handleExportCsv = () => {
+    const headers = ['Mã hãng tàu', 'Tên hãng tàu', 'Người liên hệ', 'Số điện thoại', 'Email', 'Website', 'Link tra cứu', 'Trạng thái'];
+    const rows = shippingLines.map(s => [
+      s.code,
+      `"${s.name.replace(/"/g, '""')}"`,
+      `"${(s.contactPerson || '').replace(/"/g, '""')}"`,
+      s.phone || '',
+      s.email || '',
+      s.website || '',
+      `"${(s.trackingUrl || '').replace(/"/g, '""')}"`,
+      s.isActive ? 'Đang hoạt động' : 'Tạm ngưng'
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const link = document.createElement('a');
+    link.href = encodeURI(csvContent);
+    link.download = `Danh_sach_Hang_tau_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+  };
+
   return (
-    <div className="p-8 max-w-7xl mx-auto w-full space-y-6">
+    <div className="flex flex-col h-full bg-transparent">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100 shadow-sm">
-              <Ship size={24} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                {t('masterData.shippingLines.title', 'Quản lý hãng tàu')}
-              </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
-                {t('masterData.shippingLines.subtitle', 'Quản lý danh sách các hãng tàu quốc tế & nội địa')}
-              </p>
-            </div>
+      <div className="px-8 pt-8 pb-4 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+              <Ship size={24} className="text-blue-600 dark:text-blue-400" />
+              <span>{t('masterData.shippingLines.title', 'Quản lý hãng tàu')}</span>
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {t('masterData.shippingLines.subtitle', 'Quản lý danh sách các hãng tàu quốc tế & nội địa')}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <Button variant="secondary" size="sm" onClick={handleExportCsv} icon={<Download size={15} />}>
+              <span>Xuất CSV</span>
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
+              <span>{t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}</span>
+            </Button>
           </div>
         </div>
-
-        <button
-          onClick={handleOpenAddModal}
-          className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 shrink-0"
-        >
-          <Plus size={15} />
-          <span>{t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}</span>
-        </button>
       </div>
 
+      {/* Content Area */}
+      <div className="flex-1 overflow-auto px-8 pb-8 space-y-6">
+
       {/* Filter / Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex items-center gap-3">
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('masterData.shippingLines.searchPlaceholder', 'Tìm kiếm theo mã hãng tàu, tên, người liên hệ...')}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-700/80 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           />
           {search && (
             <button 
               onClick={() => setSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
             >
               <X size={16} />
             </button>
           )}
         </div>
-        <span className="text-xs font-semibold text-slate-500 px-3 py-1.5 bg-slate-100 rounded-lg">
+        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
           {shippingLines.length} {t('nav.shippingLines', 'Hãng tàu')}
         </span>
       </div>
 
       {/* Shipping Lines Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl overflow-hidden">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Loader2 size={32} className="animate-spin text-blue-600 mb-3" />
+            <Loader2 size={32} className="animate-spin text-blue-600 dark:text-blue-400 mb-3" />
             <p className="text-sm font-medium">{t('common.loading', 'Đang tải danh sách...')}</p>
           </div>
         ) : shippingLines.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Ship size={48} className="text-slate-300 stroke-1 mb-3" />
-            <p className="text-base font-semibold text-slate-700">
+            <Ship size={48} className="text-slate-300 dark:text-slate-600 stroke-1 mb-3" />
+            <p className="text-base font-semibold text-slate-700 dark:text-slate-300">
               {t('masterData.shippingLines.noShippingLines', 'Chưa có hãng tàu nào')}
             </p>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm text-center">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm text-center">
               Thêm các hãng tàu như Maersk, COSCO, Evergreen, ONE để quản lý và theo dõi container dễ dàng.
             </p>
             <button
               onClick={handleOpenAddModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm font-medium transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/60 rounded-lg text-sm font-medium transition-colors"
             >
               <Plus size={16} />
               <span>{t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}</span>
@@ -260,7 +282,7 @@ export default function ShippingLineList() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <th className="py-3.5 px-4">{t('masterData.shippingLines.code', 'Mã hãng tàu')}</th>
                   <th className="py-3.5 px-4">{t('masterData.shippingLines.name', 'Tên hãng tàu')}</th>
                   <th className="py-3.5 px-4">{t('masterData.shippingLines.contactPerson', 'Người liên hệ')}</th>
@@ -270,35 +292,35 @@ export default function ShippingLineList() {
                   <th className="py-3.5 px-4 text-right">{t('common.actions', 'Thao tác')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300">
                 {shippingLines.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={item.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-200">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60">
                         {item.code}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-slate-900">
+                    <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-slate-100">
                       {item.name}
                     </td>
                     <td className="py-3.5 px-4">
                       {item.contactPerson ? (
-                        <div className="flex items-center gap-1.5 text-slate-700">
+                        <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                           <User size={14} className="text-slate-400 shrink-0" />
                           <span>{item.contactPerson}</span>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic text-xs">-</span>
+                        <span className="text-slate-400 dark:text-slate-500 italic text-xs">-</span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
                       {item.phone ? (
-                        <div className="flex items-center gap-1.5 text-slate-600">
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                           <Phone size={14} className="text-slate-400 shrink-0" />
                           <span>{item.phone}</span>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic text-xs">-</span>
+                        <span className="text-slate-400 dark:text-slate-500 italic text-xs">-</span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
@@ -308,7 +330,7 @@ export default function ShippingLineList() {
                             href={item.website.startsWith('http') ? item.website : `https://${item.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                            className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline"
                           >
                             <Globe size={13} />
                             <span>Website</span>
@@ -320,25 +342,25 @@ export default function ShippingLineList() {
                             href={item.trackingUrl.startsWith('http') ? item.trackingUrl : `https://${item.trackingUrl}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800 hover:underline font-medium"
+                            className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 hover:underline font-medium"
                           >
                             <span>Tracking</span>
                             <ExternalLink size={11} />
                           </a>
                         )}
                         {!item.website && !item.trackingUrl && (
-                          <span className="text-slate-400 italic text-xs">-</span>
+                          <span className="text-slate-400 dark:text-slate-500 italic text-xs">-</span>
                         )}
                       </div>
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       {item.isActive ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                           <CheckCircle2 size={12} />
                           {t('masterData.shippingLines.active', 'Đang hoạt động')}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                           <XCircle size={12} />
                           {t('masterData.shippingLines.inactive', 'Tạm ngưng')}
                         </span>
@@ -348,14 +370,14 @@ export default function ShippingLineList() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleOpenEditModal(item)}
-                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 rounded-lg transition-colors cursor-pointer"
                           title={t('masterData.shippingLines.editShippingLine', 'Chỉnh sửa')}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => setDeletingId(item.id)}
-                          className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg transition-colors cursor-pointer"
                           title={t('masterData.shippingLines.deleteShippingLine', 'Xóa')}
                         >
                           <Trash2 size={16} />
@@ -372,14 +394,14 @@ export default function ShippingLineList() {
 
       {/* Create / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-cyan-50 text-cyan-600">
+                <div className="p-2 rounded-lg bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400">
                   <Ship size={18} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {editingItem
                     ? t('masterData.shippingLines.editShippingLine', 'Chỉnh sửa hãng tàu')
                     : t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}
@@ -387,7 +409,7 @@ export default function ShippingLineList() {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -395,7 +417,7 @@ export default function ShippingLineList() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
               {formError && (
-                <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-100 flex items-center gap-2">
+                <div className="p-3 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-400 text-xs rounded-lg border border-red-100 dark:border-red-900/40 flex items-center gap-2">
                   <AlertTriangle size={15} className="shrink-0" />
                   <span>{formError}</span>
                 </div>
@@ -403,7 +425,7 @@ export default function ShippingLineList() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.shippingLines.code', 'Mã hãng tàu')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -412,12 +434,12 @@ export default function ShippingLineList() {
                     value={formData.code}
                     onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                     placeholder="VD: MSK, COSCO, EMC"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm uppercase font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm uppercase font-semibold bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.shippingLines.name', 'Tên hãng tàu')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -426,14 +448,14 @@ export default function ShippingLineList() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="VD: Maersk Line"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.shippingLines.contactPerson', 'Người liên hệ')}
                   </label>
                   <input
@@ -441,12 +463,12 @@ export default function ShippingLineList() {
                     value={formData.contactPerson}
                     onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
                     placeholder="VD: Mr. Nguyễn Văn A"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.shippingLines.phone', 'Hotline / SĐT')}
                   </label>
                   <input
@@ -454,13 +476,13 @@ export default function ShippingLineList() {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="+84 28 3823 8888"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.shippingLines.email', 'Email')}
                 </label>
                 <input
@@ -468,13 +490,13 @@ export default function ShippingLineList() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="vietnam.sales@maersk.com"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.shippingLines.website', 'Website')}
                   </label>
                   <input
@@ -482,12 +504,12 @@ export default function ShippingLineList() {
                     value={formData.website}
                     onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                     placeholder="https://www.maersk.com"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.shippingLines.trackingUrl', 'URL tra cứu tracking')}
                   </label>
                   <input
@@ -495,13 +517,13 @@ export default function ShippingLineList() {
                     value={formData.trackingUrl}
                     onChange={(e) => setFormData({ ...formData, trackingUrl: e.target.value })}
                     placeholder="https://www.maersk.com/tracking"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.shippingLines.notes', 'Ghi chú')}
                 </label>
                 <textarea
@@ -509,7 +531,7 @@ export default function ShippingLineList() {
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="Ghi chú về lịch tàu, tuyến vận chuyển chính..."
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
               </div>
 
@@ -519,25 +541,25 @@ export default function ShippingLineList() {
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500"
                 />
-                <label htmlFor="isActive" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                <label htmlFor="isActive" className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
                   {t('masterData.shippingLines.active', 'Đang hoạt động')}
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                 >
                   {t('common.cancel', 'Hủy')}
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all cursor-pointer"
                 >
                   {submitting && <Loader2 size={16} className="animate-spin" />}
                   <span>{t('common.save', 'Lưu')}</span>
@@ -550,22 +572,22 @@ export default function ShippingLineList() {
 
       {/* Delete Confirmation Modal */}
       {deletingId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-sm w-full p-6 text-center">
-            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4 border border-red-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-sm w-full p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-4 border border-red-100 dark:border-red-900/40">
               <Trash2 size={24} />
             </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1.5">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1.5">
               {t('masterData.shippingLines.deleteShippingLine', 'Xóa hãng tàu')}
             </h3>
-            <p className="text-xs text-slate-500 mb-6">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
               {t('masterData.shippingLines.deleteConfirm', 'Bạn có chắc chắn muốn xóa hãng tàu này không? Hành động này không thể hoàn tác.')}
             </p>
             <div className="flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex-1"
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex-1 cursor-pointer"
               >
                 {t('common.cancel', 'Hủy')}
               </button>
@@ -573,7 +595,7 @@ export default function ShippingLineList() {
                 type="button"
                 onClick={() => handleDelete(deletingId)}
                 disabled={deleting}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all flex-1"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all flex-1 cursor-pointer"
               >
                 {deleting && <Loader2 size={15} className="animate-spin" />}
                 <span>{t('masterData.shippingLines.deleteShippingLine', 'Xác nhận xóa')}</span>
@@ -582,6 +604,7 @@ export default function ShippingLineList() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

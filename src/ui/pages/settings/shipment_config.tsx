@@ -386,57 +386,56 @@ export default function ShipmentConfig() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto w-full space-y-6">
-      {/* Top Breadcrumb & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <button
-            onClick={() => navigate('/settings')}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors mb-2"
-          >
-            <ArrowLeft size={14} />
-            <span>{t('settingsPage.shipmentPage.backToSettings', 'Quay lại Cài đặt')}</span>
-          </button>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shadow-sm">
-              <Package size={22} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                {t('settingsPage.shipmentPage.title', 'Cấu hình Lô hàng & Vận hành')}
-              </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                {t('settingsPage.shipmentPage.subtitle', 'Thiết lập quy tắc mã lô hàng, định mức phí mặc định, 14 trạng thái và tuyến đường')}
-              </p>
-            </div>
+    <div className="flex flex-col h-full bg-transparent">
+      {/* Top Header */}
+      <div className="px-8 pt-8 pb-4 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <button
+              onClick={() => navigate('/settings')}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-2"
+            >
+              <ArrowLeft size={14} />
+              <span>{t('settingsPage.shipmentPage.backToSettings', 'Quay lại Cài đặt')}</span>
+            </button>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+              <Package size={24} className="text-blue-600 dark:text-blue-400" />
+              <span>{t('settingsPage.shipmentPage.title', 'Cấu hình Lô hàng & Vận hành')}</span>
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {t('settingsPage.shipmentPage.subtitle', 'Thiết lập quy tắc mã lô hàng, định mức phí mặc định, 14 trạng thái và tuyến đường')}
+            </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          {savedSuccess && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 animate-fade-in">
-              <CheckCircle2 size={14} />
-              <span>{t('settingsPage.shipmentPage.saveSuccess', 'Đã lưu cấu hình!')}</span>
-            </span>
-          )}
-          <button
-            onClick={handleSave}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition-all"
-          >
-            <Save size={15} />
-            <span>{t('common.save', 'Lưu thay đổi')}</span>
-          </button>
+          <div className="flex items-center gap-3 shrink-0">
+            {savedSuccess && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 animate-fade-in">
+                <CheckCircle2 size={14} />
+                <span>{t('settingsPage.shipmentPage.saveSuccess', 'Đã lưu cấu hình!')}</span>
+              </span>
+            )}
+            <button
+              onClick={handleSave}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition-all"
+            >
+              <Save size={15} />
+              <span>{t('common.save', 'Lưu thay đổi')}</span>
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Content Area */}
+      <div className="flex-1 overflow-auto px-8 pb-8 space-y-6">
+
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
         <button
           onClick={() => setActiveTab('tracking')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
             activeTab === 'tracking'
-              ? 'bg-blue-50 text-blue-700 shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Tag size={15} />
@@ -447,13 +446,13 @@ export default function ShipmentConfig() {
           onClick={() => setActiveTab('fees')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
             activeTab === 'fees'
-              ? 'bg-emerald-50 text-emerald-700 font-bold shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Receipt size={15} />
           <span>{t('settingsPage.shipmentPage.tabs.fees', 'Phí mặc định')}</span>
-          <span className="ml-1 px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">
+          <span className="ml-1 px-1.5 py-0.2 text-[10px] bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 rounded-full font-bold">
             {fees.length}
           </span>
         </button>
@@ -462,8 +461,8 @@ export default function ShipmentConfig() {
           onClick={() => setActiveTab('stages')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
             activeTab === 'stages'
-              ? 'bg-blue-50 text-blue-700 shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Sliders size={15} />
@@ -474,8 +473,8 @@ export default function ShipmentConfig() {
           onClick={() => setActiveTab('containers')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
             activeTab === 'containers'
-              ? 'bg-blue-50 text-blue-700 shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Layers size={15} />
@@ -486,8 +485,8 @@ export default function ShipmentConfig() {
           onClick={() => setActiveTab('routes')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
             activeTab === 'routes'
-              ? 'bg-blue-50 text-blue-700 shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <MapPin size={15} />
@@ -498,8 +497,8 @@ export default function ShipmentConfig() {
           onClick={() => setActiveTab('documents')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
             activeTab === 'documents'
-              ? 'bg-blue-50 text-blue-700 shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <FileText size={15} />
@@ -510,19 +509,19 @@ export default function ShipmentConfig() {
       {/* TAB 1: TRACKING RULES */}
       {activeTab === 'tracking' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+          <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm space-y-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 {t('settingsPage.shipmentPage.tracking.title', 'Quy tắc sinh mã lô hàng tự động')}
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Thiết lập định dạng mã lô hàng (Tracking No) áp dụng cho mọi lô hàng mới theo số thứ tự liên tiếp.
               </p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('settingsPage.shipmentPage.tracking.prefix', 'Tiền tố mã lô hàng (Prefix)')}
                 </label>
                 <input
@@ -530,17 +529,17 @@ export default function ShipmentConfig() {
                   placeholder="VD: QC"
                   value={trackingForm.prefix}
                   onChange={(e) => setTrackingForm({ ...trackingForm, prefix: e.target.value.toUpperCase() })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-mono font-bold text-slate-800 uppercase focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 uppercase focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
-                <span className="text-[11px] text-slate-400 mt-1 block">Mặc định: QC (Lô hàng Quá cảnh)</span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Mặc định: QC (Lô hàng Quá cảnh)</span>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Ký tự phân cách</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ký tự phân cách</label>
                 <select
                   value={trackingForm.separator}
                   onChange={(e) => setTrackingForm({ ...trackingForm, separator: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
                 >
                   <option value="">Không có - Liền nhau (VD: QC26083101)</option>
                   <option value="-">Gạch nối ( - ) (VD: QC-260831-01)</option>
@@ -549,7 +548,7 @@ export default function ShipmentConfig() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Định dạng ngày tháng</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Định dạng ngày tháng</label>
                 <select
                   value={trackingForm.includeDate ? (trackingForm.dateFormat || 'YYMMDD') : 'NONE'}
                   onChange={(e) => {
@@ -560,7 +559,7 @@ export default function ShipmentConfig() {
                       setTrackingForm({ ...trackingForm, includeDate: true, dateFormat: val });
                     }
                   }}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                   <option value="YYMMDD">YYMMDD - Năm 2 số + Tháng + Ngày (VD: 260831)</option>
                   <option value="YYYYMMDD">YYYYMMDD - Năm 4 số + Tháng + Ngày (VD: 20260831)</option>
@@ -569,17 +568,17 @@ export default function ShipmentConfig() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Số chữ số thứ tự (STT tăng dần)</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Số chữ số thứ tự (STT tăng dần)</label>
                 <select
                   value={trackingForm.seqDigits || 2}
                   onChange={(e) => setTrackingForm({ ...trackingForm, seqDigits: Number(e.target.value) })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
                 >
                   <option value={2}>2 chữ số (01, 02, 03... 99)</option>
                   <option value={3}>3 chữ số (001, 002, 003... 999)</option>
                   <option value={4}>4 chữ số (0001, 0002... 9999)</option>
                 </select>
-                <span className="text-[11px] text-slate-400 mt-1 block">Tự động tăng theo số lượng lô hàng trong ngày (không phải số ngẫu nhiên).</span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Tự động tăng theo số lượng lô hàng trong ngày (không phải số ngẫu nhiên).</span>
               </div>
             </div>
           </div>
@@ -629,13 +628,13 @@ export default function ShipmentConfig() {
       {activeTab === 'fees' && (
         <div className="space-y-6">
           {/* Header Card & KPI Summary */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   {t('settingsPage.shipmentPage.fees.title', 'Định mức các khoản phí mặc định của lô hàng mới tạo')}
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   {t('settingsPage.shipmentPage.fees.subtitle', 'Các khoản chi phí tiêu chuẩn sẽ được tự động thiết lập và hạch toán khi tạo mới lô hàng.')}
                 </p>
               </div>
@@ -644,7 +643,7 @@ export default function ShipmentConfig() {
                 <button
                   type="button"
                   onClick={handleResetDefaultFees}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   <RotateCcw size={13} />
                   <span>Khôi phục định mức</span>
@@ -662,44 +661,44 @@ export default function ShipmentConfig() {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-emerald-50/80 p-4 rounded-xl border border-emerald-100">
+              <div className="bg-emerald-50/80 dark:bg-emerald-950/40 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800/60">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-emerald-800">Tổng chi phí định mức</span>
-                  <Receipt size={16} className="text-emerald-600" />
+                  <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">Tổng chi phí định mức</span>
+                  <Receipt size={16} className="text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div className="text-2xl font-bold text-emerald-700 mt-2 font-mono">
+                <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-2 font-mono">
                   {formatVND(totalDefaultCost)}
                 </div>
-                <p className="text-[11px] text-emerald-600 mt-0.5">Áp dụng cho mỗi lô hàng tiêu chuẩn</p>
+                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">Áp dụng cho mỗi lô hàng tiêu chuẩn</p>
               </div>
 
-              <div className="bg-blue-50/80 p-4 rounded-xl border border-blue-100">
+              <div className="bg-blue-50/80 dark:bg-blue-950/40 p-4 rounded-xl border border-blue-100 dark:border-blue-800/60">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-blue-800">Thu lại từ khách hàng</span>
-                  <CreditCard size={16} className="text-blue-600" />
+                  <span className="text-xs font-semibold text-blue-800 dark:text-blue-300">Thu lại từ khách hàng</span>
+                  <CreditCard size={16} className="text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="text-2xl font-bold text-blue-700 mt-2 font-mono">
+                <div className="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-2 font-mono">
                   {formatVND(totalBillable)}
                 </div>
-                <p className="text-[11px] text-blue-600 mt-0.5">Các khoản phí xuất hóa đơn khách hàng</p>
+                <p className="text-[11px] text-blue-600 dark:text-blue-400 mt-0.5">Các khoản phí xuất hóa đơn khách hàng</p>
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-700">Khoản phí kích hoạt</span>
-                  <CheckCircle2 size={16} className="text-slate-500" />
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Khoản phí kích hoạt</span>
+                  <CheckCircle2 size={16} className="text-slate-500 dark:text-slate-400" />
                 </div>
-                <div className="text-2xl font-bold text-slate-900 mt-2 font-mono">
-                  {activeFeesCount} <span className="text-sm font-normal text-slate-500">/ {fees.length} khoản phí</span>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white mt-2 font-mono">
+                  {activeFeesCount} <span className="text-sm font-normal text-slate-500 dark:text-slate-400">/ {fees.length} khoản phí</span>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-0.5">Tự động tạo khi mở lô hàng mới</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Tự động tạo khi mở lô hàng mới</p>
               </div>
             </div>
 
             {/* Fees Table */}
-            <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50/80 text-slate-600 border-b border-slate-200 font-semibold">
+                <thead className="bg-slate-50/80 dark:bg-slate-950/90 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 font-semibold">
                   <tr>
                     <th className="py-3 px-4">Tên khoản phí</th>
                     <th className="py-3 px-4">Phân loại</th>
@@ -710,22 +709,22 @@ export default function ShipmentConfig() {
                     <th className="py-3 px-4 text-right">Thao tác</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                   {fees.map((fee, idx) => (
-                    <tr key={fee.id || idx} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-slate-900">
+                    <tr key={fee.id || idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                           <span>{fee.name}</span>
                         </div>
                         {fee.notes && (
-                          <div className="text-[11px] font-normal text-slate-400 pl-3.5 mt-0.5">
+                          <div className="text-[11px] font-normal text-slate-400 dark:text-slate-500 pl-3.5 mt-0.5">
                             {fee.notes}
                           </div>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-600">
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium">
+                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
                           {fee.category}
                         </span>
                       </td>
@@ -733,22 +732,22 @@ export default function ShipmentConfig() {
                         <span
                           className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${
                             fee.type === 'CHI'
-                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                              : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                              : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                           }`}
                         >
                           {fee.type === 'CHI' ? 'Chi phí (CHI)' : 'Doanh thu (THU)'}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-slate-900 text-sm">
+                      <td className="py-3.5 px-4 font-mono font-bold text-slate-900 dark:text-white text-sm">
                         {formatVND(fee.amount)}
                       </td>
                       <td className="py-3.5 px-4 text-center">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                             fee.isBillable
-                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                              : 'bg-slate-100 text-slate-500'
+                              ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                           }`}
                         >
                           {fee.isBillable ? 'Có (Billable)' : 'Không'}
@@ -763,7 +762,7 @@ export default function ShipmentConfig() {
                             newFees[idx].active = e.target.checked;
                             setFees(newFees);
                           }}
-                          className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500"
+                          className="w-4 h-4 text-emerald-600 rounded border-slate-300 dark:border-slate-600 focus:ring-emerald-500"
                         />
                       </td>
                       <td className="py-3.5 px-4 text-right">
@@ -771,7 +770,7 @@ export default function ShipmentConfig() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditFee(fee)}
-                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                             title="Sửa khoản phí"
                           >
                             <Edit3 size={14} />
@@ -797,19 +796,19 @@ export default function ShipmentConfig() {
 
       {/* TAB 3: STAGES */}
       {activeTab === 'stages' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm space-y-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
               {t('settingsPage.shipmentPage.stages.title', 'Chu trình 14 trạng thái vận chuyển')}
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {t('settingsPage.shipmentPage.stages.description', 'Quản lý quy trình xử lý lô hàng từ lúc khởi tạo đến khi giao hàng thành công')}
             </p>
           </div>
 
-          <div className="border border-slate-200 rounded-xl overflow-hidden">
+          <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
+              <thead className="bg-slate-50/80 dark:bg-slate-950/90 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 font-semibold">
                 <tr>
                   <th className="py-2.5 px-4">#</th>
                   <th className="py-2.5 px-4">{t('settingsPage.shipmentPage.stages.stage', 'Trạng thái')}</th>
@@ -818,13 +817,13 @@ export default function ShipmentConfig() {
                   <th className="py-2.5 px-4 text-center">{t('settingsPage.shipmentPage.stages.active', 'Áp dụng')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {stages.map((stage, idx) => (
-                  <tr key={stage.code} className="hover:bg-slate-50">
-                    <td className="py-2.5 px-4 font-mono text-slate-400">{idx + 1}</td>
-                    <td className="py-2.5 px-4 font-semibold text-slate-800">{stage.name}</td>
-                    <td className="py-2.5 px-4 font-mono text-slate-500">{stage.code}</td>
-                    <td className="py-2.5 px-4 font-mono text-slate-700">{stage.sla}h</td>
+                  <tr key={stage.code} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="py-2.5 px-4 font-mono text-slate-400 dark:text-slate-500">{idx + 1}</td>
+                    <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-slate-200">{stage.name}</td>
+                    <td className="py-2.5 px-4 font-mono text-slate-500 dark:text-slate-400">{stage.code}</td>
+                    <td className="py-2.5 px-4 font-mono text-slate-700 dark:text-slate-300">{stage.sla}h</td>
                     <td className="py-2.5 px-4 text-center">
                       <input
                         type="checkbox"
@@ -834,7 +833,7 @@ export default function ShipmentConfig() {
                           newStages[idx].active = e.target.checked;
                           setStages(newStages);
                         }}
-                        className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                        className="w-4 h-4 text-blue-600 rounded border-slate-300 dark:border-slate-600 focus:ring-blue-500"
                       />
                     </td>
                   </tr>
@@ -847,19 +846,19 @@ export default function ShipmentConfig() {
 
       {/* TAB 4: CONTAINERS */}
       {activeTab === 'containers' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm space-y-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
               {t('settingsPage.shipmentPage.containers.title', 'Quy cách và loại Container')}
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Danh mục các loại vỏ container và quy chuẩn kích thước, tải trọng.
             </p>
           </div>
 
-          <div className="border border-slate-200 rounded-xl overflow-hidden">
+          <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
+              <thead className="bg-slate-50/80 dark:bg-slate-950/90 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 font-semibold">
                 <tr>
                   <th className="py-2.5 px-4">{t('settingsPage.shipmentPage.containers.code', 'Mã Cont')}</th>
                   <th className="py-2.5 px-4">{t('settingsPage.shipmentPage.containers.name', 'Tên loại Container')}</th>
@@ -868,13 +867,13 @@ export default function ShipmentConfig() {
                   <th className="py-2.5 px-4 text-center">{t('settingsPage.shipmentPage.containers.active', 'Sử dụng')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {containers.map((cont, idx) => (
-                  <tr key={cont.code} className="hover:bg-slate-50">
-                    <td className="py-2.5 px-4 font-mono font-bold text-blue-600">{cont.code}</td>
-                    <td className="py-2.5 px-4 font-semibold text-slate-800">{cont.name}</td>
-                    <td className="py-2.5 px-4 text-slate-600 font-mono">{cont.maxWeight}</td>
-                    <td className="py-2.5 px-4 text-slate-600 font-mono">{cont.volume}</td>
+                  <tr key={cont.code} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="py-2.5 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">{cont.code}</td>
+                    <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-slate-200">{cont.name}</td>
+                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300 font-mono">{cont.maxWeight}</td>
+                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300 font-mono">{cont.volume}</td>
                     <td className="py-2.5 px-4 text-center">
                       <input
                         type="checkbox"
@@ -897,20 +896,20 @@ export default function ShipmentConfig() {
 
       {/* TAB 5: ROUTES & HUBS */}
       {activeTab === 'routes' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 {t('settingsPage.shipmentPage.routes.title', 'Lộ trình & Điểm trung chuyển mặc định')}
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Dữ liệu cảng và cửa khẩu được đồng bộ trực tiếp từ danh mục Quản lý Cảng (Master Data Ports).
               </p>
             </div>
             <button
               type="button"
               onClick={() => navigate('/master-data/ports')}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline shrink-0"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline shrink-0"
             >
               <Anchor size={13} />
               <span>Quản lý danh mục cảng</span>
@@ -919,21 +918,21 @@ export default function ShipmentConfig() {
           </div>
 
           {loadingPorts ? (
-            <div className="flex items-center justify-center py-12 text-slate-400">
-              <Loader2 size={24} className="animate-spin text-blue-600 mr-2" />
+            <div className="flex items-center justify-center py-12 text-slate-400 dark:text-slate-500">
+              <Loader2 size={24} className="animate-spin text-blue-600 dark:text-blue-400 mr-2" />
               <span className="text-xs font-medium">Đang tải danh mục cảng...</span>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {/* Default Transportation Mode */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('settingsPage.shipmentPage.routes.defaultMode', 'Phương thức vận tải mặc định')}
                 </label>
                 <select
                   value={routeConfig.defaultMode}
                   onChange={(e) => setRouteConfig({ ...routeConfig, defaultMode: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                   <option value="SEA">Đường biển (SEA) — Tàu container & Sà lan</option>
                   <option value="LAND">Đường bộ (LAND) — Xe đầu kéo container</option>
@@ -943,7 +942,7 @@ export default function ShipmentConfig() {
 
               {/* Default POL (Port of Loading) Dropdown */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('settingsPage.shipmentPage.routes.defaultOrigin', 'Cảng xuất phát mặc định (POL)')} <span className="text-red-500">*</span>
                 </label>
                 <SearchableSelect
@@ -959,7 +958,7 @@ export default function ShipmentConfig() {
 
               {/* Default Transit Port Dropdown */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('settingsPage.shipmentPage.routes.defaultTransit', 'Cảng trung chuyển (Transit Port)')} <span className="text-red-500">*</span>
                 </label>
                 <SearchableSelect
@@ -975,7 +974,7 @@ export default function ShipmentConfig() {
 
               {/* Default POD (Port of Discharge) Dropdown */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('settingsPage.shipmentPage.routes.defaultDest', 'Cảng/Điểm đích mặc định (POD)')} <span className="text-red-500">*</span>
                 </label>
                 <SearchableSelect
@@ -991,7 +990,7 @@ export default function ShipmentConfig() {
 
               {/* Default Border Gate Dropdown */}
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('settingsPage.shipmentPage.routes.defaultBorder', 'Cửa khẩu đường bộ')}
                 </label>
                 <SearchableSelect
@@ -1011,24 +1010,24 @@ export default function ShipmentConfig() {
 
       {/* TAB 6: REQUIRED DOCUMENTS */}
       {activeTab === 'documents' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm space-y-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Danh mục chứng từ bắt buộc</h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Danh mục chứng từ bắt buộc</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Các tài liệu cần nhân viên logistics tải lên để chuyển tiếp trạng thái lô hàng.
             </p>
           </div>
 
-          <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden text-xs">
+          <div className="border border-slate-200 dark:border-slate-800 rounded-xl divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden text-xs">
             {documents.map((doc, idx) => (
-              <div key={idx} className="p-3.5 flex items-center justify-between bg-white hover:bg-slate-50">
+              <div key={idx} className="p-3.5 flex items-center justify-between bg-white/90 dark:bg-slate-900/80 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                  <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
                     <FileText size={16} />
                   </div>
                   <div>
-                    <div className="font-semibold text-slate-900">{doc.name}</div>
-                    <div className="text-[11px] text-slate-400">Yêu cầu tại mốc: <span className="font-mono font-medium text-slate-600">{doc.stage}</span></div>
+                    <div className="font-semibold text-slate-900 dark:text-white">{doc.name}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-slate-500">Yêu cầu tại mốc: <span className="font-mono font-medium text-slate-600 dark:text-slate-300">{doc.stage}</span></div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1040,9 +1039,9 @@ export default function ShipmentConfig() {
                       newDocs[idx].required = e.target.checked;
                       setDocuments(newDocs);
                     }}
-                    className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-blue-600 rounded border-slate-300 dark:border-slate-600 focus:ring-blue-500"
                   />
-                  <span className="text-xs text-slate-600">Bắt buộc</span>
+                  <span className="text-xs text-slate-600 dark:text-slate-300">Bắt buộc</span>
                 </div>
               </div>
             ))}
@@ -1053,20 +1052,20 @@ export default function ShipmentConfig() {
       {/* Fee Add / Edit Modal */}
       {isFeeModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
                   <Receipt size={18} />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                   {editingFee ? 'Chỉnh sửa khoản phí mặc định' : 'Thêm khoản phí mặc định mới'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsFeeModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg transition-colors"
               >
                 <X size={16} />
               </button>
@@ -1074,7 +1073,7 @@ export default function ShipmentConfig() {
 
             <form onSubmit={handleSaveFee} className="p-6 space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Tên khoản phí <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -1083,17 +1082,17 @@ export default function ShipmentConfig() {
                   placeholder="VD: Phí kiểm hóa, Phí bốc xếp..."
                   value={feeForm.name}
                   onChange={(e) => setFeeForm({ ...feeForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Phân loại / Nhóm</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Phân loại / Nhóm</label>
                   <select
                     value={feeForm.category}
                     onChange={(e) => setFeeForm({ ...feeForm, category: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   >
                     <option value="Hải quan">Hải quan</option>
                     <option value="Hiện trường">Hiện trường</option>
@@ -1105,11 +1104,11 @@ export default function ShipmentConfig() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Loại phí</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Loại phí</label>
                   <select
                     value={feeForm.type}
                     onChange={(e) => setFeeForm({ ...feeForm, type: e.target.value as 'CHI' | 'THU' })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   >
                     <option value="CHI">Chi phí (CHI)</option>
                     <option value="THU">Doanh thu (THU)</option>
@@ -1118,7 +1117,7 @@ export default function ShipmentConfig() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Số tiền định mức (VND) <span className="text-red-500">*</span>
                 </label>
                 <CurrencyInput
@@ -1129,34 +1128,34 @@ export default function ShipmentConfig() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Ghi chú & Mục đích</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ghi chú & Mục đích</label>
                 <input
                   type="text"
                   placeholder="Mô tả chi tiết mục đích chi phí..."
                   value={feeForm.notes}
                   onChange={(e) => setFeeForm({ ...feeForm, notes: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800">
                 <div>
-                  <div className="font-semibold text-slate-800">Thu lại từ khách hàng</div>
-                  <div className="text-[11px] text-slate-500">Xuất hóa đơn hoặc quyết toán với khách hàng</div>
+                  <div className="font-semibold text-slate-800 dark:text-slate-200">Thu lại từ khách hàng</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">Xuất hóa đơn hoặc quyết toán với khách hàng</div>
                 </div>
                 <input
                   type="checkbox"
                   checked={feeForm.isBillable}
                   onChange={(e) => setFeeForm({ ...feeForm, isBillable: e.target.checked })}
-                  className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500"
+                  className="w-4 h-4 text-emerald-600 rounded border-slate-300 dark:border-slate-600 focus:ring-emerald-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsFeeModalOpen(false)}
-                  className="px-4 py-2 font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   Hủy
                 </button>
@@ -1171,6 +1170,7 @@ export default function ShipmentConfig() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

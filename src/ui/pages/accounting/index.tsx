@@ -83,23 +83,23 @@ export default function AccountingDashboard() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-slate-50/50">
+    <div className="flex flex-col h-full bg-transparent text-slate-900 dark:text-slate-100">
       {/* Header */}
       <div className="px-8 pt-8 pb-0 shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-              <Calculator size={24} className="text-blue-600" />
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+              <Calculator size={24} className="text-blue-600 dark:text-blue-400" />
               <span>Quản lý Kế toán & Sổ quỹ Doanh nghiệp</span>
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Quản lý toàn diện công nợ phải thu khách hàng, công nợ phải trả đối tác/hãng tàu, sổ quỹ tiền mặt ngân hàng và báo cáo dòng tiền.
             </p>
           </div>
         </div>
 
         {/* Navigation Tabs - Modern Segmented Underline Styling */}
-        <div className="flex items-center gap-2 mt-6 border-b border-slate-200 overflow-x-auto hide-scrollbar">
+        <div className="flex items-center gap-2 mt-6 border-b border-slate-200 dark:border-slate-800 overflow-x-auto hide-scrollbar">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -107,13 +107,13 @@ export default function AccountingDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-3 text-xs font-bold border-b-2 transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-5 py-3 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'border-blue-600 text-blue-700 bg-white rounded-t-xl shadow-xs'
-                    : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50'
+                    ? 'border-blue-600 text-blue-700 dark:text-blue-400 bg-white dark:bg-slate-900/90 rounded-t-xl shadow-xs'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
                 }`}
               >
-                <Icon size={16} className={isActive ? 'text-blue-600' : 'text-slate-400'} />
+                <Icon size={16} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'} />
                 <span>{tab.label}</span>
                 {typeof tab.badgeCount === 'number' && tab.badgeCount > 0 && (
                   <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${tab.badgeClass}`}>

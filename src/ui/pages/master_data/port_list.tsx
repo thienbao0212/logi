@@ -18,8 +18,10 @@ import {
   Truck,
   Plane,
   Layers,
-  Filter
+  Filter,
+  Download
 } from 'lucide-react';
+import { Button } from '../../components/common/index.js';
 
 interface Port {
   id: string;
@@ -246,50 +248,69 @@ export default function PortList() {
     }
   };
 
+  const handleExportCsv = () => {
+    const headers = ['Mã cảng', 'Tên cảng/cửa khẩu', 'Phân loại', 'Thành phố', 'Quốc gia', 'Địa chỉ', 'Trạng thái'];
+    const rows = ports.map(p => [
+      p.code,
+      `"${p.name.replace(/"/g, '""')}"`,
+      p.type,
+      `"${(p.city || '').replace(/"/g, '""')}"`,
+      `"${p.country.replace(/"/g, '""')}"`,
+      `"${(p.address || '').replace(/"/g, '""')}"`,
+      p.isActive ? 'Đang hoạt động' : 'Tạm ngưng'
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const link = document.createElement('a');
+    link.href = encodeURI(csvContent);
+    link.download = `Danh_sach_Cang_Bien_Cua_Khau_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+  };
+
   return (
-    <div className="p-8 max-w-7xl mx-auto w-full space-y-6">
+    <div className="flex flex-col h-full bg-transparent">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shadow-sm">
-              <Anchor size={24} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                {t('masterData.ports.title', 'Quản lý cảng & cửa khẩu')}
-              </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
-                {t('masterData.ports.subtitle', 'Quản lý danh mục cảng biển, cảng cạn ICD, cửa khẩu và sân bay')}
-              </p>
-            </div>
+      <div className="px-8 pt-8 pb-4 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+              <Anchor size={24} className="text-blue-600 dark:text-blue-400" />
+              <span>{t('masterData.ports.title', 'Quản lý cảng & cửa khẩu')}</span>
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {t('masterData.ports.subtitle', 'Quản lý danh mục cảng biển, cảng cạn ICD, cửa khẩu và sân bay')}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <Button variant="secondary" size="sm" onClick={handleExportCsv} icon={<Download size={15} />}>
+              <span>Xuất CSV</span>
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
+              <span>{t('masterData.ports.addPort', 'Thêm cảng mới')}</span>
+            </Button>
           </div>
         </div>
-
-        <button
-          onClick={handleOpenAddModal}
-          className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 shrink-0"
-        >
-          <Plus size={15} />
-          <span>{t('masterData.ports.addPort', 'Thêm cảng mới')}</span>
-        </button>
       </div>
 
+      {/* Content Area */}
+      <div className="flex-1 overflow-auto px-8 pb-8 space-y-6">
+
       {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center gap-3">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex flex-col md:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('masterData.ports.searchPlaceholder', 'Tìm kiếm theo mã cảng, tên cảng, thành phố, quốc gia...')}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-700/80 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           />
           {search && (
             <button 
               onClick={() => setSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
             >
               <X size={16} />
             </button>
@@ -298,11 +319,11 @@ export default function PortList() {
 
         {/* Type Filter */}
         <div className="flex items-center gap-2 w-full md:w-auto shrink-0">
-          <Filter size={16} className="text-slate-400" />
+          <Filter size={16} className="text-slate-400 dark:text-slate-500" />
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-700/80 rounded-lg text-sm text-slate-700 dark:text-slate-300 focus:bg-white dark:focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           >
             <option value="ALL">{t('masterData.ports.filterAll', 'Tất cả loại cảng')}</option>
             <option value="SEAPORT">{t('masterData.ports.types.SEAPORT', 'Cảng biển')}</option>
@@ -312,31 +333,31 @@ export default function PortList() {
             <option value="AIRPORT">{t('masterData.ports.types.AIRPORT', 'Sân bay')}</option>
           </select>
 
-          <span className="text-xs font-semibold text-slate-500 px-3 py-2 bg-slate-100 rounded-lg whitespace-nowrap">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg whitespace-nowrap">
             {ports.length} {t('nav.ports', 'Cảng')}
           </span>
         </div>
       </div>
 
       {/* Ports Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl overflow-hidden">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Loader2 size={32} className="animate-spin text-blue-600 mb-3" />
+            <Loader2 size={32} className="animate-spin text-blue-600 dark:text-blue-400 mb-3" />
             <p className="text-sm font-medium">{t('common.loading', 'Đang tải danh sách...')}</p>
           </div>
         ) : ports.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Anchor size={48} className="text-slate-300 stroke-1 mb-3" />
-            <p className="text-base font-semibold text-slate-700">
+            <Anchor size={48} className="text-slate-300 dark:text-slate-600 stroke-1 mb-3" />
+            <p className="text-base font-semibold text-slate-700 dark:text-slate-300">
               {t('masterData.ports.noPorts', 'Chưa có cảng nào trong danh mục')}
             </p>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm text-center">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm text-center">
               Thêm các cảng biển, cảng ICD hoặc cửa khẩu như Cát Lái, Cái Mép, Thượng Hải, Mộc Bài để quản lý và tạo lộ trình vận chuyển.
             </p>
             <button
               onClick={handleOpenAddModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm font-medium transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/60 rounded-lg text-sm font-medium transition-colors"
             >
               <Plus size={16} />
               <span>{t('masterData.ports.addPort', 'Thêm cảng mới')}</span>
@@ -346,7 +367,7 @@ export default function PortList() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <th className="py-3.5 px-4">{t('masterData.ports.code', 'Mã cảng (UN/LOCODE)')}</th>
                   <th className="py-3.5 px-4">{t('masterData.ports.name', 'Tên cảng')}</th>
                   <th className="py-3.5 px-4">{t('masterData.ports.type', 'Phân loại')}</th>
@@ -356,47 +377,47 @@ export default function PortList() {
                   <th className="py-3.5 px-4 text-right">{t('common.actions', 'Thao tác')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300">
                 {ports.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={item.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold font-mono bg-slate-100 text-slate-800 border border-slate-200">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                         {item.code}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-slate-900">
+                    <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-slate-100">
                       {item.name}
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       {getTypeBadge(item.type)}
                     </td>
                     <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-1.5 text-slate-700">
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                         <Globe size={14} className="text-slate-400 shrink-0" />
                         <span className="font-medium">{item.country}</span>
                         {item.city && (
-                          <span className="text-slate-400 text-xs">({item.city})</span>
+                          <span className="text-slate-400 dark:text-slate-500 text-xs">({item.city})</span>
                         )}
                       </div>
                     </td>
                     <td className="py-3.5 px-4 max-w-xs truncate">
                       {item.address ? (
-                        <div className="flex items-center gap-1.5 text-slate-600">
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                           <MapPin size={14} className="text-slate-400 shrink-0" />
                           <span className="truncate" title={item.address}>{item.address}</span>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic text-xs">-</span>
+                        <span className="text-slate-400 dark:text-slate-500 italic text-xs">-</span>
                       )}
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       {item.isActive ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                           <CheckCircle2 size={12} />
                           {t('masterData.ports.active', 'Đang hoạt động')}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                           <XCircle size={12} />
                           {t('masterData.ports.inactive', 'Tạm ngưng')}
                         </span>
@@ -406,14 +427,14 @@ export default function PortList() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleOpenEditModal(item)}
-                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 rounded-lg transition-colors cursor-pointer"
                           title={t('masterData.ports.editPort', 'Chỉnh sửa')}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => setDeletingId(item.id)}
-                          className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg transition-colors cursor-pointer"
                           title={t('masterData.ports.deletePort', 'Xóa')}
                         >
                           <Trash2 size={16} />
@@ -430,14 +451,14 @@ export default function PortList() {
 
       {/* Create / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
                   <Anchor size={18} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {editingPort
                     ? t('masterData.ports.editPort', 'Chỉnh sửa cảng')
                     : t('masterData.ports.addPort', 'Thêm cảng mới')}
@@ -445,7 +466,7 @@ export default function PortList() {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -453,7 +474,7 @@ export default function PortList() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
               {formError && (
-                <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-100 flex items-center gap-2">
+                <div className="p-3 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-400 text-xs rounded-lg border border-red-100 dark:border-red-900/40 flex items-center gap-2">
                   <AlertTriangle size={15} className="shrink-0" />
                   <span>{formError}</span>
                 </div>
@@ -461,7 +482,7 @@ export default function PortList() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.ports.code', 'Mã cảng (UN/LOCODE)')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -470,18 +491,18 @@ export default function PortList() {
                     value={formData.code}
                     onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                     placeholder="VD: VNSGN, CNSHA, KHPNH"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-mono uppercase font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-mono uppercase font-semibold bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.ports.type', 'Phân loại')} <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100"
                   >
                     <option value="SEAPORT">{t('masterData.ports.types.SEAPORT', 'Cảng biển')}</option>
                     <option value="ICD">{t('masterData.ports.types.ICD', 'Cảng cạn (ICD)')}</option>
@@ -493,7 +514,7 @@ export default function PortList() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.ports.name', 'Tên cảng / Điểm trung chuyển')} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -502,13 +523,13 @@ export default function PortList() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="VD: Cảng Cát Lái (Cat Lai Port)"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.ports.country', 'Quốc gia')} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -517,12 +538,12 @@ export default function PortList() {
                     value={formData.country}
                     onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                     placeholder="VD: Việt Nam"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('masterData.ports.countryCode', 'Mã QG')}
                   </label>
                   <input
@@ -531,13 +552,13 @@ export default function PortList() {
                     onChange={(e) => setFormData({ ...formData, countryCode: e.target.value.toUpperCase() })}
                     placeholder="VN"
                     maxLength={3}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm uppercase font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm uppercase font-semibold bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.ports.city', 'Thành phố / Tỉnh')}
                 </label>
                 <input
@@ -545,33 +566,33 @@ export default function PortList() {
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   placeholder="VD: TP. Hồ Chí Minh"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  {t('masterData.ports.address', 'Địa chỉ / Vị trí')}
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  {t('masterData.ports.address', 'Địa chỉ / Khu vực cụ thể')}
                 </label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="Khu phố 2, Phường Cát Lái, TP. Thủ Đức"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="VD: Đường Nguyễn Thị Định, Phường Cát Lái, TP. Thủ Đức"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  {t('masterData.ports.notes', 'Ghi chú')}
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  {t('masterData.ports.notes', 'Ghi chú nghiệp vụ')}
                 </label>
                 <textarea
                   rows={2}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="Ghi chú về thủ tục hải quan, luồng trung chuyển..."
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
               </div>
 
@@ -581,25 +602,25 @@ export default function PortList() {
                   id="portIsActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500"
                 />
-                <label htmlFor="portIsActive" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                <label htmlFor="portIsActive" className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
                   {t('masterData.ports.active', 'Đang hoạt động')}
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                 >
                   {t('common.cancel', 'Hủy')}
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all cursor-pointer"
                 >
                   {submitting && <Loader2 size={16} className="animate-spin" />}
                   <span>{t('common.save', 'Lưu')}</span>
@@ -612,22 +633,22 @@ export default function PortList() {
 
       {/* Delete Confirmation Modal */}
       {deletingId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-sm w-full p-6 text-center">
-            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4 border border-red-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-sm w-full p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-4 border border-red-100 dark:border-red-900/40">
               <Trash2 size={24} />
             </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1.5">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1.5">
               {t('masterData.ports.deletePort', 'Xóa cảng')}
             </h3>
-            <p className="text-xs text-slate-500 mb-6">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
               {t('masterData.ports.deleteConfirm', 'Bạn có chắc chắn muốn xóa cảng này không? Hành động này không thể hoàn tác.')}
             </p>
             <div className="flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex-1"
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex-1 cursor-pointer"
               >
                 {t('common.cancel', 'Hủy')}
               </button>
@@ -635,7 +656,7 @@ export default function PortList() {
                 type="button"
                 onClick={() => handleDelete(deletingId)}
                 disabled={deleting}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all flex-1"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all flex-1 cursor-pointer"
               >
                 {deleting && <Loader2 size={15} className="animate-spin" />}
                 <span>{t('masterData.ports.deletePort', 'Xác nhận xóa')}</span>
@@ -644,6 +665,7 @@ export default function PortList() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

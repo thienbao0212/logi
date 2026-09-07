@@ -106,7 +106,7 @@ export function Dropdown({
       {label && (
         <label
           htmlFor={id}
-          className="block text-xs font-semibold text-slate-700 select-none"
+          className="block text-xs font-semibold text-slate-700 dark:text-slate-300 select-none"
         >
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
@@ -123,34 +123,34 @@ export function Dropdown({
         onClick={() => !disabled && setIsOpen((prev) => !prev)}
         className={`
           w-full py-2 px-3.5 text-xs rounded-xl font-medium transition-all duration-150 text-left
-          bg-slate-50/60 hover:bg-white focus:bg-white outline-none flex items-center justify-between gap-2
+          bg-slate-50/60 dark:bg-slate-950/70 hover:bg-white dark:hover:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 outline-none flex items-center justify-between gap-2
           border
           ${error
-            ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-red-900'
+            ? 'border-red-300 dark:border-red-800 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-red-900 dark:text-red-300'
             : isOpen
-            ? 'border-blue-500 ring-2 ring-blue-500/20 bg-white'
-            : 'border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900'
+            ? 'border-blue-500 ring-2 ring-blue-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100'
+            : 'border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 dark:text-slate-100'
           }
-          disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed
+          disabled:bg-slate-100 dark:disabled:bg-slate-900 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed
         `.trim().replace(/\s+/g, ' ')}
       >
         <div className="flex items-center gap-2 truncate flex-1 min-w-0">
           {selectedOption?.icon && (
-            <span className="shrink-0 text-slate-400">{selectedOption.icon}</span>
+            <span className="shrink-0 text-slate-400 dark:text-slate-500">{selectedOption.icon}</span>
           )}
           {selectedOption ? (
-            <span className="font-semibold text-slate-900 truncate">
+            <span className="font-semibold text-slate-900 dark:text-slate-100 truncate">
               {selectedOption.label}
             </span>
           ) : (
-            <span className="text-slate-400 truncate">{placeholder}</span>
+            <span className="text-slate-400 dark:text-slate-500 truncate">{placeholder}</span>
           )}
         </div>
 
         <ChevronDown
           size={14}
-          className={`text-slate-400 shrink-0 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-blue-600' : ''
+          className={`text-slate-400 dark:text-slate-500 shrink-0 transition-transform duration-200 ${
+            isOpen ? 'rotate-180 text-blue-600 dark:text-blue-400' : ''
           }`}
         />
       </button>
@@ -159,25 +159,25 @@ export function Dropdown({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 top-full mt-1 z-50 bg-white border border-slate-200/90 rounded-xl shadow-lg overflow-hidden animate-in fade-in-50 zoom-in-95 duration-100"
+          className="absolute left-0 right-0 top-full mt-1 z-50 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden animate-in fade-in-50 zoom-in-95 duration-100"
         >
           {searchable && (
-            <div className="p-2 border-b border-slate-100 bg-slate-50/50">
+            <div className="p-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
               <div className="relative">
-                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <input
                   ref={searchInputRef}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="w-full pl-8 pr-7 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-500/30 font-medium"
+                  className="w-full pl-8 pr-7 py-1.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-400"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                   >
                     <X size={12} />
                   </button>
@@ -188,7 +188,7 @@ export function Dropdown({
 
           <div className="max-h-60 overflow-y-auto custom-scrollbar p-1">
             {filteredOptions.length === 0 ? (
-              <div className="py-4 text-center text-xs text-slate-400 italic">
+              <div className="py-4 text-center text-xs text-slate-400 dark:text-slate-500 italic">
                 Không tìm thấy kết quả phù hợp
               </div>
             ) : (
@@ -203,10 +203,10 @@ export function Dropdown({
                     className={`
                       flex items-center justify-between px-3 py-2 rounded-lg text-xs cursor-pointer transition-colors
                       ${opt.disabled
-                        ? 'opacity-40 cursor-not-allowed text-slate-400'
+                        ? 'opacity-40 cursor-not-allowed text-slate-400 dark:text-slate-600'
                         : isSelected
-                        ? 'bg-blue-50 text-blue-700 font-bold'
-                        : 'text-slate-700 hover:bg-slate-50 font-medium'
+                        ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-bold'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium'
                       }
                     `.trim().replace(/\s+/g, ' ')}
                   >
@@ -215,7 +215,7 @@ export function Dropdown({
                       <div className="truncate">
                         <div className="truncate">{opt.label}</div>
                         {opt.subLabel && (
-                          <div className="text-[10px] text-slate-400 font-normal truncate">
+                          <div className="text-[10px] text-slate-400 dark:text-slate-500 font-normal truncate">
                             {opt.subLabel}
                           </div>
                         )}
@@ -224,11 +224,11 @@ export function Dropdown({
 
                     <div className="flex items-center gap-2 shrink-0 ml-2">
                       {opt.badge && (
-                        <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-600">
+                        <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                           {opt.badge}
                         </span>
                       )}
-                      {isSelected && <Check size={14} className="text-blue-600" />}
+                      {isSelected && <Check size={14} className="text-blue-600 dark:text-blue-400" />}
                     </div>
                   </div>
                 );

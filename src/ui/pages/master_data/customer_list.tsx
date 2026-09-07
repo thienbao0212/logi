@@ -14,8 +14,10 @@ import {
   MapPin, 
   Calendar,
   Building2,
-  AlertTriangle
+  AlertTriangle,
+  Download
 } from 'lucide-react';
+import { Button } from '../../components/common/index.js';
 
 interface Customer {
   id: string;
@@ -148,79 +150,95 @@ export default function CustomerList() {
     }
   };
 
+  const handleExportCsv = () => {
+    const headers = ['Mã KH', 'Tên khách hàng', 'Email', 'Số điện thoại', 'Địa chỉ', 'Ngày tạo'];
+    const rows = customers.map(c => [
+      c.id,
+      `"${c.name.replace(/"/g, '""')}"`,
+      c.email || '',
+      c.phone || '',
+      `"${(c.address || '').replace(/"/g, '""')}"`,
+      new Date(c.createdAt).toLocaleDateString('vi-VN')
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const link = document.createElement('a');
+    link.href = encodeURI(csvContent);
+    link.download = `Danh_sach_Khach_hang_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+  };
+
   return (
-    <div className="p-8 max-w-7xl mx-auto w-full space-y-6">
+    <div className="flex flex-col h-full bg-transparent text-slate-900 dark:text-slate-100">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shadow-sm">
-              <Users size={24} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                {t('masterData.customers.title', 'Quản lý khách hàng')}
-              </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
-                {t('masterData.customers.subtitle', 'Quản lý danh mục khách hàng và thông tin liên hệ')}
-              </p>
-            </div>
+      <div className="px-8 pt-8 pb-4 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+              <Users size={24} className="text-blue-600 dark:text-blue-400" />
+              <span>{t('masterData.customers.title', 'Quản lý khách hàng')}</span>
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {t('masterData.customers.subtitle', 'Quản lý danh mục khách hàng và thông tin liên hệ')}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <Button variant="secondary" size="sm" onClick={handleExportCsv} icon={<Download size={15} />}>
+              <span>Xuất CSV</span>
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
+              <span>{t('masterData.customers.addCustomer', 'Thêm khách hàng')}</span>
+            </Button>
           </div>
         </div>
-
-        <button
-          onClick={handleOpenAddModal}
-          className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 shrink-0"
-        >
-          <Plus size={15} />
-          <span>{t('masterData.customers.addCustomer', 'Thêm khách hàng')}</span>
-        </button>
       </div>
 
-      {/* Filter / Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+      {/* Content Area */}
+      <div className="flex-1 overflow-auto px-8 pb-8 space-y-6">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl flex items-center gap-3">
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('masterData.customers.searchPlaceholder', 'Tìm kiếm theo tên, email, số điện thoại, địa chỉ...')}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-700/80 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           />
           {search && (
             <button 
               onClick={() => setSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
             >
               <X size={16} />
             </button>
           )}
         </div>
-        <span className="text-xs font-semibold text-slate-500 px-3 py-1.5 bg-slate-100 rounded-lg">
+        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
           {customers.length} {t('nav.customers', 'Khách hàng')}
         </span>
       </div>
 
       {/* Customer Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs dark:shadow-xl overflow-hidden">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Loader2 size={32} className="animate-spin text-blue-600 mb-3" />
+          <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
+            <Loader2 size={32} className="animate-spin text-blue-600 dark:text-blue-400 mb-3" />
             <p className="text-sm font-medium">{t('common.loading', 'Đang tải danh sách...')}</p>
           </div>
         ) : customers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Building2 size={48} className="text-slate-300 stroke-1 mb-3" />
-            <p className="text-base font-semibold text-slate-700">
+          <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
+            <Building2 size={48} className="text-slate-300 dark:text-slate-600 stroke-1 mb-3" />
+            <p className="text-base font-semibold text-slate-700 dark:text-slate-300">
               {t('masterData.customers.noCustomers', 'Chưa có khách hàng nào')}
             </p>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm text-center">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm text-center">
               Hãy tạo khách hàng mới để quản lý và gán vào các đơn hàng vận chuyển.
             </p>
             <button
               onClick={handleOpenAddModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm font-medium transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg text-sm font-medium transition-colors cursor-pointer"
             >
               <Plus size={16} />
               <span>{t('masterData.customers.addCustomer', 'Thêm khách hàng')}</span>
@@ -230,7 +248,7 @@ export default function CustomerList() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="bg-slate-50/90 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <th className="py-3.5 px-4">{t('masterData.customers.name', 'Tên khách hàng')}</th>
                   <th className="py-3.5 px-4">{t('masterData.customers.email', 'Email')}</th>
                   <th className="py-3.5 px-4">{t('masterData.customers.phone', 'Số điện thoại')}</th>
@@ -239,30 +257,30 @@ export default function CustomerList() {
                   <th className="py-3.5 px-4 text-right">{t('common.actions', 'Thao tác')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-200">
                 {customers.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={c.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50 flex items-center justify-center font-bold text-xs shrink-0">
                           {c.name.substring(0, 2).toUpperCase()}
                         </div>
-                        <span className="font-semibold text-slate-900">{c.name}</span>
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">{c.name}</span>
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
                       {c.email ? (
-                        <div className="flex items-center gap-1.5 text-slate-600">
-                          <Mail size={14} className="text-slate-400 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                          <Mail size={14} className="text-slate-400 dark:text-slate-500 shrink-0" />
                           <span>{c.email}</span>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic text-xs">-</span>
+                        <span className="text-slate-400 dark:text-slate-600 italic text-xs">-</span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
                       {c.phone ? (
-                        <div className="flex items-center gap-1.5 text-slate-600">
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                           <Phone size={14} className="text-slate-400 shrink-0" />
                           <span>{c.phone}</span>
                         </div>
@@ -452,6 +470,7 @@ export default function CustomerList() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

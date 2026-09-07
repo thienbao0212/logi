@@ -56,12 +56,12 @@ const MILESTONES_CONFIG = [
 ];
 
 // Shared input class helpers
-const inputCls = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400';
+const inputCls = 'w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500';
 const inputErrCls = (issue: any) =>
   issue
     ? issue.type === 'ERROR'
-      ? 'border-red-400 ring-2 ring-red-100 bg-red-50/40 text-red-900 focus:outline-none'
-      : 'border-amber-400 ring-2 ring-amber-100 bg-amber-50/40 text-amber-900 focus:outline-none'
+      ? 'border-red-400 dark:border-red-500 ring-2 ring-red-100 dark:ring-red-950/40 bg-red-50/40 dark:bg-red-950/20 text-red-900 dark:text-red-200 focus:outline-none'
+      : 'border-amber-400 dark:border-amber-500 ring-2 ring-amber-100 dark:ring-amber-950/40 bg-amber-50/40 dark:bg-amber-950/20 text-amber-900 dark:text-amber-200 focus:outline-none'
     : inputCls;
 
 // Section header with left accent bar
@@ -69,8 +69,8 @@ function SectionHeader({ icon, title, badge }: { icon?: React.ReactNode; title: 
   return (
     <div className="flex items-center gap-2 mb-3">
       <div className="w-1 h-5 bg-blue-500 rounded-full shrink-0" />
-      {icon && <span className="text-slate-500 shrink-0">{icon}</span>}
-      <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">{title}</span>
+      {icon && <span className="text-slate-500 dark:text-slate-400 shrink-0">{icon}</span>}
+      <span className="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">{title}</span>
       {badge && <span className="ml-1">{badge}</span>}
     </div>
   );
@@ -80,11 +80,11 @@ function SectionHeader({ icon, title, badge }: { icon?: React.ReactNode; title: 
 function FieldGroup({ label, required, children, hint }: { label: string; required?: boolean; children: React.ReactNode; hint?: string }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+      <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
         {label}{required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       {children}
-      {hint && <p className="text-[10px] text-slate-400 mt-1">{hint}</p>}
+      {hint && <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">{hint}</p>}
     </div>
   );
 }
@@ -189,23 +189,23 @@ export default function TransitMilestonesPanel({
     <div className="space-y-4">
 
       {/* ── Timeline Stepper ── */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs px-6 py-5">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-xs px-6 py-5">
         {/* Header row */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-sm font-bold text-slate-900">5 Mốc vận hành</h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">5 Mốc vận hành</h3>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
               Điền đầy đủ trường <span className="text-red-500 font-bold">*</span> để hoàn thành mỗi mốc · Phí tự động đồng bộ sang Kế toán
             </p>
           </div>
           <div className="shrink-0">
             {allCompleted ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-full">
-                <CheckCircle2 size={13} className="text-emerald-600" /> Hoàn thành 5/5
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold rounded-full">
+                <CheckCircle2 size={13} className="text-emerald-600 dark:text-emerald-400" /> Hoàn thành 5/5
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-full">
-                <Clock size={13} className="text-slate-500" /> {completedCount}/5 mốc
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-full">
+                <Clock size={13} className="text-slate-500 dark:text-slate-400" /> {completedCount}/5 mốc
               </span>
             )}
           </div>
@@ -214,7 +214,7 @@ export default function TransitMilestonesPanel({
         {/* Timeline track */}
         <div className="relative flex items-start">
           {/* Connecting line — sits behind nodes */}
-          <div className="absolute top-4 left-0 right-0 h-px bg-slate-200 z-0" />
+          <div className="absolute top-4 left-0 right-0 h-px bg-slate-200 dark:bg-slate-800 z-0" />
 
           {MILESTONES_CONFIG.map((step, idx) => {
             const Icon = step.icon;
@@ -228,7 +228,7 @@ export default function TransitMilestonesPanel({
                 {idx > 0 && (
                   <div
                     className={`absolute top-4 right-1/2 w-full h-px transition-all duration-500 -z-0 ${
-                      isDone || isPast ? 'bg-emerald-400' : 'bg-slate-200'
+                      isDone || isPast ? 'bg-emerald-400 dark:bg-emerald-500' : 'bg-slate-200 dark:bg-slate-800'
                     }`}
                   />
                 )}
@@ -242,15 +242,15 @@ export default function TransitMilestonesPanel({
                 >
                   {/* Outer pulse ring for active */}
                   {isActive && (
-                    <span className="absolute w-9 h-9 rounded-full bg-blue-100 animate-pulse" />
+                    <span className="absolute w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 animate-pulse" />
                   )}
 
                   <div className={`relative w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-200 shadow-sm ${
                     isDone
                       ? 'bg-emerald-500 border-emerald-500 text-white'
                       : isActive
-                      ? 'bg-white border-blue-600 text-blue-600'
-                      : 'bg-white border-slate-300 text-slate-400'
+                      ? 'bg-white dark:bg-slate-900 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                      : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-500'
                   }`}>
                     {isDone
                       ? <CheckCircle2 size={16} className="text-white" />
@@ -266,16 +266,16 @@ export default function TransitMilestonesPanel({
                   className="mt-2.5 text-center focus:outline-none"
                 >
                   <div className={`text-[11px] font-bold leading-tight transition-colors ${
-                    isActive ? 'text-blue-700' : isDone ? 'text-emerald-700' : 'text-slate-500 group-hover:text-slate-700'
+                    isActive ? 'text-blue-700 dark:text-blue-400' : isDone ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                   }`}>
                     {step.shortLabel}
                   </div>
                   <div className={`text-[10px] mt-0.5 font-medium ${
                     isDone
-                      ? 'text-emerald-600'
+                      ? 'text-emerald-600 dark:text-emerald-400'
                       : isActive
-                      ? 'text-blue-500'
-                      : 'text-slate-400'
+                      ? 'text-blue-500 dark:text-blue-400'
+                      : 'text-slate-400 dark:text-slate-500'
                   }`}>
                     {isDone ? '✓ Xong' : isActive ? 'Đang nhập' : `Còn ${validations[idx].missingFields.length > 0 ? validations[idx].missingFields.length + ' trường' : '—'}`}
                   </div>
@@ -344,27 +344,27 @@ export default function TransitMilestonesPanel({
       ) : null}
 
       {/* ── Main Content Card ── */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-sm overflow-hidden">
 
         {/* Step Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/60 gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 dark:bg-blue-500 text-white flex items-center justify-center shadow-xs shrink-0">
               {React.createElement(MILESTONES_CONFIG[activeStep].icon, { size: 18 })}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-sm font-bold text-slate-900">{MILESTONES_CONFIG[activeStep].label}</h3>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">{MILESTONES_CONFIG[activeStep].label}</h3>
                 {currentValidation.isCompleted ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
                     <CheckCircle2 size={11} /> Đã hoàn thành
                   </span>
                 ) : currentValidation.missingFields.length > 0 ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-full">
                     <AlertTriangle size={11} /> Còn thiếu {currentValidation.missingFields.length} trường
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-full">
                     Chưa có dữ liệu
                   </span>
                 )}
@@ -1083,11 +1083,11 @@ export default function TransitMilestonesPanel({
         </div>
 
         {/* ── Footer Nav ── (Prev/Next only, no duplicate Save) */}
-        <div className="px-6 py-3.5 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between">
+        <div className="px-6 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {activeStep > 0 && (
               <button type="button" onClick={() => { setActiveStep(activeStep - 1); setShowOptional(false); }}
-                className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-1.5">
+                className="px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60 rounded-xl transition-colors flex items-center gap-1.5">
                 <ChevronLeft size={13} />
                 {MILESTONES_CONFIG[activeStep - 1].shortLabel}
               </button>
@@ -1096,7 +1096,7 @@ export default function TransitMilestonesPanel({
           <div className="flex items-center gap-2">
             {activeStep < 4 && (
               <button type="button" onClick={() => { setActiveStep(activeStep + 1); setShowOptional(false); }}
-                className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-1.5">
+                className="px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60 rounded-xl transition-colors flex items-center gap-1.5">
                 {MILESTONES_CONFIG[activeStep + 1].shortLabel}
                 <ChevronRight size={13} />
               </button>
