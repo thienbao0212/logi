@@ -96,7 +96,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       {/* Top Navigation Bar */}
       <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-6 shrink-0 z-10 transition-colors duration-200">
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 shrink-0 overflow-hidden"
+          style={{
+            width: collapsed ? '40px' : '232px',
+            transition: 'width 300ms cubic-bezier(0.4,0,0.2,1)',
+          }}
+        >
           <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
             <Package size={20} />
           </div>
@@ -115,8 +121,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </span>
         </div>
 
-        {/* Dynamic header content injected from pages via Portal */}
-        <div id="app-header-extra" className="flex-1 flex justify-start items-center pl-6 pr-4 overflow-hidden min-w-0" />
+        {/* Dynamic header content injected from pages via Portal - aligned with main content */}
+        <div id="app-header-extra" className="flex-1 flex justify-start items-center pl-6 md:pl-8 pr-4 overflow-hidden min-w-0" />
 
         <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {/* Theme Toggle Button */}
@@ -178,14 +184,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   onClick={() => navigate('/admin')}
                   title={collapsed ? t('nav.adminDashboard', 'Admin Dashboard') : undefined}
                   className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname.startsWith('/admin')
+                    location.pathname === '/admin'
                       ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 font-semibold'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-100'
                   }`}
                 >
                   <LayoutDashboard
                     size={18}
-                    className={`shrink-0 ${location.pathname.startsWith('/admin') ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
+                    className={`shrink-0 ${location.pathname === '/admin' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}
                   />
                   <span
                     style={{

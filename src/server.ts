@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import authApp from './api/app/auth/index.js'
 import shipmentsApp from './api/app/shipments/index.js'
 import masterDataApp from './api/app/master_data/index.js'
+import usersApp from './api/app/users/index.js'
 import { requireAuth } from './api/middleware/auth.js'
 import { AppContext } from './lib/context/types.js'
 
@@ -13,6 +14,7 @@ app.get('/api/system/health', (c) => c.json({ status: 'ok' }))
 app.route('/api/auth', authApp)
 app.route('/api/shipments', shipmentsApp)
 app.route('/api/master-data', masterDataApp)
+app.route('/api/users', usersApp)
 
 app.onError((err, c) => {
   console.error('Unhandled Error:', err);

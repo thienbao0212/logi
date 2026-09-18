@@ -38,7 +38,12 @@ interface ShipmentPnlRow {
   netProfit: number; // Lợi nhuận ròng = revenue - totalCost
 }
 
-export default function ShipmentPnlTab() {
+export interface ShipmentPnlTabProps {
+  startDate?: string;
+  endDate?: string;
+}
+
+export default function ShipmentPnlTab({ startDate = '', endDate = '' }: ShipmentPnlTabProps = {}) {
   const navigate = useNavigate();
   const [shipments, setShipments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -163,9 +168,20 @@ export default function ShipmentPnlTab() {
       if (filterProfit === 'PROFIT') return r.netProfit > 0;
       if (filterProfit === 'LOSS') return r.netProfit < 0;
       if (filterProfit === 'BREAK_EVEN') return r.netProfit === 0;
+
+      // Filter by date range (createdAt is ISO string)
+      if (startDate) {
+        const rowDate = r.createdAt ? r.createdAt.slice(0, 10) : '';
+        if (rowDate && rowDate < startDate) return false;
+      }
+      if (endDate) {
+        const rowDate = r.createdAt ? r.createdAt.slice(0, 10) : '';
+        if (rowDate && rowDate > endDate) return false;
+      }
+
       return true;
     });
-  }, [pnlRows, searchQuery, filterProfit]);
+  }, [pnlRows, searchQuery, filterProfit, startDate, endDate]);
 
   // Totals calculations
   const totals = useMemo(() => {
@@ -211,10 +227,11 @@ export default function ShipmentPnlTab() {
   }, [filteredRows]);
 
   const handleExportCsv = () => {
-    const headers = ['STT', 'Mã lô hàng', 'Khách hàng', 'Tổng chi phí trực tiếp', 'Chi phí quản lý', 'Tổng chi phí', 'Doanh thu lô', 'Lợi nhuận ròng'];
+    const headers = ['STT', 'Mã lô hàng', 'Ngày tạo', 'Khách hàng', 'Tổng chi phí trực tiếp', 'Chi phí quản lý', 'Tổng chi phí', 'Doanh thu lô', 'Lợi nhuận ròng'];
     const rows = filteredRows.map((r, idx) => [
       idx + 1,
       r.trackingNumber,
+      r.createdAt ? r.createdAt.slice(0, 10) : '',
       `"${r.customerName || ''}"`,
       r.directCost,
       r.managementCost,
@@ -227,6 +244,7 @@ export default function ShipmentPnlTab() {
     rows.push([
       'Tổng',
       `${totals.count} lô`,
+      '—',
       '—',
       totals.totalDirect,
       totals.totalManagement,
@@ -449,6 +467,9 @@ export default function ShipmentPnlTab() {
                           </span>
                           <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[160px]">
                             {row.customerName}
+                          </div>
+                          <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
+                            {row.createdAt ? new Date(row.createdAt).toLocaleDateString('vi-VN') : '—'}
                           </div>
                         </div>
                       </td>

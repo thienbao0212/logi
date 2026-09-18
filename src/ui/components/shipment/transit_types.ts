@@ -1,4 +1,5 @@
 // Types and helpers for 5 Transit Milestones & Cost Reconciliation
+import { apiFetch } from '@/lib/fetch.js';
 
 export interface ContainerItem {
   id: string;
@@ -659,8 +660,247 @@ export function loadMilestonesFromStorage(shipmentId: string, initialShipment?: 
   return defaultData;
 }
 
+export interface ShipmentActivityPayload {
+  id?: string;
+  action: string;
+  description: string | { vi: string; en: string };
+  entityType?: string;
+  entityId?: string;
+  oldValue?: string;
+  newValue?: string;
+  createdAt?: string;
+  createdBy?: string;
+}
+
+export function recordShipmentActivity(shipmentId: string, activity: ShipmentActivityPayload): void {
+  try {
+    const actId = activity.id || `act-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const nowIso = new Date().toISOString();
+    const userStr = localStorage.getItem('user');
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const authorName = currentUser?.fullName || currentUser?.name || currentUser?.email || 'You';
+
+    const newActivity = {
+      id: actId,
+      shipmentId,
+      action: activity.action,
+      description: typeof activity.description === 'string' ? { vi: activity.description, en: activity.description } : activity.description,
+      entityType: activity.entityType || 'SHIPMENT',
+      entityId: activity.entityId,
+      oldValue: activity.oldValue,
+      newValue: activity.newValue,
+      createdAt: activity.createdAt || nowIso,
+      createdBy: authorName,
+    };
+
+    // 1. Save to LocalStorage for instant reactive UI updates
+    const key = `logiflow_activities_${shipmentId}`;
+    const raw = localStorage.getItem(key);
+    const list = raw ? JSON.parse(raw) : [];
+    localStorage.setItem(key, JSON.stringify([newActivity, ...list].slice(0, 200)));
+
+    // 2. Sync to Backend API in background
+    apiFetch(`/api/shipments/${shipmentId}/activities`, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: newActivity.action,
+        description: newActivity.description.vi || newActivity.description.en,
+        entityType: newActivity.entityType,
+        entityId: newActivity.entityId,
+        oldValue: newActivity.oldValue,
+        newValue: newActivity.newValue,
+      }),
+    }).catch(() => {
+      // Backend may be offline or in mock mode; local store guarantees persistence
+    });
+  } catch (e) {
+    console.error('Failed to record activity:', e);
+  }
+}
+
+function diffAndLogMilestoneChanges(shipmentId: string, oldData: TransitMilestonesData, newData: TransitMilestonesData): void {
+  // Milestone 1 diffs
+  if (oldData.m1?.arrivalDate !== newData.m1?.arrivalDate && newData.m1?.arrivalDate) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_UPDATED',
+      description: { vi: `Mốc 1 (Cảng đến): Cập nhật ngày hàng đến: "${newData.m1.arrivalDate}" (cũ: "${oldData.m1?.arrivalDate || 'trống'}")`, en: `Milestone 1: Updated arrival date to "${newData.m1.arrivalDate}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m1?.arrivalDate,
+      newValue: newData.m1.arrivalDate,
+    });
+  }
+  if (oldData.m1?.shippingLine !== newData.m1?.shippingLine && newData.m1?.shippingLine) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_UPDATED',
+      description: { vi: `Mốc 1: Cập nhật hãng tàu: "${newData.m1.shippingLine}"`, en: `Milestone 1: Updated shipping line "${newData.m1.shippingLine}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m1?.shippingLine,
+      newValue: newData.m1.shippingLine,
+    });
+  }
+  if (oldData.m1?.billOfLading !== newData.m1?.billOfLading && newData.m1?.billOfLading) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_UPDATED',
+      description: { vi: `Mốc 1: Cập nhật số vận đơn (BL): "${newData.m1.billOfLading}"`, en: `Milestone 1: Updated Bill of Lading "${newData.m1.billOfLading}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m1?.billOfLading,
+      newValue: newData.m1.billOfLading,
+    });
+  }
+  if (oldData.m1?.freeDemDays !== newData.m1?.freeDemDays && newData.m1?.freeDemDays !== undefined) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_UPDATED',
+      description: { vi: `Mốc 1: Cập nhật số ngày miễn lưu bãi (DEM): ${newData.m1.freeDemDays} ngày (Hạn: ${newData.m1.demExpiryDate || '—'})`, en: `Milestone 1: Updated free DEM days to ${newData.m1.freeDemDays}` },
+      entityType: 'MILESTONE',
+      oldValue: `${oldData.m1?.freeDemDays} ngày`,
+      newValue: `${newData.m1.freeDemDays} ngày`,
+    });
+  }
+  if (oldData.m1?.freeDetDays !== newData.m1?.freeDetDays && newData.m1?.freeDetDays !== undefined) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_UPDATED',
+      description: { vi: `Mốc 1: Cập nhật số ngày miễn lưu vỏ (DET): ${newData.m1.freeDetDays} ngày`, en: `Milestone 1: Updated free DET days to ${newData.m1.freeDetDays}` },
+      entityType: 'MILESTONE',
+      oldValue: `${oldData.m1?.freeDetDays} ngày`,
+      newValue: `${newData.m1.freeDetDays} ngày`,
+    });
+  }
+  if (oldData.m1?.declarationNumber !== newData.m1?.declarationNumber && newData.m1?.declarationNumber) {
+    recordShipmentActivity(shipmentId, {
+      action: 'CUSTOMS_UPDATED',
+      description: { vi: `Mốc 1: Cập nhật số tờ khai HQ: "${newData.m1.declarationNumber}"`, en: `Milestone 1: Updated customs declaration "${newData.m1.declarationNumber}"` },
+      entityType: 'CUSTOMS',
+      oldValue: oldData.m1?.declarationNumber,
+      newValue: newData.m1.declarationNumber,
+    });
+  }
+  if (!oldData.m1?.isCompleted && newData.m1?.isCompleted) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_COMPLETED',
+      description: { vi: 'Mốc 1: Đã hoàn thành thủ tục tại Cảng đến Cát Lái', en: 'Milestone 1: Port arrival completed' },
+      entityType: 'MILESTONE',
+      newValue: 'ĐÃ HOÀN THÀNH',
+    });
+  }
+
+  // Milestone 2 diffs (Hải quan)
+  if (oldData.m2?.clearanceDate !== newData.m2?.clearanceDate && newData.m2?.clearanceDate) {
+    recordShipmentActivity(shipmentId, {
+      action: 'CUSTOMS_UPDATED',
+      description: { vi: `Mốc 2 (Hải quan): Cập nhật ngày thông quan: "${newData.m2.clearanceDate}"`, en: `Milestone 2: Updated customs clearance date "${newData.m2.clearanceDate}"` },
+      entityType: 'CUSTOMS',
+      oldValue: oldData.m2?.clearanceDate,
+      newValue: newData.m2.clearanceDate,
+    });
+  }
+  if (oldData.m2?.transitPermitNo !== newData.m2?.transitPermitNo && newData.m2?.transitPermitNo) {
+    recordShipmentActivity(shipmentId, {
+      action: 'CUSTOMS_UPDATED',
+      description: { vi: `Mốc 2: Cập nhật giấy phép quá cảnh: "${newData.m2.transitPermitNo}"`, en: `Milestone 2: Updated transit permit "${newData.m2.transitPermitNo}"` },
+      entityType: 'CUSTOMS',
+      oldValue: oldData.m2?.transitPermitNo,
+      newValue: newData.m2.transitPermitNo,
+    });
+  }
+  if (oldData.m2?.brokerName !== newData.m2?.brokerName && newData.m2?.brokerName) {
+    recordShipmentActivity(shipmentId, {
+      action: 'CUSTOMS_UPDATED',
+      description: { vi: `Mốc 2: Cập nhật đại lý hải quan: "${newData.m2.brokerName}"`, en: `Milestone 2: Updated customs broker "${newData.m2.brokerName}"` },
+      entityType: 'CUSTOMS',
+      oldValue: oldData.m2?.brokerName,
+      newValue: newData.m2.brokerName,
+    });
+  }
+  if (!oldData.m2?.isCompleted && newData.m2?.isCompleted) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_COMPLETED',
+      description: { vi: 'Mốc 2: Đã hoàn thành thủ tục Hải quan quá cảnh', en: 'Milestone 2: Customs clearance completed' },
+      entityType: 'CUSTOMS',
+      newValue: 'ĐÃ HOÀN THÀNH',
+    });
+  }
+
+  // Milestone 3 diffs (Vận chuyển đường bộ)
+  if (oldData.m3?.truckPlate !== newData.m3?.truckPlate && newData.m3?.truckPlate) {
+    recordShipmentActivity(shipmentId, {
+      action: 'TRUCKING_UPDATED',
+      description: { vi: `Mốc 3 (Vận chuyển): Cập nhật biển số xe vận chuyển: "${newData.m3.truckPlate}" (Tài xế: ${newData.m3.driverName || '—'})`, en: `Milestone 3: Updated truck plate "${newData.m3.truckPlate}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m3?.truckPlate,
+      newValue: newData.m3.truckPlate,
+    });
+  }
+  if (oldData.m3?.departureDate !== newData.m3?.departureDate && newData.m3?.departureDate) {
+    recordShipmentActivity(shipmentId, {
+      action: 'TRUCKING_UPDATED',
+      description: { vi: `Mốc 3: Xe bắt đầu lăn bánh rời cảng: "${newData.m3.departureDate}"`, en: `Milestone 3: Truck departed on "${newData.m3.departureDate}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m3?.departureDate,
+      newValue: newData.m3.departureDate,
+    });
+  }
+  if (!oldData.m3?.isCompleted && newData.m3?.isCompleted) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_COMPLETED',
+      description: { vi: 'Mốc 3: Đã hoàn thành khâu vận chuyển đường bộ đến biên giới', en: 'Milestone 3: Road trucking completed' },
+      entityType: 'MILESTONE',
+      newValue: 'ĐÃ HOÀN THÀNH',
+    });
+  }
+
+  // Milestone 4 diffs (Cửa khẩu xuất)
+  if (oldData.m4?.borderGateName !== newData.m4?.borderGateName && newData.m4?.borderGateName) {
+    recordShipmentActivity(shipmentId, {
+      action: 'BORDER_UPDATED',
+      description: { vi: `Mốc 4 (Cửa khẩu): Cập nhật cửa khẩu xuất: "${newData.m4.borderGateName}"`, en: `Milestone 4: Updated border gate "${newData.m4.borderGateName}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m4?.borderGateName,
+      newValue: newData.m4.borderGateName,
+    });
+  }
+  if (!oldData.m4?.isCompleted && newData.m4?.isCompleted) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_COMPLETED',
+      description: { vi: `Mốc 4: Đã hoàn tất thủ tục xuất cảnh qua cửa khẩu ${newData.m4.borderGateName || 'Mộc Bài'}`, en: 'Milestone 4: Border gate exit clearance completed' },
+      entityType: 'MILESTONE',
+      newValue: 'ĐÃ HOÀN THÀNH',
+    });
+  }
+
+  // Milestone 5 diffs (Đích đến & Trả rỗng)
+  if (oldData.m5?.depotName !== newData.m5?.depotName && newData.m5?.depotName) {
+    recordShipmentActivity(shipmentId, {
+      action: 'DEPOT_UPDATED',
+      description: { vi: `Mốc 5 (Đích đến): Cập nhật bãi trả rỗng Depot: "${newData.m5.depotName}"`, en: `Milestone 5: Updated empty return depot "${newData.m5.depotName}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m5?.depotName,
+      newValue: newData.m5.depotName,
+    });
+  }
+  if (oldData.m5?.actualReturnDate !== newData.m5?.actualReturnDate && newData.m5?.actualReturnDate) {
+    recordShipmentActivity(shipmentId, {
+      action: 'DELIVERY_UPDATED',
+      description: { vi: `Mốc 5: Cập nhật ngày trả rỗng vỏ container thực tế: "${newData.m5.actualReturnDate}"`, en: `Milestone 5: Return date "${newData.m5.actualReturnDate}"` },
+      entityType: 'MILESTONE',
+      oldValue: oldData.m5?.actualReturnDate,
+      newValue: newData.m5.actualReturnDate,
+    });
+  }
+  if (!oldData.m5?.isCompleted && newData.m5?.isCompleted) {
+    recordShipmentActivity(shipmentId, {
+      action: 'MILESTONE_COMPLETED',
+      description: { vi: 'Mốc 5: Đã hoàn thành giao hàng thành công & trả vỏ container rỗng tại Depot', en: 'Milestone 5: Delivery and empty container return completed' },
+      entityType: 'MILESTONE',
+      newValue: 'ĐÃ HOÀN THÀNH',
+    });
+  }
+}
+
 export function saveMilestonesToStorage(shipmentId: string, data: TransitMilestonesData): void {
   try {
+    const rawOld = localStorage.getItem(`${STORAGE_KEY_PREFIX}${shipmentId}`);
+    const oldData: TransitMilestonesData | null = rawOld ? JSON.parse(rawOld) : null;
+
     data.updatedAt = new Date().toISOString();
     // Validate and update isCompleted for each milestone
     data.m1.isCompleted = validateMilestone1(data.m1).isCompleted;
@@ -673,6 +913,11 @@ export function saveMilestonesToStorage(shipmentId: string, data: TransitMilesto
     
     // Auto-sync financial items
     syncMilestonesToFinancialStorage(shipmentId, data);
+
+    // Audit log: diff old and new milestone fields
+    if (oldData) {
+      diffAndLogMilestoneChanges(shipmentId, oldData, data);
+    }
   } catch (e) {
     console.error('Failed to save milestones to storage:', e);
   }
@@ -692,7 +937,26 @@ export function loadShipmentCostsFromStorage(shipmentId: string): FinancialCostI
 
 export function saveShipmentCostsToStorage(shipmentId: string, costs: FinancialCostItem[]): void {
   try {
+    const rawOld = localStorage.getItem(`${FINANCIAL_KEY_PREFIX}${shipmentId}`);
+    const oldCosts: FinancialCostItem[] = rawOld ? JSON.parse(rawOld) : [];
+
     localStorage.setItem(`${FINANCIAL_KEY_PREFIX}${shipmentId}`, JSON.stringify(costs));
+
+    const oldTotal = oldCosts.reduce((s, c) => s + (Number(c.amount) || 0), 0);
+    const newTotal = costs.reduce((s, c) => s + (Number(c.amount) || 0), 0);
+
+    if (rawOld && oldTotal !== newTotal) {
+      recordShipmentActivity(shipmentId, {
+        action: 'COSTS_UPDATED',
+        description: {
+          vi: `Cập nhật chi phí trực tiếp lô hàng: ${newTotal.toLocaleString('vi-VN')} đ (cũ: ${oldTotal.toLocaleString('vi-VN')} đ)`,
+          en: `Updated direct costs: ${newTotal.toLocaleString('vi-VN')} đ (old: ${oldTotal.toLocaleString('vi-VN')} đ)`,
+        },
+        entityType: 'FINANCIAL',
+        oldValue: `${oldTotal.toLocaleString('vi-VN')} đ`,
+        newValue: `${newTotal.toLocaleString('vi-VN')} đ`,
+      });
+    }
   } catch (e) {
     console.error('Failed to save financial costs:', e);
   }
@@ -833,7 +1097,23 @@ export function loadShipmentPnl(shipmentId: string): { managementCost: number; r
 
 export function saveShipmentPnl(shipmentId: string, data: { managementCost: number; revenue: number; notes?: string }): void {
   try {
+    const rawOld = localStorage.getItem(`${PNL_KEY_PREFIX}${shipmentId}`);
+    const oldPnl = rawOld ? JSON.parse(rawOld) : null;
+
     localStorage.setItem(`${PNL_KEY_PREFIX}${shipmentId}`, JSON.stringify(data));
+
+    if (oldPnl && (oldPnl.managementCost !== data.managementCost || oldPnl.revenue !== data.revenue)) {
+      recordShipmentActivity(shipmentId, {
+        action: 'PNL_UPDATED',
+        description: {
+          vi: `Cập nhật tài chính P&L: CP quản lý ${data.managementCost.toLocaleString('vi-VN')} đ (cũ: ${oldPnl.managementCost.toLocaleString('vi-VN')} đ), Doanh thu ${data.revenue.toLocaleString('vi-VN')} đ (cũ: ${oldPnl.revenue.toLocaleString('vi-VN')} đ)`,
+          en: `Updated P&L: Management cost ${data.managementCost} (old: ${oldPnl.managementCost}), Revenue ${data.revenue} (old: ${oldPnl.revenue})`,
+        },
+        entityType: 'FINANCIAL',
+        oldValue: `CP: ${oldPnl.managementCost.toLocaleString('vi-VN')} đ, DT: ${oldPnl.revenue.toLocaleString('vi-VN')} đ`,
+        newValue: `CP: ${data.managementCost.toLocaleString('vi-VN')} đ, DT: ${data.revenue.toLocaleString('vi-VN')} đ`,
+      });
+    }
   } catch (e) {
     console.error(e);
   }

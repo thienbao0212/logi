@@ -14,6 +14,7 @@ import { AppContext } from '../lib/context/types.js';
 import { AppError } from '../lib/errors.js';
 import { eq, and, or, inArray } from 'drizzle-orm';
 import { requireAccess } from '../lib/access.js';
+import { addActivity, logShipmentFieldChanges } from './transit.js';
 
 async function resolveLocationId(companyId: string, locationOrPortId: string): Promise<string> {
   if (!locationOrPortId) {
@@ -119,6 +120,18 @@ export async function createShipment(ctx: AppContext, data: any) {
     createdBy: ctx.user!.id,
   });
 
+  // Audit Log: Shipment Created
+  await addActivity(ctx, shipment.id, {
+    action: 'SHIPMENT_CREATED',
+    description: {
+      vi: `Tạo mới lô hàng (Mã vận đơn: ${trackingNumber}, Phương thức: ${data.mode || 'SEA'})`,
+      en: `Created shipment (Tracking: ${trackingNumber}, Mode: ${data.mode || 'SEA'})`,
+    },
+    entityType: 'SHIPMENT',
+    entityId: shipment.id,
+    newValue: trackingNumber,
+  });
+
   return shipment;
 }
 
@@ -134,6 +147,9 @@ export async function updateShipment(ctx: AppContext, shipmentId: string, data: 
   if (data.destinationId) {
     updateData.destinationId = await resolveLocationId(shipment.companyId, data.destinationId);
   }
+
+  // Audit Log: Log every changed field before committing update
+  await logShipmentFieldChanges(ctx, shipmentId, shipment, data);
 
   const [updated] = await db.update(shipments)
     .set({
@@ -175,6 +191,18 @@ export async function addTrackingEvent(ctx: AppContext, shipmentId: string, data
 
   // Update shipment status
   await db.update(shipments).set({ status: data.status, updatedAt: new Date() }).where(eq(shipments.id, shipmentId));
+
+  // Audit Log: Event & Status Update
+  await addActivity(ctx, shipmentId, {
+    action: 'EVENT_ADDED',
+    description: {
+      vi: `Cập nhật lộ trình: "${data.description}" (Trạng thái: ${data.status})`,
+      en: `Tracking event: "${data.description}" (Status: ${data.status})`,
+    },
+    entityType: 'STATUS',
+    oldValue: shipment.status,
+    newValue: data.status,
+  });
 
   return event;
 }

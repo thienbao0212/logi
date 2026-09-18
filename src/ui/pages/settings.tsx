@@ -45,6 +45,10 @@ export default function Settings() {
       navigate('/settings/shipments');
       return;
     }
+    if (groupId === 'users_roles') {
+      navigate('/settings/users');
+      return;
+    }
     setActiveModalGroup(groupId);
   };
 

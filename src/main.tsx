@@ -17,6 +17,7 @@ import VendorList from './ui/pages/master_data/vendor_list.js'
 import ChargeList from './ui/pages/master_data/charge_list.js'
 import Settings from './ui/pages/settings.js'
 import ShipmentConfig from './ui/pages/settings/shipment_config.js'
+import UserManagement from './ui/pages/settings/user_management.js'
 import PrivateRoute from './ui/components/private_route.js'
 import { ThemeProvider } from './ui/context/theme_context.js'
 
@@ -97,6 +98,12 @@ if (rootElement) {
           <Route path="/settings/shipments" element={
             <PrivateRoute role="logistic">
               <ShipmentConfig />
+            </PrivateRoute>
+          } />
+
+          <Route path="/settings/users" element={
+            <PrivateRoute role="admin">
+              <UserManagement />
             </PrivateRoute>
           } />
         </Routes>

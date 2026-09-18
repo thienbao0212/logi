@@ -1,4 +1,5 @@
 import { FinancialRequest, RequestStatus } from './types.js';
+import { recordShipmentActivity } from '../../transit_types.js';
 
 const STORAGE_KEY = 'MOCK_FINANCIAL_REQUESTS';
 
@@ -175,10 +176,39 @@ export const FinancialService = {
     
     MOCK_REQUESTS = [newReq, ...MOCK_REQUESTS];
     saveRequests();
+
+    if (shipmentId) {
+      recordShipmentActivity(shipmentId, {
+        action: 'FINANCIAL_REQUEST_CREATED',
+        description: {
+          vi: `Tạo yêu cầu ${isThu ? 'Thu' : 'Chi'} [${newReq.id}]: ${newReq.amount.toLocaleString('vi-VN')} ${newReq.currency} (${newReq.category} - ${newReq.description || newReq.partyName})`,
+          en: `Created ${newReq.type} request [${newReq.id}]: ${newReq.amount} ${newReq.currency} (${newReq.category})`,
+        },
+        entityType: 'FINANCIAL',
+        entityId: newReq.id,
+        newValue: `${newReq.amount.toLocaleString('vi-VN')} ${newReq.currency}`,
+      });
+    }
+
     return newReq;
   },
   
   updateRequestStatus: async (reqId: string, status: RequestStatus, updateFields?: Partial<FinancialRequest>) => {
+    const targetReq = MOCK_REQUESTS.find(r => r.id === reqId);
+    if (targetReq?.shipmentId && targetReq.status !== status) {
+      recordShipmentActivity(targetReq.shipmentId, {
+        action: 'FINANCIAL_STATUS_UPDATED',
+        description: {
+          vi: `Cập nhật trạng thái yêu cầu ${targetReq.type} [${targetReq.id}]: "${targetReq.status}" ➔ "${status}"`,
+          en: `Updated ${targetReq.type} request [${targetReq.id}] status: "${targetReq.status}" ➔ "${status}"`,
+        },
+        entityType: 'FINANCIAL',
+        entityId: targetReq.id,
+        oldValue: targetReq.status,
+        newValue: status,
+      });
+    }
+
     MOCK_REQUESTS = MOCK_REQUESTS.map(req => {
       if (req.id === reqId) {
         const history = [...(req.history || [])];
@@ -220,6 +250,20 @@ export const FinancialService = {
   },
   
   recordPayment: async (reqId: string, paidAmount: number) => {
+    const targetReq = MOCK_REQUESTS.find(r => r.id === reqId);
+    if (targetReq?.shipmentId) {
+      recordShipmentActivity(targetReq.shipmentId, {
+        action: 'FINANCIAL_PAYMENT_RECORDED',
+        description: {
+          vi: `Ghi nhận thanh toán yêu cầu ${targetReq.type} [${targetReq.id}]: ${paidAmount.toLocaleString('vi-VN')} ${targetReq.currency}`,
+          en: `Recorded payment for ${targetReq.type} request [${targetReq.id}]: ${paidAmount} ${targetReq.currency}`,
+        },
+        entityType: 'FINANCIAL',
+        entityId: targetReq.id,
+        newValue: `${paidAmount.toLocaleString('vi-VN')} ${targetReq.currency}`,
+      });
+    }
+
     MOCK_REQUESTS = MOCK_REQUESTS.map(req => {
       if (req.id === reqId) {
         const newPaid = req.paidAmount + paidAmount;

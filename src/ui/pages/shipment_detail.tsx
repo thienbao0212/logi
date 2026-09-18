@@ -235,10 +235,10 @@ export default function ShipmentDetail() {
         <div className="flex gap-5 items-start">
           
           {/* Main area with Tabs */}
-          <div className="flex-1 min-w-0 flex flex-col bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800/90 rounded-2xl shadow-xs overflow-hidden">
+          <div className="flex-1 min-w-0 flex flex-col bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800/90 rounded-2xl shadow-xs">
             
             {/* Tab Navigation Header */}
-            <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto sticky top-[-24px] z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xs px-2 hide-scrollbar">
+            <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto sticky top-[-24px] z-30 bg-white dark:bg-slate-900 shadow-xs px-2 hide-scrollbar rounded-t-2xl">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.key;
