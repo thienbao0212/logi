@@ -1,13 +1,18 @@
-import { Clock, ShieldAlert, CheckCircle2, DollarSign } from 'lucide-react';
+import { Clock, ShieldAlert, DollarSign, ChevronRight } from 'lucide-react';
 import { TransitMilestonesData, getDaysDiffFromToday, FinancialCostItem } from './transit_types.js';
 
 interface MilestoneAlertBannerProps {
   milestones: TransitMilestonesData;
   costs?: FinancialCostItem[];
   onNavigateMilestone?: (milestoneIndex: number) => void;
+  compact?: boolean;
 }
 
-export default function MilestoneAlertBanner({ milestones, costs = [], onNavigateMilestone }: MilestoneAlertBannerProps) {
+export default function MilestoneAlertBanner({ 
+  milestones, 
+  costs = [], 
+  onNavigateMilestone 
+}: MilestoneAlertBannerProps) {
   const alerts: Array<{
     id: string;
     type: 'critical' | 'warning' | 'info';
@@ -30,8 +35,8 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
         alerts.push({
           id: 'dem_overdue',
           type: 'critical',
-          title: `🚨 RỦI RO CAO: Đã quá hạn DEM ${Math.abs(diff)} ngày (${m1.demExpiryDate})!`,
-          description: `Container chưa rời cảng mà đã quá hạn miễn phí lưu bãi. Đang phát sinh phí phạt DEM lưu bãi hãng tàu tính theo từng ngày.`,
+          title: `🚨 Quá hạn DEM ${Math.abs(diff)} ngày (${m1.demExpiryDate})!`,
+          description: `Container chưa rời cảng mà đã quá hạn miễn phí lưu bãi. Đang phát sinh phí phạt DEM lưu bãi hãng tàu.`,
           actionLabel: 'Xử lý Mốc 2 / Mốc 3 ngay',
           milestoneIndex: isCustomsCleared ? 2 : 1,
         });
@@ -39,8 +44,8 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
         alerts.push({
           id: 'dem_today',
           type: 'critical',
-          title: `⚠️ HÔM NAY LÀ HẠN CHÓT DEM (${m1.demExpiryDate})!`,
-          description: `Hết ngày hôm nay sẽ bắt đầu tính phí phạt lưu bãi cảng. Cần hoàn tất thông quan và kéo cont rời cảng khẩn cấp.`,
+          title: `⚠️ Hôm nay là hạn chót DEM (${m1.demExpiryDate})!`,
+          description: `Hết hôm nay sẽ bắt đầu tính phí phạt lưu bãi. Cần thông quan và kéo cont rời cảng khẩn cấp.`,
           actionLabel: 'Xem Mốc 1 & 2',
           milestoneIndex: 0,
         });
@@ -48,8 +53,8 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
         alerts.push({
           id: 'dem_soon',
           type: 'warning',
-          title: `⏰ Cảnh báo Deadline: Còn ${diff} ngày là hết hạn DEM (${m1.demExpiryDate})`,
-          description: `Vui lòng đẩy nhanh tiến độ làm thủ tục Hải quan (Mốc 2) để xe kịp kéo cont rời cảng trước hạn.`,
+          title: `⏰ Còn ${diff} ngày là hết hạn DEM (${m1.demExpiryDate})`,
+          description: `Vui lòng đẩy nhanh tiến độ làm Hải quan để kịp kéo cont rời cảng trước hạn.`,
           actionLabel: 'Kiểm tra Mốc Hải quan',
           milestoneIndex: 1,
         });
@@ -67,7 +72,7 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
         alerts.push({
           id: 'det_overdue',
           type: 'critical',
-          title: `🚨 RỦI RO CAO: Đã quá hạn DET ${Math.abs(diff)} ngày (${m3.detExpiryDate})!`,
+          title: `🚨 Quá hạn DET ${Math.abs(diff)} ngày (${m3.detExpiryDate})!`,
           description: `Chưa hoàn tất trả rỗng container về depot. Đang phát sinh phí phạt lưu vỏ hãng tàu.`,
           actionLabel: 'Điền Mốc 5 Trả rỗng',
           milestoneIndex: 4,
@@ -76,7 +81,7 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
         alerts.push({
           id: 'det_today',
           type: 'critical',
-          title: `⚠️ HÔM NAY HẾT HẠN DET LƯU VỎ (${m3.detExpiryDate})!`,
+          title: `⚠️ Hôm nay hết hạn DET lưu vỏ (${m3.detExpiryDate})!`,
           description: `Cần hạ bãi trả rỗng về depot trong hôm nay để tránh bị hãng tàu phạt phí DET.`,
           actionLabel: 'Xử lý Trả rỗng',
           milestoneIndex: 4,
@@ -85,7 +90,7 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
         alerts.push({
           id: 'det_soon',
           type: 'warning',
-          title: `⏰ Cảnh báo Deadline: Còn ${diff} ngày là hết hạn DET lưu vỏ (${m3.detExpiryDate})`,
+          title: `⏰ Còn ${diff} ngày là hết hạn DET lưu vỏ (${m3.detExpiryDate})`,
           description: `Sau khi giao hàng tại Campuchia, cần điều phối xe kéo cont rỗng về depot kịp hạn.`,
           actionLabel: 'Theo dõi Mốc 4 & 5',
           milestoneIndex: 3,
@@ -103,7 +108,7 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
       alerts.push({
         id: 'sto_overdue',
         type: 'warning',
-        title: `Phát sinh phí lưu bãi Cảng STO (${Math.abs(diff)} ngày vượt định mức)`,
+        title: `Phát sinh phí lưu bãi Cảng STO (+${Math.abs(diff)} ngày)`,
         description: `Đã vượt quá số ngày miễn phí lưu bãi do Cảng quy định (${m1.freeStoDays || 2} ngày). Khoản này cảng sẽ thu thêm.`,
         actionLabel: 'Xem chi tiết phí',
         milestoneIndex: 0,
@@ -117,73 +122,63 @@ export default function MilestoneAlertBanner({ milestones, costs = [], onNavigat
     alerts.push({
       id: 'unc_missing',
       type: 'info',
-      title: `Đối soát Kế toán: Có ${pendingUNC.length} khoản đã chi nhưng chưa đính kèm Ủy nhiệm chi (UNC)`,
+      title: `Đối soát Kế toán: ${pendingUNC.length} khoản chi thiếu UNC`,
       description: `Vui lòng tải lên file/ảnh UNC để hoàn tất chứng từ đối chiếu chi phí phát sinh.`,
     });
   }
 
   if (alerts.length === 0) {
-    return (
-      <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl px-4 py-3 flex items-center justify-between text-emerald-800 text-xs shadow-xs">
-        <div className="flex items-center gap-2.5">
-          <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-          <span><strong>Tiến độ an toàn:</strong> Không có cảnh báo rủi ro hay quá hạn deadline DEM/DET nào cho lô hàng này.</span>
-        </div>
-        <span className="text-[11px] font-semibold bg-emerald-100/80 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-300/60">
-          On Track
-        </span>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       {alerts.map((alert) => {
         const isCritical = alert.type === 'critical';
         const isWarning = alert.type === 'warning';
 
         const bgClass = isCritical
-          ? 'bg-red-50 border-red-200 text-red-900 shadow-xs'
+          ? 'bg-rose-50/80 hover:bg-rose-100/90 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 border-rose-200/90 dark:border-rose-900/60 text-rose-900 dark:text-rose-200'
           : isWarning
-          ? 'bg-amber-50 border-amber-200 text-amber-900 shadow-xs'
-          : 'bg-blue-50 border-blue-200 text-blue-900 shadow-xs';
+          ? 'bg-amber-50/80 hover:bg-amber-100/90 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border-amber-200/90 dark:border-amber-900/60 text-amber-900 dark:text-amber-200'
+          : 'bg-blue-50/80 hover:bg-blue-100/90 dark:bg-blue-950/40 dark:hover:bg-blue-900/60 border-blue-200/90 dark:border-blue-900/60 text-blue-900 dark:text-blue-200';
 
-        const iconColor = isCritical ? 'text-red-600' : isWarning ? 'text-amber-600' : 'text-blue-600';
+        const iconColor = isCritical
+          ? 'text-rose-600 dark:text-rose-400'
+          : isWarning
+          ? 'text-amber-600 dark:text-amber-400'
+          : 'text-blue-600 dark:text-blue-400';
+
+        const tooltipText = `${alert.title}\n\n${alert.description}${alert.actionLabel ? `\n\n👉 Nhấp để: ${alert.actionLabel}` : ''}`;
 
         return (
-          <div key={alert.id} className={`border rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${bgClass}`}>
-            <div className="flex items-start gap-3">
-              <div className={`p-1.5 rounded-lg shrink-0 ${isCritical ? 'bg-red-100' : isWarning ? 'bg-amber-100' : 'bg-blue-100'}`}>
+          <button
+            key={alert.id}
+            type="button"
+            onClick={() => alert.milestoneIndex !== undefined && onNavigateMilestone?.(alert.milestoneIndex)}
+            title={tooltipText}
+            className={`w-full group px-3 py-2.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between gap-2 shadow-2xs hover:shadow-xs ${bgClass}`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <span className={`shrink-0 ${iconColor}`}>
                 {isCritical ? (
-                  <ShieldAlert size={18} className={iconColor} />
+                  <ShieldAlert size={15} />
                 ) : isWarning ? (
-                  <Clock size={18} className={iconColor} />
+                  <Clock size={15} />
                 ) : (
-                  <DollarSign size={18} className={iconColor} />
+                  <DollarSign size={15} />
                 )}
-              </div>
-              <div>
-                <h4 className="text-xs font-bold leading-tight">{alert.title}</h4>
-                <p className="text-[11px] opacity-90 mt-0.5">{alert.description}</p>
-              </div>
+              </span>
+              <span className="text-xs font-semibold truncate leading-tight">
+                {alert.title}
+              </span>
             </div>
 
-            {alert.actionLabel && alert.milestoneIndex !== undefined && onNavigateMilestone && (
-              <button
-                type="button"
-                onClick={() => onNavigateMilestone(alert.milestoneIndex!)}
-                className={`self-start sm:self-center px-3 py-1.5 text-xs font-bold rounded-lg border transition-all shrink-0 ${
-                  isCritical
-                    ? 'bg-red-600 hover:bg-red-700 text-white border-red-700 shadow-xs'
-                    : isWarning
-                    ? 'bg-amber-600 hover:bg-amber-700 text-white border-amber-700 shadow-xs'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-700 shadow-xs'
-                }`}
-              >
-                {alert.actionLabel} →
-              </button>
-            )}
-          </div>
+            <ChevronRight 
+              size={14} 
+              className={`shrink-0 ${iconColor} opacity-75 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all`} 
+            />
+          </button>
         );
       })}
     </div>

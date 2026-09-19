@@ -1,8 +1,15 @@
 import { Package, Ship, Plane, Truck, Train, MapPin, Building2, Calendar } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { 
+  TransitMilestonesData, 
+  loadMilestonesFromStorage, 
+  getMilestonesStatusList 
+} from './transit_types.js';
 
 interface ShipmentHeaderProps {
   shipment: any;
+  milestones?: TransitMilestonesData | null;
+  onMilestoneClick?: (milestoneKey: string) => void;
   onEditClick?: () => void;
   onTabChange?: (tabKey: string) => void;
 }
@@ -25,11 +32,22 @@ const MODE_ICON: Record<string, React.ReactNode> = {
   RAIL: <Train size={14} />,
 };
 
-export default function ShipmentHeader({ shipment }: ShipmentHeaderProps) {
+export default function ShipmentHeader({ 
+  shipment, 
+  milestones, 
+  onMilestoneClick 
+}: ShipmentHeaderProps) {
   const statusInfo = STATUS_CONFIG[shipment.status] || { label: shipment.status || 'Đang thực hiện', color: 'bg-blue-50 text-blue-800 border-blue-200' };
 
   const [isScrolled, setIsScrolled] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Derive 5 milestones status list reactively
+  const milestoneItems = useMemo(() => {
+    const data = milestones || (shipment?.id ? loadMilestonesFromStorage(shipment.id, shipment) : null);
+    if (!data) return null;
+    return getMilestonesStatusList(data);
+  }, [milestones, shipment]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -65,17 +83,17 @@ export default function ShipmentHeader({ shipment }: ShipmentHeaderProps) {
   return (
     <>
       <div ref={sentinelRef} className="absolute top-0 w-full h-px opacity-0 pointer-events-none" />
-      <div className={`bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 sticky top-0 z-30 shadow-2xs transition-all duration-300 ease-in-out ${isScrolled ? 'py-2.5' : 'py-4'}`}>
+      <div className={`bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 sticky top-0 z-30 shadow-2xs transition-all duration-300 ease-in-out ${isScrolled ? 'py-2.5' : 'py-3.5'}`}>
         
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
           
           {/* Left: Shipment ID & Tags */}
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3.5 min-w-0">
             <div className={`rounded-xl bg-blue-600 dark:bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs transition-all duration-300 ${isScrolled ? 'w-8 h-8' : 'w-11 h-11'}`}>
               <Package size={isScrolled ? 16 : 22} />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className={`font-bold font-mono text-slate-900 dark:text-white tracking-tight transition-all duration-300 ${isScrolled ? 'text-base' : 'text-xl'}`}>
                   {shipment.trackingNumber}
@@ -128,6 +146,49 @@ export default function ShipmentHeader({ shipment }: ShipmentHeaderProps) {
               </div>
             </div>
           </div>
+
+          {/* Right: 5 Milestones Status Tracker / Quick Jump */}
+          {milestoneItems && (
+            <div className="flex items-center gap-1.5 bg-slate-50/90 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/70 shrink-0 shadow-2xs overflow-x-auto max-w-full">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-2 shrink-0">
+                5 Mốc:
+              </span>
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                {milestoneItems.map((step) => {
+                  const hasMissing = step.missingFields.length > 0;
+                  return (
+                    <button
+                      key={step.key}
+                      type="button"
+                      onClick={() => onMilestoneClick?.(step.key)}
+                      title={`${step.label}: ${step.isCompleted ? 'Đã hoàn tất' : `Còn thiếu ${step.missingFields.length} trường thông tin`}`}
+                      className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer border ${
+                        step.isCompleted
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 shadow-2xs'
+                          : hasMissing
+                          ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/60'
+                          : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                      }`}
+                    >
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${
+                        step.isCompleted
+                          ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50'
+                          : hasMissing
+                          ? 'bg-amber-500'
+                          : 'bg-slate-300 dark:bg-slate-600'
+                      }`} />
+                      <span>{step.shortLabel}</span>
+                      {step.isCompleted ? (
+                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
+                      ) : (
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">({step.missingFields.length})</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
         </div>
 

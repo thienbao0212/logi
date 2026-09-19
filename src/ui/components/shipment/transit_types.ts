@@ -1038,6 +1038,44 @@ export function syncMilestonesToFinancialStorage(shipmentId: string, milestones:
   return updatedCosts;
 }
 
+// ── 5 Milestones Meta & Validation List ────────────────────────────
+export interface MilestoneMeta {
+  id: number;
+  key: 'm1' | 'm2' | 'm3' | 'm4' | 'm5';
+  label: string;
+  shortLabel: string;
+  desc: string;
+}
+
+export const MILESTONES_META: MilestoneMeta[] = [
+  { id: 0, key: 'm1', label: '1. Hàng đến cảng', shortLabel: 'Cảng', desc: 'B/L, Hãng tàu, Cảng đến, Phí nâng hạ, Danh sách Container' },
+  { id: 1, key: 'm2', label: '2. Thông quan Hải quan', shortLabel: 'Hải quan', desc: 'Tờ khai HQ, Phân luồng, Ngày thông quan, Phí kiểm hóa' },
+  { id: 2, key: 'm3', label: '3. Vận chuyển đường bộ', shortLabel: 'Vận chuyển', desc: 'Đơn vị vận tải, Xe đầu kéo, Tài xế, Ngày xuất bãi, Cước cont' },
+  { id: 3, key: 'm4', label: '4. Cửa khẩu xuất (Quá cảnh)', shortLabel: 'Cửa khẩu', desc: 'Cửa khẩu xuất, Tờ khai xuất, Xe Campuchia, Phí cửa khẩu' },
+  { id: 4, key: 'm5', label: '5. Hạ vỏ & Trả rỗng', shortLabel: 'Trả rỗng', desc: 'Depot nhận vỏ, Phiếu EIR, Ngày trả thực tế, Hoàn cược cont' },
+];
+
+export interface MilestoneStatusItem extends MilestoneMeta {
+  isCompleted: boolean;
+  missingFields: { key: string; label: string }[];
+}
+
+export function getMilestonesStatusList(milestones: TransitMilestonesData): MilestoneStatusItem[] {
+  const v1 = validateMilestone1(milestones.m1);
+  const v2 = validateMilestone2(milestones.m2);
+  const v3 = validateMilestone3(milestones.m3);
+  const v4 = validateMilestone4(milestones.m4);
+  const v5 = validateMilestone5(milestones.m5);
+
+  return [
+    { ...MILESTONES_META[0], isCompleted: v1.isCompleted, missingFields: v1.missingFields },
+    { ...MILESTONES_META[1], isCompleted: v2.isCompleted, missingFields: v2.missingFields },
+    { ...MILESTONES_META[2], isCompleted: v3.isCompleted, missingFields: v3.missingFields },
+    { ...MILESTONES_META[3], isCompleted: v4.isCompleted, missingFields: v4.missingFields },
+    { ...MILESTONES_META[4], isCompleted: v5.isCompleted, missingFields: v5.missingFields },
+  ];
+}
+
 // ── Check if shipment has completed all 5 milestones ──────────────────────────
 export function checkAllMilestonesCompleted(milestones: TransitMilestonesData): boolean {
   const v1 = validateMilestone1(milestones.m1);

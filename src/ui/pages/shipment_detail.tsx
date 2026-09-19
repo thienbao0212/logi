@@ -154,6 +154,15 @@ export default function ShipmentDetail() {
     }
   };
 
+  const handleMilestoneClick = (key: string) => {
+    if (activeTab !== 'milestones') {
+      setActiveTab('milestones');
+    }
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('scroll-to-milestone', { detail: { milestoneKey: key } }));
+    }, activeTab !== 'milestones' ? 120 : 10);
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center min-h-[400px]">
       <div className="flex flex-col items-center gap-3 text-slate-400">
@@ -211,22 +220,15 @@ export default function ShipmentDetail() {
 
       {/* Fixed Header Area */}
       <div className="shrink-0 flex flex-col z-20">
-        <ShipmentHeader shipment={shipment} />
+        <ShipmentHeader 
+          shipment={shipment} 
+          milestones={milestones}
+          onMilestoneClick={handleMilestoneClick}
+        />
       </div>
 
       <div className="flex-1 flex flex-col gap-4 p-6 overflow-y-auto min-h-0 relative">
         
-        {/* Milestone Alert Banner (DEM/DET Deadline & Risks) */}
-        {milestones && (
-          <div className="shrink-0">
-            <MilestoneAlertBanner 
-              milestones={milestones}
-              costs={costs}
-              onNavigateMilestone={() => setActiveTab('milestones')}
-            />
-          </div>
-        )}
-
         {/* Main Content Area */}
         <div className="flex gap-5 items-start">
           
@@ -307,6 +309,18 @@ export default function ShipmentDetail() {
           {/* Right Sidebar */}
           <div className="w-80 shrink-0 hidden lg:block space-y-4">
             
+            {/* Active Milestone & Deadline Alerts */}
+            {milestones && (
+              <MilestoneAlertBanner 
+                milestones={milestones}
+                costs={costs}
+                onNavigateMilestone={(idx) => {
+                  const keys = ['m1', 'm2', 'm3', 'm4', 'm5'];
+                  handleMilestoneClick(keys[idx] || 'm1');
+                }}
+              />
+            )}
+
             {/* Quick Status Card */}
             <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-3">
               <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center justify-between">
