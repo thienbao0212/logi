@@ -17,9 +17,9 @@ import {
 const fmtVND = (n: number) => n.toLocaleString('vi-VN') + ' ₫';
 
 const STATUS_CONFIG: Record<InvoiceStatus, { label: string; cls: string }> = {
-  DRAFT: { label: 'Bản nháp', cls: 'bg-slate-100 text-slate-700 border-slate-300' },
-  ISSUED: { label: 'Đã phát hành', cls: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
-  CANCELLED: { label: 'Đã hủy', cls: 'bg-red-100 text-red-700 border-red-300' },
+  DRAFT: { label: 'Bản nháp', cls: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
+  ISSUED: { label: 'Đã phát hành', cls: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' },
+  CANCELLED: { label: 'Đã hủy', cls: 'bg-rose-50 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border-rose-200 dark:border-rose-800' },
 };
 
 const CURRENT_MONTH = new Date().toISOString().slice(0, 7);
@@ -250,17 +250,17 @@ function InvoiceModal({
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800">
+          <Button variant="secondary" size="sm" onClick={onClose}>
             Hủy bỏ
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant={isEdit ? 'primary' : 'success'}
+            size="sm"
             onClick={handleSave}
-            className={`px-5 py-2 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-sm ${type === 'OUT' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'}`}
+            icon={<Check size={14} />}
           >
-            <Check size={14} />
             {isEdit ? 'Lưu thay đổi' : 'Thêm hóa đơn'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -433,7 +433,7 @@ export default function InvoicesTab() {
           <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
             <ExportButton onExport={handleExportCsv} />
             <Button
-              variant={subTab === 'OUT' ? 'primary' : 'danger'}
+              variant="success"
               icon={<Plus size={15} />}
               onClick={handleOpenAdd}
             >
@@ -477,12 +477,22 @@ export default function InvoicesTab() {
                     {inv.status === 'DRAFT' && <Badge variant="neutral" dot size="sm">Bản nháp</Badge>}
                     {inv.status === 'CANCELLED' && <Badge variant="danger" dot size="sm">Đã hủy</Badge>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-1">
-                      <button type="button" onClick={() => handleOpenEdit(inv)} className="p-1.5 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(inv)}
+                        className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/60 text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
+                        title="Chỉnh sửa hóa đơn"
+                      >
                         <Edit3 size={13} />
                       </button>
-                      <button type="button" onClick={() => handleDelete(inv.id)} className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-950/60 text-red-500 dark:text-red-400">
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(inv.id)}
+                        className="p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+                        title="Xóa hóa đơn"
+                      >
                         <Trash2 size={13} />
                       </button>
                     </div>

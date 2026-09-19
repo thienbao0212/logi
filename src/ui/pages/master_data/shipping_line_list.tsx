@@ -219,7 +219,7 @@ export default function ShippingLineList() {
             <Button variant="secondary" size="sm" onClick={handleExportCsv} icon={<Download size={15} />}>
               <span>Xuất CSV</span>
             </Button>
-            <Button variant="primary" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
+            <Button variant="success" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
               <span>{t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}</span>
             </Button>
           </div>
@@ -272,7 +272,7 @@ export default function ShippingLineList() {
             </p>
             <button
               onClick={handleOpenAddModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/60 rounded-lg text-sm font-medium transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 rounded-lg text-sm font-medium transition-colors cursor-pointer"
             >
               <Plus size={16} />
               <span>{t('masterData.shippingLines.addShippingLine', 'Thêm hãng tàu')}</span>
@@ -549,21 +549,22 @@ export default function ShippingLineList() {
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                 >
                   {t('common.cancel', 'Hủy')}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant={editingItem ? 'primary' : 'success'}
+                  size="sm"
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all cursor-pointer"
                 >
                   {submitting && <Loader2 size={16} className="animate-spin" />}
-                  <span>{t('common.save', 'Lưu')}</span>
-                </button>
+                  <span>{editingItem ? t('common.save', 'Lưu thay đổi') : t('common.create', 'Thêm hãng tàu')}</span>
+                </Button>
               </div>
             </form>
           </div>
@@ -584,22 +585,24 @@ export default function ShippingLineList() {
               {t('masterData.shippingLines.deleteConfirm', 'Bạn có chắc chắn muốn xóa hãng tàu này không? Hành động này không thể hoàn tác.')}
             </p>
             <div className="flex items-center justify-center gap-3">
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
+                className="flex-1"
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex-1 cursor-pointer"
               >
                 {t('common.cancel', 'Hủy')}
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                className="flex-1"
                 onClick={() => handleDelete(deletingId)}
                 disabled={deleting}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all flex-1 cursor-pointer"
               >
                 {deleting && <Loader2 size={15} className="animate-spin" />}
                 <span>{t('masterData.shippingLines.deleteShippingLine', 'Xác nhận xóa')}</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>

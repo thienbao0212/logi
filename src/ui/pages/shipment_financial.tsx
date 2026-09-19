@@ -184,7 +184,7 @@ export default function ShipmentFinancial() {
             <button
               type="button"
               onClick={() => (isOpen ? setIsOpen(false) : handleOpenPopover())}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-150 cursor-pointer shadow-xs ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-150 cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
                 appliedPreset !== 'ALL'
                   ? 'bg-blue-50/90 dark:bg-blue-950/50 border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 ring-2 ring-blue-500/10'
                   : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'

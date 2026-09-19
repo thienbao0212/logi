@@ -1,4 +1,4 @@
-import { Edit, Package, FileText, DollarSign, Ship, Plane, Truck, Train, MapPin, Building2, Calendar, Layers } from 'lucide-react';
+import { Package, Ship, Plane, Truck, Train, MapPin, Building2, Calendar } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface ShipmentHeaderProps {
@@ -25,7 +25,7 @@ const MODE_ICON: Record<string, React.ReactNode> = {
   RAIL: <Train size={14} />,
 };
 
-export default function ShipmentHeader({ shipment, onEditClick, onTabChange }: ShipmentHeaderProps) {
+export default function ShipmentHeader({ shipment }: ShipmentHeaderProps) {
   const statusInfo = STATUS_CONFIG[shipment.status] || { label: shipment.status || 'Đang thực hiện', color: 'bg-blue-50 text-blue-800 border-blue-200' };
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -127,49 +127,6 @@ export default function ShipmentHeader({ shipment, onEditClick, onTabChange }: S
                 </span>
               </div>
             </div>
-          </div>
-
-          {/* Right: Quick Action Buttons */}
-          <div className="flex items-center gap-2 shrink-0 flex-wrap">
-            {onTabChange && (
-              <>
-                <button 
-                  type="button"
-                  onClick={() => onTabChange('milestones')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors"
-                >
-                  <Layers size={13} className="text-blue-600 dark:text-blue-400" />
-                  <span>5 Mốc Vận chuyển</span>
-                </button>
-
-                <button 
-                  type="button"
-                  onClick={() => onTabChange('financial')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors"
-                >
-                  <DollarSign size={13} className="text-amber-600 dark:text-amber-400" />
-                  <span>Tài chính & Phí</span>
-                </button>
-
-                <button 
-                  type="button"
-                  onClick={() => onTabChange('documents')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors"
-                >
-                  <FileText size={13} className="text-purple-600 dark:text-purple-400" />
-                  <span>Chứng từ</span>
-                </button>
-              </>
-            )}
-
-            <button 
-              type="button"
-              onClick={onEditClick}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors"
-            >
-              <Edit size={13} />
-              <span>Chỉnh sửa thông số</span>
-            </button>
           </div>
 
         </div>

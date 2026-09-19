@@ -103,7 +103,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             transition: 'width 300ms cubic-bezier(0.4,0,0.2,1)',
           }}
         >
-          <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 shadow-sm shadow-blue-500/20 text-white flex items-center justify-center shrink-0">
             <Package size={20} />
           </div>
           {/* Logo text fades out when collapsed */}
@@ -115,9 +115,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               whiteSpace: 'nowrap',
               transition: 'max-width 300ms cubic-bezier(0.4,0,0.2,1), opacity 200ms ease',
             }}
-            className="font-bold text-slate-900 dark:text-white tracking-tight text-lg"
+            className="font-bold text-slate-900 dark:text-white tracking-tight text-lg flex items-center"
           >
-            LogiFlow
+            LogiFlow<span className="text-orange-500 font-extrabold ml-0.5">.</span>
           </span>
         </div>
 
@@ -128,34 +128,39 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            className="flex items-center justify-center text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
             title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng (Light Mode)' : 'Chuyển sang Giao diện Tối (Dark Mode)'}
             aria-label="Toggle Theme"
           >
             {theme === 'dark' ? (
               <Sun size={19} className="text-amber-400 hover:rotate-45 transition-transform duration-300" />
             ) : (
-              <Moon size={19} className="text-slate-600 dark:text-slate-400 hover:-rotate-12 transition-transform duration-300" />
+              <Moon size={19} className="text-slate-700 dark:text-slate-400 hover:-rotate-12 transition-transform duration-300" />
             )}
           </button>
 
           <button
             onClick={() => i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}
-            className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors px-2.5 py-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer text-xs font-semibold"
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors px-2.5 py-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer text-xs font-semibold focus-visible:ring-2 focus-visible:ring-blue-500"
             title="Switch Language"
+            aria-label="Switch Language"
           >
             <Globe size={18} />
             <span className="uppercase">{i18n.language === 'vi' ? 'EN' : 'VI'}</span>
           </button>
           
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-transparent dark:border-slate-700/60">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
             <User size={15} className="text-slate-500 dark:text-slate-400" />
             <span className="text-xs sm:text-sm font-medium">{user.firstName} {user.lastName}</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300">
+              {isAdmin ? 'Admin' : 'Ops'}
+            </span>
           </div>
           <button
             onClick={handleLogout}
-            className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            className="text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500"
             title="Log out"
+            aria-label="Log out"
           >
             <LogOut size={19} />
           </button>

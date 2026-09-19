@@ -273,7 +273,7 @@ export default function VendorList() {
           <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
             <ExportButton onExport={handleExportCsv} />
             <Button
-              variant="primary"
+              variant="success"
               icon={<Plus size={15} />}
               onClick={openCreateModal}
             >
@@ -563,7 +563,7 @@ export default function VendorList() {
             <Button variant="secondary" onClick={() => setModalOpen(false)}>
               Hủy bỏ
             </Button>
-            <Button type="submit" variant="primary" icon={<Check size={14} />}>
+            <Button type="submit" variant={editingVendor ? 'primary' : 'success'} icon={<Check size={14} />}>
               {editingVendor ? 'Lưu thay đổi' : 'Tạo nhà cung cấp'}
             </Button>
           </div>

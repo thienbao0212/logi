@@ -51,14 +51,14 @@ export default function AccountingDashboard() {
       label: 'Công nợ Phải thu (AR)', 
       icon: ArrowDownLeft,
       badgeCount: counts.thu,
-      badgeClass: 'bg-emerald-100 text-emerald-800'
+      badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
     },
     { 
       id: 'payables', 
       label: 'Công nợ Phải trả (AP)', 
       icon: ArrowUpRight,
       badgeCount: counts.chi,
-      badgeClass: 'bg-rose-100 text-rose-800'
+      badgeClass: 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
     },
     { 
       id: 'cashbook', 
@@ -107,10 +107,10 @@ export default function AccountingDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-3 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer ${
+                className={`flex items-center gap-2 px-5 py-3 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
                   isActive
                     ? 'border-blue-600 text-blue-700 dark:text-blue-400 bg-white dark:bg-slate-900/90 rounded-t-xl shadow-xs'
-                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
+                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
                 }`}
               >
                 <Icon size={16} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'} />

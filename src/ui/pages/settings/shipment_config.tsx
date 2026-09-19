@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { SearchableSelect, SelectOption } from '../../components/common/searchable_select.js';
 import CurrencyInput from '../../components/common/currency_input.js';
+import { Button } from '../../components/common/index.js';
 
 interface Port {
   id: string;
@@ -414,13 +415,13 @@ export default function ShipmentConfig() {
                 <span>{t('settingsPage.shipmentPage.saveSuccess', 'Đã lưu cấu hình!')}</span>
               </span>
             )}
-            <button
+            <Button
+              variant="primary"
               onClick={handleSave}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition-all"
+              icon={<Save size={15} />}
             >
-              <Save size={15} />
               <span>{t('common.save', 'Lưu thay đổi')}</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -778,7 +779,7 @@ export default function ShipmentConfig() {
                           <button
                             type="button"
                             onClick={() => handleDeleteFee(fee.id)}
-                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-lg transition-colors cursor-pointer"
                             title="Xóa khoản phí"
                           >
                             <Trash2 size={14} />
@@ -1161,7 +1162,11 @@ export default function ShipmentConfig() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-all"
+                  className={`px-4 py-2 font-semibold text-white rounded-lg shadow-xs transition-all cursor-pointer ${
+                    editingFee
+                      ? 'bg-blue-600 hover:bg-blue-700'
+                      : 'bg-emerald-600 hover:bg-emerald-700'
+                  }`}
                 >
                   {editingFee ? 'Lưu thay đổi' : 'Thêm khoản phí'}
                 </button>

@@ -324,7 +324,7 @@ export default function ShipmentList() {
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/25 hover:shadow-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm hover:shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             <Plus size={15} />
             <span>Tạo lô hàng mới (QC)</span>
@@ -471,7 +471,7 @@ export default function ShipmentList() {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Plus size={15} />
               <span>Tạo lô hàng đầu tiên</span>

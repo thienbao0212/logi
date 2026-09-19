@@ -310,80 +310,64 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => navigate('/shipments')}
-            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-blue-400 dark:hover:border-blue-600 transition-all text-left group cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Đang vận hành</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Đang vận hành</span>
               <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-blue-800/60 group-hover:bg-blue-600 group-hover:text-white transition-all">
                 <Package size={15} />
               </div>
             </div>
             <div className="text-3xl font-black text-blue-700 dark:text-blue-400 font-mono">{stats.inProgress}</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">lô đang xử lý</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">lô đang xử lý</div>
           </button>
 
           {/* 2. Đã hoàn thành */}
           <button
             type="button"
             onClick={() => navigate('/shipments')}
-            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-emerald-400 dark:hover:border-emerald-600 transition-all text-left group cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Đã hoàn thành</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Đã hoàn thành</span>
               <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-800/60 group-hover:bg-emerald-600 group-hover:text-white transition-all">
                 <CheckCircle2 size={15} />
               </div>
             </div>
             <div className="text-3xl font-black text-emerald-700 dark:text-emerald-400 font-mono">{stats.completed}</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">lô đã kết thúc</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">lô đã kết thúc</div>
           </button>
 
           {/* 3. Cảnh báo khẩn */}
           <button
             type="button"
             onClick={() => navigate('/shipments')}
-            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-red-300 dark:hover:border-red-700 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-red-400 dark:hover:border-red-600 transition-all text-left group cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">DEM/DET khẩn</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">DEM/DET khẩn</span>
               <div className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center border border-red-100 dark:border-red-800/60 group-hover:bg-red-600 group-hover:text-white transition-all">
                 <AlertTriangle size={15} />
               </div>
             </div>
             <div className="text-3xl font-black text-red-700 dark:text-red-400 font-mono">{stats.demCritical}</div>
             <div className="text-[11px] mt-1 font-medium">
-              <span className="text-red-600 dark:text-red-400">{stats.demCritical} quá hạn</span>
-              {stats.demWarning > 0 && <span className="text-amber-500 dark:text-amber-400 ml-1">· {stats.demWarning} gần hạn</span>}
+              <span className="text-red-600 dark:text-red-400 font-bold">{stats.demCritical} quá hạn</span>
+              {stats.demWarning > 0 && <span className="text-amber-600 dark:text-amber-400 ml-1">· {stats.demWarning} gần hạn</span>}
             </div>
           </button>
 
-          {/* 4. Tổng doanh thu */}
+           {/* 5. Lợi nhuận ròng */}
           <button
             type="button"
             onClick={() => navigate('/shipments/financial')}
-            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left group"
+            className={`bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-all text-left group cursor-pointer focus:outline-hidden focus-visible:ring-2 ${stats.totalProfit >= 0 ? 'hover:border-emerald-400 dark:hover:border-emerald-600 focus-visible:ring-emerald-500' : 'hover:border-red-400 dark:hover:border-red-600 focus-visible:ring-red-500'}`}
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng doanh thu</span>
-              <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-blue-800/60 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                <TrendingUp size={15} />
-              </div>
-            </div>
-            <div className="text-2xl font-black text-blue-700 dark:text-blue-400 font-mono">{fmtCompact(stats.totalRevenue)}</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">từ {stats.profitableCount} lô có lãi</div>
-          </button>
-
-          {/* 5. Lợi nhuận ròng */}
-          <button
-            type="button"
-            onClick={() => navigate('/shipments/financial')}
-            className={`bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-all text-left group ${stats.totalProfit >= 0 ? 'hover:border-emerald-300 dark:hover:border-emerald-700' : 'hover:border-red-300 dark:hover:border-red-700'}`}
-          >
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Lợi nhuận ròng</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Lợi nhuận ròng</span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
-                stats.totalProfit >= 0 
-                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/60 group-hover:bg-emerald-600 group-hover:text-white' 
+                stats.totalProfit >= 0
+                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/60 group-hover:bg-emerald-600 group-hover:text-white'
                   : 'bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800/60 group-hover:bg-red-600 group-hover:text-white'
               }`}>
                 {stats.totalProfit >= 0 ? <TrendingUp size={15} /> : <TrendingDown size={15} />}
@@ -392,9 +376,9 @@ export default function AdminDashboard() {
             <div className={`text-2xl font-black font-mono ${stats.totalProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
               {stats.totalProfit < 0 ? '(' : ''}{fmtCompact(Math.abs(stats.totalProfit))}{stats.totalProfit < 0 ? ')' : ''}
             </div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
-              {stats.lossCount > 0 && <span className="text-red-600 dark:text-red-400">{stats.lossCount} lô lỗ</span>}
-              {stats.lossCount === 0 && <span className="text-emerald-600 dark:text-emerald-400">Tất cả có lãi</span>}
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              {stats.lossCount > 0 && <span className="text-red-600 dark:text-red-400 font-semibold">{stats.lossCount} lô lỗ</span>}
+              {stats.lossCount === 0 && <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Tất cả có lãi</span>}
             </div>
           </button>
 
@@ -402,16 +386,16 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => navigate('/accounting')}
-            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700 transition-all text-left group"
+            className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-purple-400 dark:hover:border-purple-600 transition-all text-left group cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-500"
           >
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Số dư quỹ</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Số dư quỹ</span>
               <div className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-100 dark:border-purple-800/60 group-hover:bg-purple-600 group-hover:text-white transition-all">
                 <Wallet size={15} />
               </div>
             </div>
             <div className="text-2xl font-black text-purple-700 dark:text-purple-400 font-mono">{fmtCompact(financialData.cashBalance)}</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">tiền mặt & ngân hàng</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">tiền mặt & ngân hàng</div>
           </button>
         </div>
 
@@ -431,7 +415,7 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={() => navigate('/shipments/financial')}
-                className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5"
+                className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md"
               >
                 Xem báo cáo chi tiết <ChevronRight size={13} />
               </button>
@@ -447,9 +431,9 @@ export default function AdminDashboard() {
                     contentStyle={{ borderRadius: '12px', backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc', fontSize: '11px' }}
                     formatter={(v: any, name?: any) => [fmtVND(Number(v)), name ?? '']}
                   />
-                  <Bar dataKey="Doanh thu" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={28} />
-                  <Bar dataKey="Chi phí" fill="#f87171" radius={[4, 4, 0, 0]} maxBarSize={28} />
-                  <Bar dataKey="Lợi nhuận" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                  <Bar dataKey="Doanh thu" fill="#2563eb" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                  <Bar dataKey="Chi phí" fill="#dc2626" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                  <Bar dataKey="Lợi nhuận" fill="#16a34a" radius={[4, 4, 0, 0]} maxBarSize={28} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

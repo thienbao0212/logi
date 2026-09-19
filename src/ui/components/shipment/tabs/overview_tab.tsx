@@ -1,4 +1,4 @@
-import { Package, Truck, Ship, Calendar, Users, AlertCircle } from 'lucide-react';
+import { Package, Truck, Ship, Calendar, Users, AlertCircle, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 interface Shipment {
   id: string;
@@ -21,6 +21,7 @@ interface Shipment {
 
 interface OverviewTabProps {
   shipment: Shipment;
+  onEdit?: () => void;
 }
 
 interface CriticalDate {
@@ -90,12 +91,15 @@ function DateIndicator({ label, date }: { label: string; date: string | undefine
   );
 }
 
-function Card({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+function Card({ title, icon, action, children }: { title: string; icon: React.ReactNode; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
-        <span className="text-slate-500 dark:text-slate-400">{icon}</span>
-        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">{title}</h3>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
+        <div className="flex items-center gap-2">
+          <span className="text-slate-500 dark:text-slate-400">{icon}</span>
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">{title}</h3>
+        </div>
+        {action && <div>{action}</div>}
       </div>
       <div className="px-5 py-4">{children}</div>
     </div>
@@ -111,7 +115,7 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-export default function OverviewTab({ shipment }: OverviewTabProps) {
+export default function OverviewTab({ shipment, onEdit }: OverviewTabProps) {
   const { t } = useTranslation();
   const criticalDates: CriticalDate[] = [
     {
@@ -141,7 +145,20 @@ export default function OverviewTab({ shipment }: OverviewTabProps) {
       {/* LEFT COLUMN */}
       <div className="flex flex-col gap-5">
         {/* Shipment Information */}
-        <Card title={t('shipment.overview.shipmentInfo', 'Shipment Information')} icon={<Package size={16} />}>
+        <Card 
+          title={t('shipment.overview.shipmentInfo', 'Shipment Information')} 
+          icon={<Package size={16} />}
+          action={onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950/60 rounded-lg transition-colors cursor-pointer"
+            >
+              <Edit size={13} />
+              <span>{t('common.edit', 'Chỉnh sửa')}</span>
+            </button>
+          )}
+        >
           <Field
             label={t('shipment.overview.trackingNumber', 'Tracking Number')}
             value={

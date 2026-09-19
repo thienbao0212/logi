@@ -360,7 +360,7 @@ export default function CashbookTab() {
             </p>
             {!isAddAccountOpen && (
               <Button
-                variant="primary"
+                variant="success"
                 size="sm"
                 onClick={() => setIsAddAccountOpen(true)}
               >
@@ -419,7 +419,7 @@ export default function CashbookTab() {
                   Hủy
                 </Button>
                 <Button
-                  variant="primary"
+                  variant="success"
                   size="sm"
                   onClick={() => {
                     if (!newAccForm.accountName || !newAccForm.bankName) {
@@ -489,7 +489,7 @@ export default function CashbookTab() {
                           refreshAccounts();
                         }
                       }}
-                      className="p-1.5 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded transition-colors cursor-pointer"
                       title="Xóa tài khoản"
                     >
                       <Trash2 size={14} />

@@ -487,7 +487,7 @@ export default function CreateShipmentModal({ onClose, onSuccess }: { onClose: (
             type="submit"
             form="create-shipment-quick-form"
             disabled={loading || loadingMasterData}
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2"
+            className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-emerald-700 active:bg-emerald-800 focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer"
           >
             {loading ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
             <span>{loading ? 'Đang tạo...' : 'Tạo lô hàng ngay'}</span>

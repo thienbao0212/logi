@@ -41,7 +41,7 @@ export function SegmentedControl({
             type="button"
             onClick={() => onChange(opt.id)}
             className={`
-              flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap
+              flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500
               ${isActive ? activeClass : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 font-medium'}
             `.trim().replace(/\s+/g, ' ')}
           >

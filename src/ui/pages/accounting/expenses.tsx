@@ -176,7 +176,7 @@ function ExpenseModal({
           <Button variant="secondary" onClick={onClose}>
             Hủy bỏ
           </Button>
-          <Button variant="primary" onClick={handleSave} icon={<Check size={14} />}>
+          <Button variant={isEdit ? 'primary' : 'success'} onClick={handleSave} icon={<Check size={14} />}>
             {isEdit ? 'Lưu thay đổi' : 'Thêm chi phí'}
           </Button>
         </div>
@@ -383,7 +383,7 @@ export default function ExpensesTab() {
           <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
             <ExportButton onExport={handleExportCsv} />
             <Button
-              variant="danger"
+              variant="success"
               icon={<Plus size={15} />}
               onClick={() => { setEditExpense(null); setModalOpen(true); }}
             >
@@ -426,12 +426,22 @@ export default function ExpensesTab() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-slate-400 dark:text-slate-500 text-[11px] max-w-[120px] truncate">{e.notes || '—'}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <button type="button" onClick={() => { setEditExpense(e); setModalOpen(true); }} className="p-1.5 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-950/60 text-purple-600 dark:text-purple-400">
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => { setEditExpense(e); setModalOpen(true); }}
+                        className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/60 text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
+                        title="Chỉnh sửa chi phí"
+                      >
                         <Edit3 size={13} />
                       </button>
-                      <button type="button" onClick={() => handleDelete(e.id)} className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-950/60 text-red-500 dark:text-red-400">
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(e.id)}
+                        className="p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+                        title="Xóa chi phí"
+                      >
                         <Trash2 size={13} />
                       </button>
                     </div>

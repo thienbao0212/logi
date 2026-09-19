@@ -197,7 +197,7 @@ export const ChargeList: React.FC = () => {
 
             <ExportButton onExport={handleExportCsv} />
 
-            <Button variant="primary" size="sm" onClick={handleOpenAdd}>
+            <Button variant="success" size="sm" onClick={handleOpenAdd}>
               <Plus className="w-4 h-4 mr-1.5" />
               Thêm khoản phí mới
             </Button>
@@ -517,7 +517,7 @@ export const ChargeList: React.FC = () => {
             >
               Hủy
             </Button>
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant={editingItem?.id ? 'primary' : 'success'}>
               {editingItem?.id ? 'Cập nhật' : 'Tạo mới'}
             </Button>
           </div>

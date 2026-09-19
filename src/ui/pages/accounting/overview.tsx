@@ -181,8 +181,8 @@ export default function OverviewTab() {
                   formatter={(value: any) => [`$${Number(value || 0).toLocaleString()}`, '']}
                 />
                 <Legend iconType="circle" wrapperStyle={{paddingTop: '16px', fontSize: '12px'}} />
-                <Bar dataKey="Tiền vào (Thu)" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={36} />
-                <Bar dataKey="Tiền ra (Chi)" fill="#f43f5e" radius={[6, 6, 0, 0]} maxBarSize={36} />
+                <Bar dataKey="Tiền vào (Thu)" fill="#16a34a" radius={[6, 6, 0, 0]} maxBarSize={36} />
+                <Bar dataKey="Tiền ra (Chi)" fill="#dc2626" radius={[6, 6, 0, 0]} maxBarSize={36} />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -234,7 +234,7 @@ export default function PayablesTab() {
         <div className="flex items-center gap-2 shrink-0">
           <ExportButton onExport={handleExportCsv} />
           <Button
-            variant="danger"
+            variant="success"
             icon={<Plus size={15} />}
             onClick={() => setIsModalOpen(true)}
           >

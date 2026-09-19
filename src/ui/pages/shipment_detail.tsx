@@ -211,11 +211,7 @@ export default function ShipmentDetail() {
 
       {/* Fixed Header Area */}
       <div className="shrink-0 flex flex-col z-20">
-        <ShipmentHeader 
-          shipment={shipment} 
-          onEditClick={() => setIsEditing(true)} 
-          onTabChange={(tabKey) => setActiveTab(tabKey)}
-        />
+        <ShipmentHeader shipment={shipment} />
       </div>
 
       <div className="flex-1 flex flex-col gap-4 p-6 overflow-y-auto min-h-0 relative">
@@ -246,13 +242,13 @@ export default function ShipmentDetail() {
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold whitespace-nowrap border-b-2 transition-all ${
+                    className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold whitespace-nowrap border-b-2 transition-all cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
                       isActive
-                        ? 'border-blue-600 dark:border-blue-400 text-blue-700 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
-                        : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                        ? 'border-blue-600 dark:border-blue-400 text-blue-700 dark:text-blue-400 bg-blue-50/60 dark:bg-blue-900/30'
+                        : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
                     }`}
                   >
-                    <Icon size={15} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'} />
+                    <Icon size={15} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -282,7 +278,7 @@ export default function ShipmentDetail() {
 
               {/* TAB 3: TỔNG QUAN LÔ HÀNG */}
               {activeTab === 'overview' && (
-                <OverviewTab shipment={shipment} />
+                <OverviewTab shipment={shipment} onEdit={() => setIsEditing(true)} />
               )}
 
               {/* TAB 4: CHỨNG TỪ */}

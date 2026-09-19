@@ -56,7 +56,7 @@ export function Badge({
   return (
     <span
       className={`
-        inline-flex items-center gap-1.5 font-bold rounded-full border shadow-2xs select-none
+        inline-flex items-center gap-1.5 font-bold rounded-full border shadow-2xs select-none whitespace-nowrap shrink-0
         ${styles.container}
         ${SIZE_STYLES[size]}
         ${className}

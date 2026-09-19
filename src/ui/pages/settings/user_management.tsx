@@ -294,7 +294,7 @@ export default function UserManagement() {
                 <Button variant="secondary" size="sm" onClick={handleExportCsv} icon={<Download size={15} />}>
                   <span>Xuất CSV</span>
                 </Button>
-                <Button variant="primary" size="sm" onClick={handleOpenAdd} icon={<Plus size={15} />}>
+                <Button variant="success" size="sm" onClick={handleOpenAdd} icon={<Plus size={15} />}>
                   <span>Thêm thành viên</span>
                 </Button>
               </>
@@ -796,7 +796,7 @@ export default function UserManagement() {
               <button
                 type="button"
                 onClick={handleSaveAdd}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer"
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer"
               >
                 Tạo thành viên
               </button>

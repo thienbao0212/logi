@@ -187,7 +187,7 @@ export default function CustomerList() {
             <Button variant="secondary" size="sm" onClick={handleExportCsv} icon={<Download size={15} />}>
               <span>Xuất CSV</span>
             </Button>
-            <Button variant="primary" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
+            <Button variant="success" size="sm" onClick={handleOpenAddModal} icon={<Plus size={15} />}>
               <span>{t('masterData.customers.addCustomer', 'Thêm khách hàng')}</span>
             </Button>
           </div>
@@ -238,7 +238,7 @@ export default function CustomerList() {
             </p>
             <button
               onClick={handleOpenAddModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 rounded-lg text-sm font-medium transition-colors cursor-pointer"
             >
               <Plus size={16} />
               <span>{t('masterData.customers.addCustomer', 'Thêm khách hàng')}</span>
@@ -332,14 +332,14 @@ export default function CustomerList() {
 
       {/* Create / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
                   <Users size={18} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {editingCustomer
                     ? t('masterData.customers.editCustomer', 'Chỉnh sửa khách hàng')
                     : t('masterData.customers.addCustomer', 'Thêm khách hàng')}
@@ -347,7 +347,7 @@ export default function CustomerList() {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <X size={18} />
               </button>
@@ -355,14 +355,14 @@ export default function CustomerList() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               {formError && (
-                <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-100 flex items-center gap-2">
+                <div className="p-3 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-400 text-xs rounded-lg border border-red-100 dark:border-red-900/40 flex items-center gap-2">
                   <AlertTriangle size={15} className="shrink-0" />
                   <span>{formError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.customers.name', 'Tên khách hàng')} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -371,12 +371,12 @@ export default function CustomerList() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="VD: ABC Logistics Vietnam Co., Ltd"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.customers.email', 'Email')}
                 </label>
                 <input
@@ -384,12 +384,12 @@ export default function CustomerList() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="contact@company.com"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.customers.phone', 'Số điện thoại')}
                 </label>
                 <input
@@ -397,12 +397,12 @@ export default function CustomerList() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="+84 901 234 567"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('masterData.customers.address', 'Địa chỉ')}
                 </label>
                 <textarea
@@ -410,26 +410,27 @@ export default function CustomerList() {
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Tòa nhà Landmark, Quận 1, TP. Hồ Chí Minh"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                <button
-                  type="button"
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                 >
                   {t('common.cancel', 'Hủy')}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant={editingCustomer ? 'primary' : 'success'}
+                  size="sm"
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all"
                 >
                   {submitting && <Loader2 size={16} className="animate-spin" />}
-                  <span>{t('common.save', 'Lưu')}</span>
-                </button>
+                  <span>{editingCustomer ? t('common.save', 'Lưu thay đổi') : t('common.create', 'Thêm khách hàng')}</span>
+                </Button>
               </div>
             </form>
           </div>
@@ -438,34 +439,36 @@ export default function CustomerList() {
 
       {/* Delete Confirmation Modal */}
       {deletingId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-sm w-full p-6 text-center">
-            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4 border border-red-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-sm w-full p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-4 border border-red-100 dark:border-red-900/40">
               <Trash2 size={24} />
             </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1.5">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1.5">
               {t('masterData.customers.deleteCustomer', 'Xóa khách hàng')}
             </h3>
-            <p className="text-xs text-slate-500 mb-6">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
               {t('masterData.customers.deleteConfirm', 'Bạn có chắc chắn muốn xóa khách hàng này không? Hành động này không thể hoàn tác.')}
             </p>
             <div className="flex items-center justify-center gap-3">
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
+                className="flex-1"
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex-1"
               >
                 {t('common.cancel', 'Hủy')}
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                className="flex-1"
                 onClick={() => handleDelete(deletingId)}
                 disabled={deleting}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg shadow-sm transition-all flex-1"
               >
                 {deleting && <Loader2 size={15} className="animate-spin" />}
                 <span>{t('masterData.customers.deleteCustomer', 'Xác nhận xóa')}</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
