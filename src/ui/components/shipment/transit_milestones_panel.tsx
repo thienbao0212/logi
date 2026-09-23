@@ -95,8 +95,7 @@ function FieldIssueHint({ issue }: { issue: any }) {
 export default function TransitMilestonesPanel({ 
   shipment, 
   onMilestonesChange, 
-  onAllCompleted,
-  onNavigateToFinancial
+  onAllCompleted
 }: TransitMilestonesPanelProps) {
   const [data, setData] = useState<TransitMilestonesData>(() => loadMilestonesFromStorage(shipment.id, shipment));
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -129,9 +128,6 @@ export default function TransitMilestonesPanel({
   const v3 = useMemo(() => validateMilestone3(data.m3), [data.m3]);
   const v4 = useMemo(() => validateMilestone4(data.m4), [data.m4]);
   const v5 = useMemo(() => validateMilestone5(data.m5), [data.m5]);
-  const validations = [v1, v2, v3, v4, v5];
-  const allCompleted = v1.isCompleted && v2.isCompleted && v3.isCompleted && v4.isCompleted && v5.isCompleted;
-  const completedCount = validations.filter(v => v.isCompleted).length;
 
   // --- Timeline scan for input field warnings ---
   const timelineIssues = useMemo(() => scanShipmentTimeline(data), [data]);
@@ -207,18 +203,6 @@ export default function TransitMilestonesPanel({
   }, []);
 
   // --- Save helpers ---
-  const handleSaveAll = () => {
-    saveMilestonesToStorage(shipment.id, data);
-    setSavedSuccess(true);
-    setSavedMilestoneKey('all');
-    setTimeout(() => {
-      setSavedSuccess(false);
-      setSavedMilestoneKey(null);
-    }, 3000);
-    if (onMilestonesChange) onMilestonesChange(data);
-    if (checkAllMilestonesCompleted(data) && onAllCompleted) onAllCompleted();
-  };
-
   const handleSaveMilestone = (key: string) => {
     saveMilestonesToStorage(shipment.id, data);
     setSavedSuccess(true);
@@ -1356,46 +1340,6 @@ export default function TransitMilestonesPanel({
           </div>
         </div>
 
-      </div>
-
-      {/* ── BOTTOM GLOBAL ACTIONS ── */}
-      <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-200/90 dark:border-slate-800/90 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold shrink-0 ${
-            allCompleted ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600' : 'bg-blue-100 dark:bg-blue-950 text-blue-600'
-          }`}>
-            {allCompleted ? <CheckCircle2 size={20} /> : <Clock size={20} />}
-          </div>
-          <div>
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-              {allCompleted ? '🎉 Toàn bộ 5 mốc vận hành đã hoàn tất' : `Đang hoàn thiện: ${completedCount}/5 mốc đã xong`}
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Mọi thay đổi chi phí đều được đồng bộ tự động sang Tab Tài chính & Đối chiếu Kế toán.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
-          {onNavigateToFinancial && (
-            <button 
-              type="button" 
-              onClick={onNavigateToFinancial} 
-              className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <DollarSign size={13} />
-              <span>Đối chiếu Kế toán</span>
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleSaveAll}
-            className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Save size={15} />
-            <span>Lưu tất cả thay đổi</span>
-          </button>
-        </div>
       </div>
 
     </div>
